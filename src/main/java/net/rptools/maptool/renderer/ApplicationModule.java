@@ -11,6 +11,8 @@ import net.rptools.maptool.renderer.map.MapViewImpl;
  * <code>ApplicationModule</code> used for Google Guice injection bindings.
  * */
 public class ApplicationModule extends AbstractModule {
+
+  /** the {@link EventBus} used for sending events. */
   private final EventBus eventBus = new EventBus("render-poc Event Bus");
 
   @Override

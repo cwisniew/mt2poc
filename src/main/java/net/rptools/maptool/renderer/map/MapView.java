@@ -19,4 +19,11 @@ public interface MapView {
    */
   GameMap getGameMap();
 
+
+  /**
+   * Sets the scale factor for the map view.
+   * @param scale the scale factor.
+   */
+  void setScale(double scale);
+
 }

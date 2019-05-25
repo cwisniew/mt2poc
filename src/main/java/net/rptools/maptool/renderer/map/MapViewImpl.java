@@ -5,12 +5,16 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.ui.controls.ResizableCanvas;
 
@@ -100,6 +104,12 @@ public class MapViewImpl implements MapView, Closeable {
     return gameMap;
   }
 
+  @Override
+  public void setScale(double scaleFactor) {
+    scale = scaleFactor;
+    render();
+  }
+
   /**
    * Handle resizing of the
    */
@@ -109,6 +119,7 @@ public class MapViewImpl implements MapView, Closeable {
 
     viewBounds = new Rectangle2D(-width/2, -height/2, width, height);
 
+    transation = new Point2D(width/2, height/2);
     render();
   }
 
@@ -117,6 +128,54 @@ public class MapViewImpl implements MapView, Closeable {
    * Renders the content of the Map View.
    */
   private void render() {
+    renderBackground();
+  }
+
+
+  /**
+   * Render the view of the map.
+   */
+  private void renderBackground() {
+    GraphicsContext gc = backgroundCanvas.getGraphicsContext2D();
+    double width = backgroundCanvas.getWidth();
+    double height = backgroundCanvas.getHeight();
+
+    gc.clearRect(0, 0, width, height);
+    gc.setStroke(Color.RED);
+
+    gc.strokeLine(0, 0, width, height);
+    gc.strokeLine(0, height, width, 0);
+
+    if (gameMap.getBackgroundTexture().isPresent()) {
+      gc.save();
+
+      gc.translate(transation.getX(), transation.getY());
+      gc.scale(scale, scale);
+      Image backgroundTexture = gameMap.getBackgroundTexture().get();
+
+      double textureWidth = backgroundTexture.getWidth();
+      double textureHeight = backgroundTexture.getHeight();
+
+      int numXTextures = (int) Math.ceil(width/textureWidth);
+      int numYTextures = (int) Math.ceil(height/textureHeight);
+
+      double startX = - (numXTextures / 2 * textureWidth);
+      double startY = - (numYTextures / 2 * textureHeight);
+
+      for (double x = startX; x <= width; x+= textureWidth) {
+        for (double y = startY; y <= height; y+= textureHeight) {
+          gc.drawImage(backgroundTexture, x, y);
+        }
+      }
+
+      gc.setFill(Color.BLUE);
+      gc.fillOval(-transation.getX(),-transation.getY(), 55, 55);
+      gc.setFill(Color.RED);
+      gc.fillOval(-3,-3, 5, 5);
+      gc.restore();
+    }
+
+
   }
 
   @Override
