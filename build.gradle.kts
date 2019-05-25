@@ -1,10 +1,8 @@
 import org.ajoberstar.grgit.Grgit
 
 
-
-
-val moduleName: String by project;
-val vendor: String by project;
+val moduleName: String by extra;
+val vendor: String by extra;
 
 val currentOS = org.gradle.internal.os.OperatingSystem.current()
 
@@ -114,9 +112,9 @@ spotless {
 tasks.jar {
     manifest {
         attributes(
-                "Implementation-Title" to "MapTool 2",
+                "Implementation-Title" to "Renderer POC",
                 "Implementation-Version" to tagVersion,
-                "Main-Class" to "net.rptools.maptool.App"
+                "Main-Class" to "net.rptools.maptool.renderer.App"
         )
     }
 }
@@ -124,7 +122,7 @@ tasks.jar {
 
 application {
     // Define the main class for the application
-    mainClassName = "net.rptools.maptool.App"
+    mainClassName = "net.rptools.maptool.renderer.App"
     applicationDefaultJvmArgs = listOf("--add-opens", "java.base/java.lang=com.google.guice")
 
 }
