@@ -5,12 +5,12 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
-import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -47,6 +47,12 @@ public class MapViewImpl implements MapView, Closeable {
   /** The background image rendered from the {@link GameMap}. */
   private Canvas backgroundCanvas;
 
+  /** The x co-ordinate of the mouse. */
+  private double mouseX;
+
+  /** The y co-ordinate of the mouse. */
+  private double mouseY;
+
    /**
     *  Creates a new <code>MapViewImpl</code> object.
     *
@@ -78,6 +84,12 @@ public class MapViewImpl implements MapView, Closeable {
     stackPane.heightProperty().addListener(h -> viewResized());
 
     stackPane.getChildren().add(backgroundCanvas);
+
+    backgroundCanvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+      mouseX = e.getX();
+      mouseY = e.getY();
+      render();
+    });
   }
 
   @Override
@@ -140,11 +152,6 @@ public class MapViewImpl implements MapView, Closeable {
     double width = backgroundCanvas.getWidth();
     double height = backgroundCanvas.getHeight();
 
-    gc.clearRect(0, 0, width, height);
-    gc.setStroke(Color.RED);
-
-    gc.strokeLine(0, 0, width, height);
-    gc.strokeLine(0, height, width, 0);
 
     if (gameMap.getBackgroundTexture().isPresent()) {
       gc.save();
@@ -156,8 +163,8 @@ public class MapViewImpl implements MapView, Closeable {
       double textureWidth = backgroundTexture.getWidth();
       double textureHeight = backgroundTexture.getHeight();
 
-      int numXTextures = (int) Math.ceil(width/textureWidth);
-      int numYTextures = (int) Math.ceil(height/textureHeight);
+      int numXTextures = (int) Math.ceil(width/textureWidth) + 1;
+      int numYTextures = (int) Math.ceil(height/textureHeight) + 1;
 
       double startX = - (numXTextures / 2 * textureWidth);
       double startY = - (numYTextures / 2 * textureHeight);
@@ -168,11 +175,15 @@ public class MapViewImpl implements MapView, Closeable {
         }
       }
 
-      gc.setFill(Color.BLUE);
-      gc.fillOval(-transation.getX(),-transation.getY(), 55, 55);
-      gc.setFill(Color.RED);
-      gc.fillOval(-3,-3, 5, 5);
       gc.restore();
+
+      gc.setFill(Color.RED);
+      gc.fillOval(mouseX - 3, mouseY - 3, 5, 5);
+    } else {
+      gc.clearRect(0, 0, width, height);
+      gc.setStroke(Color.RED);
+      gc.strokeLine(0, 0, width, height);
+      gc.strokeLine(0, height, width, 0);
     }
 
 
