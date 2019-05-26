@@ -51,7 +51,7 @@ public class App extends Application {
     MainWindowController mainWindowController = mainFxmlLoader.getController();
 
     FXMLLoader sideFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SidePanel.fxml"));
-    Pane sidePanel = sideFxmlLoader.load(getClass().getResource("/fxml/SidePanel.fxml"));
+    Pane sidePanel = sideFxmlLoader.load();
     SidePanelController sidePanelController = sideFxmlLoader.getController();
 
     Scene scene = new Scene(mainWindow, 1024, 800);

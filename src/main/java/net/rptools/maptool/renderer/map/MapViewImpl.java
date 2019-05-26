@@ -24,11 +24,14 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.ui.controls.ResizableCanvas;
 
@@ -65,6 +68,13 @@ public class MapViewImpl implements MapView, Closeable {
   /** The y co-ordinate of the mouse. */
   private double mouseY;
 
+
+  private boolean dragging = false;
+
+
+  /** The pane to draw the tokens on */
+  Pane tokenPane;
+
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
@@ -79,6 +89,7 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane = new StackPane();
     anchorPane = new AnchorPane();
+    tokenPane = new Pane();
 
     anchorPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
     AnchorPane.setTopAnchor(stackPane, 0.0);
@@ -103,7 +114,53 @@ public class MapViewImpl implements MapView, Closeable {
           mouseX = e.getX();
           mouseY = e.getY();
           render();
-        });
+        }
+    );
+
+    tokenPane.prefHeight(Double.MAX_VALUE);
+    tokenPane.prefWidth(Double.MAX_VALUE);
+    tokenPane.getChildren().add(new Circle(50.0, 50.0, 49.0));
+
+    //stackPane.getChildren().add(tokenPane);
+
+
+    backgroundCanvas.setOnDragOver(event -> {
+      System.out.println("Here in drag over");
+      if (event.getGestureSource() != tokenPane) {
+        if (event.getDragboard().hasImage()) {
+          event.acceptTransferModes(TransferMode.ANY);
+          dragging = true;
+          event.consume();
+          render();
+        }
+      }
+    });
+
+    backgroundCanvas.setOnDragEntered(event -> {
+      System.out.println("Here in drag entered");
+      event.consume();
+    });
+
+    backgroundCanvas.setOnDragExited(event -> {
+      System.out.println("Here in drag exited");
+      dragging = false;
+      event.consume();
+      render();
+    });
+
+
+    backgroundCanvas.setOnDragDropped(event -> {
+      System.out.println("Here in drag dropped");
+      Dragboard db = event.getDragboard();
+      boolean success = false;
+      if (db.hasImage()) {
+        System.out.println("Dropped image.");
+        success = true;
+      }
+
+      event.setDropCompleted(success);
+      event.consume();
+    });
   }
 
   @Override
@@ -184,8 +241,10 @@ public class MapViewImpl implements MapView, Closeable {
 
       gc.restore();
 
-      gc.setFill(Color.RED);
-      gc.fillOval(mouseX - 3, mouseY - 3, 5, 5);
+      if (dragging) {
+        gc.setFill(Color.RED);
+        gc.fillOval(mouseX - 5, mouseY - 5, 9, 9);
+      }
     } else {
       gc.clearRect(0, 0, width, height);
       gc.setStroke(Color.RED);
