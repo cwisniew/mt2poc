@@ -1,3 +1,17 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.renderer.map;
 
 import com.google.common.eventbus.EventBus;
@@ -18,9 +32,7 @@ import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.ui.controls.ResizableCanvas;
 
-/**
- * Class that implements a view of a {@link GameMap}.
- */
+/** Class that implements a view of a {@link GameMap}. */
 public class MapViewImpl implements MapView, Closeable {
 
   /** The {@Link AnchorPane} that will hold the <code>MapView</code> nodes. */
@@ -29,7 +41,7 @@ public class MapViewImpl implements MapView, Closeable {
   /** The {@link StackPane} that holds the different rendered layers of the map. */
   private StackPane stackPane;
 
-  /** The {@link GameMap} this view "looks in to".  */
+  /** The {@link GameMap} this view "looks in to". */
   private GameMap gameMap;
 
   /** The {@link EventBus} used to listen for {@link GameMap} changes. */
@@ -53,12 +65,12 @@ public class MapViewImpl implements MapView, Closeable {
   /** The y co-ordinate of the mouse. */
   private double mouseY;
 
-   /**
-    *  Creates a new <code>MapViewImpl</code> object.
-    *
-    * @param gameMap The map that this <code>GameMapView</code> is a view of.
-    * @param eventBus The event bus that changes to maps are registered on.
-    */
+  /**
+   * Creates a new <code>MapViewImpl</code> object.
+   *
+   * @param gameMap The map that this <code>GameMapView</code> is a view of.
+   * @param eventBus The event bus that changes to maps are registered on.
+   */
   @Inject
   public MapViewImpl(GameMap gameMap, EventBus eventBus) {
     this.gameMap = gameMap;
@@ -85,11 +97,13 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane.getChildren().add(backgroundCanvas);
 
-    backgroundCanvas.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
-      mouseX = e.getX();
-      mouseY = e.getY();
-      render();
-    });
+    backgroundCanvas.addEventHandler(
+        MouseEvent.MOUSE_MOVED,
+        e -> {
+          mouseX = e.getX();
+          mouseY = e.getY();
+          render();
+        });
   }
 
   @Override
@@ -99,6 +113,7 @@ public class MapViewImpl implements MapView, Closeable {
 
   /**
    * Handles
+   *
    * @param mapUpdateEvent
    */
   @Subscribe
@@ -110,6 +125,7 @@ public class MapViewImpl implements MapView, Closeable {
 
   /**
    * Returns the {@link GameMap} that this is a view of.
+   *
    * @return the game map this is a view of.
    */
   public GameMap getGameMap() {
@@ -122,36 +138,27 @@ public class MapViewImpl implements MapView, Closeable {
     render();
   }
 
-  /**
-   * Handle resizing of the
-   */
+  /** Handle resizing of the */
   private void viewResized() {
     double width = stackPane.getWidth();
     double height = stackPane.getHeight();
 
-    viewBounds = new Rectangle2D(-width/2, -height/2, width, height);
+    viewBounds = new Rectangle2D(-width / 2, -height / 2, width, height);
 
-    transation = new Point2D(width/2, height/2);
+    transation = new Point2D(width / 2, height / 2);
     render();
   }
 
-
-  /**
-   * Renders the content of the Map View.
-   */
+  /** Renders the content of the Map View. */
   private void render() {
     renderBackground();
   }
 
-
-  /**
-   * Render the view of the map.
-   */
+  /** Render the view of the map. */
   private void renderBackground() {
     GraphicsContext gc = backgroundCanvas.getGraphicsContext2D();
     double width = backgroundCanvas.getWidth();
     double height = backgroundCanvas.getHeight();
-
 
     if (gameMap.getBackgroundTexture().isPresent()) {
       gc.save();
@@ -163,14 +170,14 @@ public class MapViewImpl implements MapView, Closeable {
       double textureWidth = backgroundTexture.getWidth();
       double textureHeight = backgroundTexture.getHeight();
 
-      int numXTextures = (int) Math.ceil(width/textureWidth) + 1;
-      int numYTextures = (int) Math.ceil(height/textureHeight) + 1;
+      int numXTextures = (int) Math.ceil(width / textureWidth) + 1;
+      int numYTextures = (int) Math.ceil(height / textureHeight) + 1;
 
-      double startX = - (numXTextures / 2 * textureWidth);
-      double startY = - (numYTextures / 2 * textureHeight);
+      double startX = -(numXTextures / 2 * textureWidth);
+      double startY = -(numYTextures / 2 * textureHeight);
 
-      for (double x = startX; x <= width; x+= textureWidth) {
-        for (double y = startY; y <= height; y+= textureHeight) {
+      for (double x = startX; x <= width; x += textureWidth) {
+        for (double y = startY; y <= height; y += textureHeight) {
           gc.drawImage(backgroundTexture, x, y);
         }
       }
@@ -185,8 +192,6 @@ public class MapViewImpl implements MapView, Closeable {
       gc.strokeLine(0, 0, width, height);
       gc.strokeLine(0, height, width, 0);
     }
-
-
   }
 
   @Override
