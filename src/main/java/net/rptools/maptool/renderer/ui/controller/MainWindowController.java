@@ -16,6 +16,8 @@ package net.rptools.maptool.renderer.ui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
@@ -49,5 +51,12 @@ public class MainWindowController {
 
   public void setLeft(Pane pane) {
     mainBorderPane.setLeft(pane);
+  }
+
+
+  @FXML
+  private void handleQuitAction(ActionEvent event) {
+    System.exit(0);
+    Platform.exit();
   }
 }
