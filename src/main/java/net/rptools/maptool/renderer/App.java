@@ -3,12 +3,15 @@ package net.rptools.maptool.renderer;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
-import javafx.scene.Parent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.rptools.maptool.renderer.map.MapView;
+import net.rptools.maptool.renderer.ui.controller.MainWindowController;
+import net.rptools.maptool.renderer.ui.controller.SidePanelController;
 
 /**
  * Application class for rendering proof of concept.
@@ -31,11 +34,34 @@ public class App extends Application {
 
     Injector injector = Guice.createInjector(new ApplicationModule());
 
-    Pane parent = (Pane) createDefaultMapView(injector);
-    Scene scene = new Scene(parent);
-    primaryStage.setScene(new Scene(createDefaultMapView(injector), 1024, 800));
-    parent.prefWidthProperty().bind(scene.widthProperty());
-    parent.prefHeightProperty().bind(scene.heightProperty());
+
+
+
+    FXMLLoader mainFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
+    Pane mainWindow = mainFxmlLoader.load();
+    MainWindowController mainWindowController = mainFxmlLoader.getController();
+
+    FXMLLoader sideFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SidePanel.fxml"));
+    Pane sidePanel = sideFxmlLoader.load(getClass().getResource("/fxml/SidePanel.fxml"));
+    SidePanelController sidePanelController = sideFxmlLoader.getController();
+
+
+    Scene scene = new Scene(mainWindow ,1024, 800);
+
+    mainWindow.prefWidthProperty().bind(scene.widthProperty());
+    mainWindow.prefHeightProperty().bind(scene.heightProperty());
+
+
+    Pane mapViewPane = createDefaultMapView(injector);
+    mainWindowController.setMain(mapViewPane);
+
+
+    mainWindowController.setLeft(sidePanel);
+
+
+
+    primaryStage.setScene(scene);
+
 
     primaryStage.show();
     primaryStage.setTitle("Renderer POC");
