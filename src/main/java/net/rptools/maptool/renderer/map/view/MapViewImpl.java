@@ -12,7 +12,7 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.renderer.map;
+package net.rptools.maptool.renderer.map.view;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -32,8 +32,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import net.rptools.maptool.renderer.map.GameMap;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.map.grid.Grid;
+import net.rptools.maptool.renderer.map.grid.render.GridLine;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.ui.controls.ResizableCanvas;
 
@@ -85,6 +87,10 @@ public class MapViewImpl implements MapView, Closeable {
   /** The factory class for obtaining a grid renderer. */
   GridRendererFactory gridRendererFactory;
 
+
+  /** Sets the details for drawing the grid line. */
+  GridLine gridLine = new GridLine();
+
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
@@ -131,7 +137,7 @@ public class MapViewImpl implements MapView, Closeable {
     tokenPane.getChildren().add(new Circle(20.0, 20.0, 19.0));
 
 
-    tokenPane.setOnDragOver(event -> {
+    stackPane.setOnDragOver(event -> {
       System.out.println("Here in drag over");
       if (event.getGestureSource() != tokenPane) {
         if (event.getDragboard().hasImage()) {
@@ -143,12 +149,12 @@ public class MapViewImpl implements MapView, Closeable {
       }
     });
 
-    tokenPane.setOnDragEntered(event -> {
+    stackPane.setOnDragEntered(event -> {
       System.out.println("Here in drag entered");
       event.consume();
     });
 
-    tokenPane.setOnDragExited(event -> {
+    stackPane.setOnDragExited(event -> {
       System.out.println("Here in drag exited");
       dragging = false;
       event.consume();
@@ -156,7 +162,7 @@ public class MapViewImpl implements MapView, Closeable {
     });
 
 
-    tokenPane.setOnDragDropped(event -> {
+    stackPane.setOnDragDropped(event -> {
       System.out.println("Here in drag dropped");
       Dragboard db = event.getDragboard();
       boolean success = false;
@@ -213,6 +219,16 @@ public class MapViewImpl implements MapView, Closeable {
     render();
   }
 
+  @Override
+  public void setGridLine(GridLine gridLine) {
+    this.gridLine = gridLine;
+  }
+
+  @Override
+  public GridLine getGridLine() {
+    return gridLine;
+  }
+
   /** Handle resizing of the */
   private void viewResized() {
     double width = stackPane.getWidth();
@@ -237,38 +253,9 @@ public class MapViewImpl implements MapView, Closeable {
     double height = backgroundCanvas.getHeight();
 
     if (gameMap.getBackgroundTexture().isPresent()) {
-      gc.save();
-
-      gc.translate(translation.getX(), translation.getY());
-      gc.scale(scale, scale);
       Image backgroundTexture = gameMap.getBackgroundTexture().get();
-
-      double textureWidth = backgroundTexture.getWidth();
-      double textureHeight = backgroundTexture.getHeight();
-
-      int numXTextures = (int) Math.ceil(width / textureWidth) + 1;
-      int numYTextures = (int) Math.ceil(height / textureHeight) + 1;
-
-      double endX = numXTextures / 2 * textureWidth;
-      double startX = -endX;
-      double endY = numYTextures / 2 * textureHeight;
-      double startY = -endY;
-
-      for (double x = startX; x <= endX; x += textureWidth) {
-        for (double y = startY; y <= endX; y += textureHeight) {
-          gc.drawImage(backgroundTexture, x, y);
-        }
-      }
-
-      gc.setFill(Color.RED);
-      gc.fillOval(-5, -5, 10, 10);
-
-      gc.restore();
-
-      if (dragging) {
-        gc.setFill(Color.RED);
-        gc.fillOval(mouseX - 5, mouseY - 5, 9, 9);
-      }
+      BackgroundTextureRenderer backgroundTextureRenderer = new BackgroundTextureRenderer();
+      backgroundTextureRenderer.render(backgroundCanvas, backgroundTexture, scale, translation);
     } else {
       gc.clearRect(0, 0, width, height);
       gc.setStroke(Color.RED);
@@ -281,15 +268,12 @@ public class MapViewImpl implements MapView, Closeable {
 
   /** Renders the grid for the map. */
   private void renderGrid() {
-    System.out.println("Here:1!!");
     if (gameMap.getGrid().isPresent()) {
-      System.out.println("Here:2!!");
       Grid grid = gameMap.getGrid().get();
       var grOptional = gridRendererFactory.rendererFor(grid);
       if (grOptional.isPresent()) {
-        System.out.println("Here:3!!");
         var gridRenderer = grOptional.get();
-        gridRenderer.render(gridCanvas, grid, Color.BLACK, scale, translation);
+        gridRenderer.render(gridCanvas, grid, gridLine, scale, translation);
       }
     }
   }

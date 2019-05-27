@@ -21,8 +21,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import net.rptools.maptool.renderer.map.MapView;
+import net.rptools.maptool.renderer.map.grid.render.GridLine;
+import net.rptools.maptool.renderer.map.view.MapView;
 import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.ui.controller.MainWindowController;
 import net.rptools.maptool.renderer.ui.controller.SidePanelController;
@@ -83,6 +85,7 @@ public class App extends Application {
     Image image = new Image(getClass().getResourceAsStream("/assets/textures/Grass.png"));
     mainMapView.getGameMap().setTexturedBackground(image);
     mainMapView.getGameMap().setGrid(new SquareGrid(50));
+    mainMapView.setGridLine(new GridLine(Color.BLACK, 1, 3));
     return mainMapView.getParentNode();
   }
 }

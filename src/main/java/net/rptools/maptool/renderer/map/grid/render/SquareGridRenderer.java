@@ -7,37 +7,47 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.grid.SquareGrid;
 
+/**
+ * Class used for rendering a {@link SquareGrid}.
+ */
 public class SquareGridRenderer implements GridRenderer<SquareGrid> {
 
   @Override
-  public void render(Canvas canvas, SquareGrid grid, Color color, double scale, Point2D translation) {
+  public void render(Canvas canvas, SquareGrid grid, GridLine gridLine, double scale, Point2D translation) {
 
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.clearRect(0, 0 , canvas.getWidth(), canvas.getHeight());
 
     gc.save();
 
+
     gc.translate(translation.getX(), translation.getY());
     gc.scale(scale, scale);
-    gc.setStroke(color);
 
-    gc.setFill(color.BLUE);
+    gc.setFill(Color.BLUE);
     gc.fillOval(-3, -3, 6, 6);
 
+
+    gc.setStroke(gridLine.getLineColor());
+    gc.setLineDashes(gridLine.getLineDashes());
 
 
     double dimension = grid.getWidth();
 
+    /*
+     * We add +1 and then take Ceiling below as its always better to draw one too many grid cells
+     * in each direction and have them clipped than it is to stop short of the edge of the map.
+     */
     double width = canvas.getWidth();
-    int numXLines = (int) Math.ceil(width / dimension) + 1;
+    int numXLines = (int) (width / dimension) + 1;
 
     double height = canvas.getHeight();
-    int numYLines = (int) Math.ceil(height / dimension) + 1;
+    int numYLines = (int) (height / dimension) + 1;
 
-    double endX = numXLines / 2 * dimension;
+    double endX = (Math.ceil(numXLines / 2.0)) * dimension;
     double startX = -endX;
 
-    double endY = numYLines / 2 * dimension;
+    double endY = (Math.ceil(numYLines / 2.0)) * dimension;
     double startY = -endY;
 
     for (double x = startX; x <= endX; x+= dimension) {

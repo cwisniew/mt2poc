@@ -12,9 +12,12 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.renderer.map;
+package net.rptools.maptool.renderer.map.view;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import net.rptools.maptool.renderer.map.GameMap;
+import net.rptools.maptool.renderer.map.grid.render.GridLine;
 
 /** Interface for classes that is a view of a (@link GameMap}. */
 public interface MapView {
@@ -39,4 +42,19 @@ public interface MapView {
    * @param scale the scale factor.
    */
   void setScale(double scale);
+
+
+  /**
+   * Sets the details for drawing the grid line.
+   *
+   * @param gridLine The details for drawing the the grid lines.
+   */
+  void setGridLine(GridLine gridLine);
+
+
+  /**
+   * Returns the details used for drawing the grid lines.
+   * @return the details used for drawing the grid lines.
+   */
+  GridLine getGridLine();
 }

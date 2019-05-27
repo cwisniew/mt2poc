@@ -2,7 +2,6 @@ package net.rptools.maptool.renderer.map.grid.render;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.grid.Grid;
 
 /**
@@ -10,6 +9,15 @@ import net.rptools.maptool.renderer.map.grid.Grid;
  */
 public interface GridRenderer<T extends Grid> {
 
-  void render(Canvas canvas, T grid, Color color, double scale, Point2D translation);
+  /**
+   * Renders the grid to a {@link Canvas}.
+   *
+   * @param canvas the {@link Canvas} to draw the grid to.
+   * @param grid the {@link Grid} to be drawn.
+   * @param gridLine the {@link GridLine} with the details of how grid lines should be drawn.
+   * @param scale the scaling factor of the map view.
+   * @param translation the translation factor of the map view.
+   */
+  void render(Canvas canvas, T grid, GridLine gridLine, double scale, Point2D translation);
 
 }
