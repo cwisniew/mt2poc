@@ -6,6 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.grid.SquareGrid;
+import net.rptools.maptool.renderer.map.view.MapViewPort;
 
 /**
  * Class used for rendering a {@link SquareGrid}.
@@ -13,13 +14,15 @@ import net.rptools.maptool.renderer.map.grid.SquareGrid;
 public class SquareGridRenderer implements GridRenderer<SquareGrid> {
 
   @Override
-  public void render(Canvas canvas, SquareGrid grid, GridLine gridLine, double scale, Point2D translation) {
+  public void render(Canvas canvas, SquareGrid grid, GridLine gridLine, MapViewPort viewPort) {
 
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.clearRect(0, 0 , canvas.getWidth(), canvas.getHeight());
 
     gc.save();
 
+    final Point2D translation = viewPort.getCentreScreenTranslate();
+    final double scale = viewPort.getZoomLevel();
 
     gc.translate(translation.getX(), translation.getY());
     gc.scale(scale, scale);

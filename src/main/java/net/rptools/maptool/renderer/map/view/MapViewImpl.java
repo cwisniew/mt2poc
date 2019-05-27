@@ -77,19 +77,24 @@ public class MapViewImpl implements MapView, Closeable {
 
 
   /** The pane to draw the tokens on */
-  Pane tokenPane = new Pane();
+  private Pane tokenPane = new Pane();
 
 
   /** The {@link Canvas} used for drawing the grid. */
-  Canvas gridCanvas = new ResizableCanvas();
+  private Canvas gridCanvas = new ResizableCanvas();
 
 
   /** The factory class for obtaining a grid renderer. */
-  GridRendererFactory gridRendererFactory;
+  private GridRendererFactory gridRendererFactory;
 
 
   /** Sets the details for drawing the grid line. */
-  GridLine gridLine = new GridLine();
+  private GridLine gridLine = new GridLine();
+
+
+  /** The view port that maps screen to map. */
+  @Inject
+  private MapViewPort mapViewPort;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -229,6 +234,12 @@ public class MapViewImpl implements MapView, Closeable {
     return gridLine;
   }
 
+  @Override
+  public MapViewPort getMapViewPort() {
+    return mapViewPort;
+  }
+
+
   /** Handle resizing of the */
   private void viewResized() {
     double width = stackPane.getWidth();
@@ -237,6 +248,8 @@ public class MapViewImpl implements MapView, Closeable {
     viewBounds = new Rectangle2D(-width / 2, -height / 2, width, height);
 
     translation = new Point2D(width / 2, height / 2);
+
+    mapViewPort.adjustDisplaySize(new Rectangle2D(0, 0, width, height));
     render();
   }
 
@@ -255,7 +268,7 @@ public class MapViewImpl implements MapView, Closeable {
     if (gameMap.getBackgroundTexture().isPresent()) {
       Image backgroundTexture = gameMap.getBackgroundTexture().get();
       BackgroundTextureRenderer backgroundTextureRenderer = new BackgroundTextureRenderer();
-      backgroundTextureRenderer.render(backgroundCanvas, backgroundTexture, scale, translation);
+      backgroundTextureRenderer.render(backgroundCanvas, backgroundTexture, mapViewPort);
     } else {
       gc.clearRect(0, 0, width, height);
       gc.setStroke(Color.RED);
@@ -273,7 +286,7 @@ public class MapViewImpl implements MapView, Closeable {
       var grOptional = gridRendererFactory.rendererFor(grid);
       if (grOptional.isPresent()) {
         var gridRenderer = grOptional.get();
-        gridRenderer.render(gridCanvas, grid, gridLine, scale, translation);
+        gridRenderer.render(gridCanvas, grid, gridLine, mapViewPort);
       }
     }
   }

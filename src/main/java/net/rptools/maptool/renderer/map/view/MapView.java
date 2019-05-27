@@ -15,7 +15,6 @@
 package net.rptools.maptool.renderer.map.view;
 
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import net.rptools.maptool.renderer.map.GameMap;
 import net.rptools.maptool.renderer.map.grid.render.GridLine;
 
@@ -57,4 +56,11 @@ public interface MapView {
    * @return the details used for drawing the grid lines.
    */
   GridLine getGridLine();
+
+
+  /**
+   * Returns the {@link MapViewPortImpl} that maps between screen and map co-ordinates.
+   * @return the {@link MapViewPortImpl} that maps between screen and map co-ordinates.
+   */
+  MapViewPort getMapViewPort();
 }

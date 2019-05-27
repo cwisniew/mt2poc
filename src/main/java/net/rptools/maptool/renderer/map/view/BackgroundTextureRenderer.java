@@ -6,14 +6,26 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+/**
+ * This class renders a repeating background texture to a {@link Canvas}.
+ */
 class BackgroundTextureRenderer {
 
-  public void render(Canvas canvas, Image backgroundTexture, double scale, Point2D translation) {
+  /**
+   * Render the repeating background texture.
+   * @param canvas the {@link Canvas} to render to.
+   * @param backgroundTexture the {@link Image} of the background texture to render.
+   * @param viewPort the {@link MapViewPort} used to map between co-ordinates.
+   */
+  public void render(Canvas canvas, Image backgroundTexture, MapViewPort viewPort) {
     double width = canvas.getWidth();
     double height = canvas.getHeight();
 
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.save();
+
+    final Point2D translation = viewPort.getCentreScreenTranslate();
+    final double scale = viewPort.getZoomLevel();
 
     gc.translate(translation.getX(), translation.getY());
     gc.scale(scale, scale);

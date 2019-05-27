@@ -26,6 +26,8 @@ import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactoryImpl;
 import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.map.grid.render.SquareGridRenderer;
+import net.rptools.maptool.renderer.map.view.MapViewPort;
+import net.rptools.maptool.renderer.map.view.MapViewPortImpl;
 
 /** <code>ApplicationModule</code> used for Google Guice injection bindings. */
 public class ApplicationModule extends AbstractModule {
@@ -46,5 +48,8 @@ public class ApplicationModule extends AbstractModule {
     bind(GridRendererFactory.class).toInstance(gridRendererFactory);
     MapBinder<Class, GridRenderer> grMapBinder = MapBinder.newMapBinder(binder(), Class.class, GridRenderer.class);
     grMapBinder.addBinding(SquareGrid.class).to(SquareGridRenderer.class);
+
+
+    bind(MapViewPort.class).to(MapViewPortImpl.class);
   }
 }
