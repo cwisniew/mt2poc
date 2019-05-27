@@ -3,6 +3,9 @@ package net.rptools.maptool.renderer.map.view;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 
+/**
+ * Class that implements the {@link MapViewPort} for co-ordinate translation.
+ */
 public class MapViewPortImpl implements MapViewPort {
 
   /** The rectangle of the world that we are currently "looking at". */
@@ -14,12 +17,15 @@ public class MapViewPortImpl implements MapViewPort {
   /** The zoom factor used. */
   private double zoomLevel = 1.0;
 
-
+  /** The point that the map view is centred on. */
   private Point2D centeredOn;
 
+  /** The co-ordinate for the centre of the screen. */
   private Point2D screenCentre = Point2D.ZERO;
 
-
+  /**
+   * Creates a new <code>MapViewPortImpl</code> object.
+   */
   public MapViewPortImpl() {
     centeredOn = new Point2D(0,0);
   }
@@ -92,6 +98,7 @@ public class MapViewPortImpl implements MapViewPort {
   }
 
 
+  @Override
   public Point2D getScreenCentre() {
     return screenCentre;
   }
