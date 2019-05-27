@@ -33,16 +33,18 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
+import net.rptools.maptool.renderer.map.grid.Grid;
+import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.ui.controls.ResizableCanvas;
 
 /** Class that implements a view of a {@link GameMap}. */
 public class MapViewImpl implements MapView, Closeable {
 
   /** The {@Link AnchorPane} that will hold the <code>MapView</code> nodes. */
-  private AnchorPane anchorPane;
+  private AnchorPane anchorPane = new AnchorPane();
 
   /** The {@link StackPane} that holds the different rendered layers of the map. */
-  private StackPane stackPane;
+  private StackPane stackPane = new StackPane();
 
   /** The {@link GameMap} this view "looks in to". */
   private GameMap gameMap;
@@ -51,7 +53,7 @@ public class MapViewImpl implements MapView, Closeable {
   private EventBus eventBus;
 
   /** The amount the view is translated. */
-  private Point2D transation = new Point2D(0.0, 0.0);
+  private Point2D translation = new Point2D(0.0, 0.0);
 
   /** The scaling factor for the view. */
   private double scale = 1.0;
@@ -60,7 +62,7 @@ public class MapViewImpl implements MapView, Closeable {
   private Rectangle2D viewBounds;
 
   /** The background image rendered from the {@link GameMap}. */
-  private Canvas backgroundCanvas;
+  private Canvas backgroundCanvas = new ResizableCanvas();
 
   /** The x co-ordinate of the mouse. */
   private double mouseX;
@@ -73,23 +75,30 @@ public class MapViewImpl implements MapView, Closeable {
 
 
   /** The pane to draw the tokens on */
-  Pane tokenPane;
+  Pane tokenPane = new Pane();
+
+
+  /** The {@link Canvas} used for drawing the grid. */
+  Canvas gridCanvas = new ResizableCanvas();
+
+
+  /** The factory class for obtaining a grid renderer. */
+  GridRendererFactory gridRendererFactory;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
-   * @param gameMap The map that this <code>GameMapView</code> is a view of.
-   * @param eventBus The event bus that changes to maps are registered on.
+   * @param gMap The map that this <code>GameMapView</code> is a view of.
+   * @param eBus The event bus that changes to maps are registered on.
+   * @param gRendererFactory The factory used for retrieving a grid renderer.
    */
   @Inject
-  public MapViewImpl(GameMap gameMap, EventBus eventBus) {
-    this.gameMap = gameMap;
-    this.eventBus = eventBus;
-    this.eventBus.register(this);
+  public MapViewImpl(GameMap gMap, EventBus eBus, GridRendererFactory gRendererFactory) {
+    gameMap = gMap;
+    eventBus = eBus;
+    gridRendererFactory = gRendererFactory;
 
-    stackPane = new StackPane();
-    anchorPane = new AnchorPane();
-    tokenPane = new Pane();
+    eventBus.register(this);
 
     anchorPane.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
     AnchorPane.setTopAnchor(stackPane, 0.0);
@@ -99,12 +108,9 @@ public class MapViewImpl implements MapView, Closeable {
 
     anchorPane.getChildren().add(stackPane);
 
-    backgroundCanvas = new ResizableCanvas();
     backgroundCanvas.widthProperty().bind(stackPane.widthProperty());
     backgroundCanvas.heightProperty().bind(stackPane.heightProperty());
 
-    stackPane.widthProperty().addListener(w -> viewResized());
-    stackPane.heightProperty().addListener(h -> viewResized());
 
     stackPane.getChildren().add(backgroundCanvas);
 
@@ -117,14 +123,15 @@ public class MapViewImpl implements MapView, Closeable {
         }
     );
 
+
+    stackPane.getChildren().add(tokenPane);
+
     tokenPane.prefHeight(Double.MAX_VALUE);
     tokenPane.prefWidth(Double.MAX_VALUE);
-    tokenPane.getChildren().add(new Circle(50.0, 50.0, 49.0));
-
-    //stackPane.getChildren().add(tokenPane);
+    tokenPane.getChildren().add(new Circle(20.0, 20.0, 19.0));
 
 
-    backgroundCanvas.setOnDragOver(event -> {
+    tokenPane.setOnDragOver(event -> {
       System.out.println("Here in drag over");
       if (event.getGestureSource() != tokenPane) {
         if (event.getDragboard().hasImage()) {
@@ -136,12 +143,12 @@ public class MapViewImpl implements MapView, Closeable {
       }
     });
 
-    backgroundCanvas.setOnDragEntered(event -> {
+    tokenPane.setOnDragEntered(event -> {
       System.out.println("Here in drag entered");
       event.consume();
     });
 
-    backgroundCanvas.setOnDragExited(event -> {
+    tokenPane.setOnDragExited(event -> {
       System.out.println("Here in drag exited");
       dragging = false;
       event.consume();
@@ -149,7 +156,7 @@ public class MapViewImpl implements MapView, Closeable {
     });
 
 
-    backgroundCanvas.setOnDragDropped(event -> {
+    tokenPane.setOnDragDropped(event -> {
       System.out.println("Here in drag dropped");
       Dragboard db = event.getDragboard();
       boolean success = false;
@@ -161,6 +168,17 @@ public class MapViewImpl implements MapView, Closeable {
       event.setDropCompleted(success);
       event.consume();
     });
+
+
+    gridCanvas.widthProperty().bind(stackPane.widthProperty());
+    gridCanvas.heightProperty().bind(stackPane.heightProperty());
+
+    stackPane.getChildren().add(gridCanvas);
+
+
+
+    stackPane.widthProperty().addListener(w -> viewResized());
+    stackPane.heightProperty().addListener(h -> viewResized());
   }
 
   @Override
@@ -202,13 +220,14 @@ public class MapViewImpl implements MapView, Closeable {
 
     viewBounds = new Rectangle2D(-width / 2, -height / 2, width, height);
 
-    transation = new Point2D(width / 2, height / 2);
+    translation = new Point2D(width / 2, height / 2);
     render();
   }
 
   /** Renders the content of the Map View. */
   private void render() {
     renderBackground();
+    renderGrid();
   }
 
   /** Render the view of the map. */
@@ -220,7 +239,7 @@ public class MapViewImpl implements MapView, Closeable {
     if (gameMap.getBackgroundTexture().isPresent()) {
       gc.save();
 
-      gc.translate(transation.getX(), transation.getY());
+      gc.translate(translation.getX(), translation.getY());
       gc.scale(scale, scale);
       Image backgroundTexture = gameMap.getBackgroundTexture().get();
 
@@ -230,14 +249,19 @@ public class MapViewImpl implements MapView, Closeable {
       int numXTextures = (int) Math.ceil(width / textureWidth) + 1;
       int numYTextures = (int) Math.ceil(height / textureHeight) + 1;
 
-      double startX = -(numXTextures / 2 * textureWidth);
-      double startY = -(numYTextures / 2 * textureHeight);
+      double endX = numXTextures / 2 * textureWidth;
+      double startX = -endX;
+      double endY = numYTextures / 2 * textureHeight;
+      double startY = -endY;
 
-      for (double x = startX; x <= width; x += textureWidth) {
-        for (double y = startY; y <= height; y += textureHeight) {
+      for (double x = startX; x <= endX; x += textureWidth) {
+        for (double y = startY; y <= endX; y += textureHeight) {
           gc.drawImage(backgroundTexture, x, y);
         }
       }
+
+      gc.setFill(Color.RED);
+      gc.fillOval(-5, -5, 10, 10);
 
       gc.restore();
 
@@ -250,6 +274,23 @@ public class MapViewImpl implements MapView, Closeable {
       gc.setStroke(Color.RED);
       gc.strokeLine(0, 0, width, height);
       gc.strokeLine(0, height, width, 0);
+    }
+
+
+  }
+
+  /** Renders the grid for the map. */
+  private void renderGrid() {
+    System.out.println("Here:1!!");
+    if (gameMap.getGrid().isPresent()) {
+      System.out.println("Here:2!!");
+      Grid grid = gameMap.getGrid().get();
+      var grOptional = gridRendererFactory.rendererFor(grid);
+      if (grOptional.isPresent()) {
+        System.out.println("Here:3!!");
+        var gridRenderer = grOptional.get();
+        gridRenderer.render(gridCanvas, grid, Color.BLACK, scale, translation);
+      }
     }
   }
 

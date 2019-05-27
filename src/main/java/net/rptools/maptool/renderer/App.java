@@ -23,6 +23,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.rptools.maptool.renderer.map.MapView;
+import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.ui.controller.MainWindowController;
 import net.rptools.maptool.renderer.ui.controller.SidePanelController;
 
@@ -81,6 +82,7 @@ public class App extends Application {
     mainMapView = injector.getInstance(MapView.class);
     Image image = new Image(getClass().getResourceAsStream("/assets/textures/Grass.png"));
     mainMapView.getGameMap().setTexturedBackground(image);
+    mainMapView.getGameMap().setGrid(new SquareGrid(50));
     return mainMapView.getParentNode();
   }
 }

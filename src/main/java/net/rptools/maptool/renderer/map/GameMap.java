@@ -17,6 +17,7 @@ package net.rptools.maptool.renderer.map;
 import java.util.Optional;
 import java.util.UUID;
 import javafx.scene.image.Image;
+import net.rptools.maptool.renderer.map.grid.Grid;
 
 /** Interface implemented by classes that represent maps used in the game. */
 public interface GameMap {
@@ -37,4 +38,20 @@ public interface GameMap {
    * @return the background texture.
    */
   Optional<Image> getBackgroundTexture();
+
+
+  /**
+   * Sets the {@link Grid} for the map.
+   *
+   * @param grid the grid for the map.
+   */
+  void setGrid(Grid grid);
+
+
+  /**
+   * Returns the {@link Grid} for the map.
+   *
+   * @return the grid for the map.
+   */
+  Optional<Grid> getGrid();
 }

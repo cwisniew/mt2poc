@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javafx.scene.image.Image;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
+import net.rptools.maptool.renderer.map.grid.Grid;
 
 /** Class used to represent maps in the game. */
 public class GameMapImpl implements GameMap {
@@ -31,6 +32,9 @@ public class GameMapImpl implements GameMap {
 
   /** The {@link EventBus} used to send events when the map is updated. */
   private final EventBus eventBus;
+
+  /** The {@link Grid} for this map. */
+  private Grid grid;
 
   /**
    * Creates a new <code>GameMapImpl</code> object.
@@ -57,5 +61,15 @@ public class GameMapImpl implements GameMap {
   @Override
   public Optional<Image> getBackgroundTexture() {
     return Optional.ofNullable(backgroundTexture);
+  }
+
+  @Override
+  public void setGrid(Grid grid) {
+    this.grid = grid;
+  }
+
+  @Override
+  public Optional<Grid> getGrid() {
+    return Optional.ofNullable(grid);
   }
 }
