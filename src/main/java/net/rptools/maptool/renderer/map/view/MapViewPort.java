@@ -1,5 +1,6 @@
 package net.rptools.maptool.renderer.map.view;
 
+import java.awt.Point;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 
@@ -78,5 +79,9 @@ public interface MapViewPort {
    * Returns the centre of the display.
    * @return the centre of the display
    */
-  public Point2D getScreenCentre();
+  Point2D getScreenCentre();
+
+
+  void translateCentredOn(Point2D vect);
+
 }

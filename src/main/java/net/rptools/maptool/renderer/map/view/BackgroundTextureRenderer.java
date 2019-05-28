@@ -18,8 +18,6 @@ class BackgroundTextureRenderer {
    * @param viewPort the {@link MapViewPort} used to map between co-ordinates.
    */
   public void render(Canvas canvas, Image backgroundTexture, MapViewPort viewPort) {
-    double width = canvas.getWidth();
-    double height = canvas.getHeight();
 
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.save();
@@ -27,23 +25,33 @@ class BackgroundTextureRenderer {
     final Point2D translation = viewPort.getCentreScreenTranslate();
     final double scale = viewPort.getZoomLevel();
 
+    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
     gc.translate(translation.getX(), translation.getY());
     gc.scale(scale, scale);
 
     double textureWidth = backgroundTexture.getWidth();
     double textureHeight = backgroundTexture.getHeight();
 
-    int numXTextures = (int) (width / textureWidth) + 1;
-    int numYTextures = (int) (height / textureHeight) + 1;
+    double width = viewPort.getMapBounds().getWidth();
+    double height = viewPort.getMapBounds().getHeight();
 
-    double endX = Math.ceil(numXTextures / 2.0) * textureWidth;
-    double startX = -endX;
-    double endY = Math.ceil(numYTextures / 2.0) * textureHeight;
-    double startY = -endY;
+    double centerX = viewPort.getCenteredOn().getX();
+    double centerY = viewPort.getCenteredOn().getY();
 
-    for (double x = startX; x <= endX; x += textureWidth) {
-      for (double y = startY; y <= endX; y += textureHeight) {
-        gc.drawImage(backgroundTexture, x, y);
+    double scaledTextureWidth = textureWidth * scale;
+    double scaledTextureHeight = textureHeight * scale;
+
+    // coerce centerX, centerY to a texture multiple
+    centerX = Math.floor(centerX/scaledTextureWidth) * scaledTextureWidth;
+    centerY = Math.floor(centerY/scaledTextureHeight) * scaledTextureHeight;
+
+    for (double x = 0; x <= width; x+= scaledTextureWidth) {
+      for (double y = 0; y <= height; y+= scaledTextureHeight) {
+        gc.drawImage(backgroundTexture, centerX + x, centerY + y);
+        gc.drawImage(backgroundTexture, centerX + x, centerY - y);
+        gc.drawImage(backgroundTexture, centerX - x, centerY - y);
+        gc.drawImage(backgroundTexture, centerX - x, centerY + y);
       }
     }
 

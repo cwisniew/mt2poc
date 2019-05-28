@@ -37,28 +37,32 @@ public class SquareGridRenderer implements GridRenderer<SquareGrid> {
 
     double dimension = grid.getWidth();
 
-    /*
-     * We add +1 and then take Ceiling below as its always better to draw one too many grid cells
-     * in each direction and have them clipped than it is to stop short of the edge of the map.
-     */
-    double width = canvas.getWidth();
-    int numXLines = (int) (width / dimension) + 1;
 
-    double height = canvas.getHeight();
-    int numYLines = (int) (height / dimension) + 1;
+    double minX = viewPort.getMapBounds().getMinX();
+    double maxX = viewPort.getMapBounds().getMaxX();
+    double minY = viewPort.getMapBounds().getMinY();
+    double maxY = viewPort.getMapBounds().getMaxY();
+    double width = viewPort.getMapBounds().getWidth();
+    double height = viewPort.getMapBounds().getHeight();
 
-    double endX = (Math.ceil(numXLines / 2.0)) * dimension;
-    double startX = -endX;
+    double scaledGridWidth = dimension * scale;
 
-    double endY = (Math.ceil(numYLines / 2.0)) * dimension;
-    double startY = -endY;
+    System.out.print("\n" + minX + " (" + scaledGridWidth + ") => " + maxX + "  :::   ");
+    double centerX = viewPort.getCenteredOn().getX();
+    double centerY = viewPort.getCenteredOn().getY();
 
-    for (double x = startX; x <= endX; x+= dimension) {
-      gc.strokeLine(x, startY, x, endY);
+    // Snap centerX, centerY to a grid lines.
+    centerX = Math.floor(centerX/scaledGridWidth) * scaledGridWidth;
+    centerY = Math.floor(centerY/scaledGridWidth) * scaledGridWidth;
+
+    for (double x = 0; x <= width; x+= scaledGridWidth) {
+      gc.strokeLine(centerX + x, minY, centerX + x, maxY);
+      gc.strokeLine(centerX - x, minY, centerX - x, maxY);
     }
 
-    for (double y = startY; y <= endY; y+= dimension) {
-      gc.strokeLine(startX, y, endX, y);
+    for (double y = 0; y <= height; y+= scaledGridWidth) {
+      gc.strokeLine(minX, centerY + y, maxX,  centerY + y);
+      gc.strokeLine(minX, centerY - y, maxX, centerY - y);
     }
 
     gc.restore();

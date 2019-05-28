@@ -40,6 +40,7 @@ public class MapViewPortImpl implements MapViewPort {
         mapBounds.getWidth(),
         mapBounds.getHeight()
     );
+    recalculateMapBounds();
   }
 
   @Override
@@ -101,5 +102,11 @@ public class MapViewPortImpl implements MapViewPort {
   @Override
   public Point2D getScreenCentre() {
     return screenCentre;
+  }
+
+  @Override
+  public void translateCentredOn(Point2D vect) {
+    centeredOn = centeredOn.add(vect);
+    recalculateMapBounds();
   }
 }

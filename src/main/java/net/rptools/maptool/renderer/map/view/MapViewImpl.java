@@ -73,11 +73,15 @@ public class MapViewImpl implements MapView, Closeable {
   private double mouseY;
 
 
+  private double mouseClickX;
+
+  private double mouseClickY;
+
   private boolean dragging = false;
 
 
-  /** The pane to draw the tokens on */
-  private Pane tokenPane = new Pane();
+  /** The pane that picks up user interactions when there is nothing else in front of it. */
+  private Pane interactivePane = new Pane();
 
 
   /** The {@link Canvas} used for drawing the grid. */
@@ -134,17 +138,44 @@ public class MapViewImpl implements MapView, Closeable {
         }
     );
 
+    stackPane.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        e -> {
+          if (e.isPrimaryButtonDown()) {
+            mouseClickX = e.getX();
+            mouseClickY = e.getY();
+            System.out.println("Mouse Clicked " + e.getX() + ", " + e.getY());
+            e.consume();
+          }
+        }
+    );
 
-    stackPane.getChildren().add(tokenPane);
+    stackPane.addEventHandler(
+        MouseEvent.MOUSE_DRAGGED,
+        e -> {
+          if (e.isPrimaryButtonDown()) {
+            System.out.println(e.getX() + ", " + e.getY() + " - " + mouseClickX + ", " + mouseClickY);
+            mapViewPort.translateCentredOn(new Point2D((e.getX() - mouseClickX)/5, (e.getY() - mouseClickY)/5));
+            e.consume();
+            render();
+          }
+        }
+    );
 
-    tokenPane.prefHeight(Double.MAX_VALUE);
-    tokenPane.prefWidth(Double.MAX_VALUE);
-    tokenPane.getChildren().add(new Circle(20.0, 20.0, 19.0));
+    // set pick on bounds to false and ensure the interactivePane background is null so that it allows mouse clicks through
+    //interactivePane.setPickOnBounds(true);
+    //interactivePane.setBackground(null);
+
+    stackPane.getChildren().add(interactivePane);
+
+    interactivePane.prefHeight(Double.MAX_VALUE);
+    interactivePane.prefWidth(Double.MAX_VALUE);
+    interactivePane.getChildren().add(new Circle(20.0, 20.0, 19.0));
 
 
-    stackPane.setOnDragOver(event -> {
+    interactivePane.setOnDragOver(event -> {
       System.out.println("Here in drag over");
-      if (event.getGestureSource() != tokenPane) {
+      if (event.getGestureSource() != interactivePane) {
         if (event.getDragboard().hasImage()) {
           event.acceptTransferModes(TransferMode.ANY);
           dragging = true;
@@ -154,12 +185,12 @@ public class MapViewImpl implements MapView, Closeable {
       }
     });
 
-    stackPane.setOnDragEntered(event -> {
+    interactivePane.setOnDragEntered(event -> {
       System.out.println("Here in drag entered");
       event.consume();
     });
 
-    stackPane.setOnDragExited(event -> {
+    interactivePane.setOnDragExited(event -> {
       System.out.println("Here in drag exited");
       dragging = false;
       event.consume();
@@ -167,7 +198,7 @@ public class MapViewImpl implements MapView, Closeable {
     });
 
 
-    stackPane.setOnDragDropped(event -> {
+    interactivePane.setOnDragDropped(event -> {
       System.out.println("Here in drag dropped");
       Dragboard db = event.getDragboard();
       boolean success = false;
@@ -180,6 +211,8 @@ public class MapViewImpl implements MapView, Closeable {
       event.consume();
     });
 
+
+    gridCanvas.setMouseTransparent(true);
 
     gridCanvas.widthProperty().bind(stackPane.widthProperty());
     gridCanvas.heightProperty().bind(stackPane.heightProperty());
