@@ -18,6 +18,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import java.util.Optional;
 import java.util.UUID;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.map.grid.Grid;
@@ -71,5 +72,10 @@ public class GameMapImpl implements GameMap {
   @Override
   public Optional<Grid> getGrid() {
     return Optional.ofNullable(grid);
+  }
+
+  @Override
+  public Point2D getGridCenter(Point2D mapPoint) {
+    return grid.getGridCenter(mapPoint);
   }
 }

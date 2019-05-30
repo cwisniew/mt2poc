@@ -53,7 +53,6 @@ public class MainWindowController {
     mainBorderPane.setLeft(pane);
   }
 
-
   @FXML
   private void handleQuitAction(ActionEvent event) {
     System.exit(0);

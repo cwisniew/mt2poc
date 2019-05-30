@@ -42,7 +42,6 @@ public interface MapView {
    */
   void setScale(double scale);
 
-
   /**
    * Sets the details for drawing the grid line.
    *
@@ -50,16 +49,16 @@ public interface MapView {
    */
   void setGridLine(GridLine gridLine);
 
-
   /**
    * Returns the details used for drawing the grid lines.
+   *
    * @return the details used for drawing the grid lines.
    */
   GridLine getGridLine();
 
-
   /**
    * Returns the {@link MapViewPortImpl} that maps between screen and map co-ordinates.
+   *
    * @return the {@link MapViewPortImpl} that maps between screen and map co-ordinates.
    */
   MapViewPort getMapViewPort();

@@ -119,10 +119,19 @@ tasks.jar {
     }
 }
 
+tasks.test {
+    jvmArgs("--enable-preview")
+}
+
+
+tasks {
+    withType<JavaCompile>().configureEach {
+        options.compilerArgs.add("--enable-preview")
+    }
+}
 
 application {
     // Define the main class for the application
     mainClassName = "net.rptools.maptool.renderer.App"
-    applicationDefaultJvmArgs = listOf("--add-opens", "java.base/java.lang=com.google.guice")
-
+    applicationDefaultJvmArgs = listOf("--enable-preview", "--add-opens", "java.base/java.lang=com.google.guice")
 }

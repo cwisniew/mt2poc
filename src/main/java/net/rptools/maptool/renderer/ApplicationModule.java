@@ -19,13 +19,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import net.rptools.maptool.renderer.map.GameMap;
 import net.rptools.maptool.renderer.map.GameMapImpl;
-import net.rptools.maptool.renderer.map.view.MapView;
-import net.rptools.maptool.renderer.map.view.MapViewImpl;
+import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.map.grid.render.GridRenderer;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactoryImpl;
-import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.map.grid.render.SquareGridRenderer;
+import net.rptools.maptool.renderer.map.view.MapView;
+import net.rptools.maptool.renderer.map.view.MapViewImpl;
 import net.rptools.maptool.renderer.map.view.MapViewPort;
 import net.rptools.maptool.renderer.map.view.MapViewPortImpl;
 
@@ -35,7 +35,7 @@ public class ApplicationModule extends AbstractModule {
   /** the {@link EventBus} used for sending events. */
   private final EventBus eventBus = new EventBus("render-poc Event Bus");
 
-  /** The {@link GridRendererFactory} used to obtain renderer for grids.  */
+  /** The {@link GridRendererFactory} used to obtain renderer for grids. */
   private final GridRendererFactory gridRendererFactory = new GridRendererFactoryImpl();
 
   @Override
@@ -44,11 +44,10 @@ public class ApplicationModule extends AbstractModule {
     bind(GameMap.class).to(GameMapImpl.class);
     bind(MapView.class).to(MapViewImpl.class);
 
-
     bind(GridRendererFactory.class).toInstance(gridRendererFactory);
-    MapBinder<Class, GridRenderer> grMapBinder = MapBinder.newMapBinder(binder(), Class.class, GridRenderer.class);
+    MapBinder<Class, GridRenderer> grMapBinder =
+        MapBinder.newMapBinder(binder(), Class.class, GridRenderer.class);
     grMapBinder.addBinding(SquareGrid.class).to(SquareGridRenderer.class);
-
 
     bind(MapViewPort.class).to(MapViewPortImpl.class);
   }

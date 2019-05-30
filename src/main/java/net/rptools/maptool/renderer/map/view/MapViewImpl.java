@@ -72,46 +72,39 @@ public class MapViewImpl implements MapView, Closeable {
   /** The y co-ordinate of the mouse. */
   private double mouseY;
 
+  /** The x co-ordinate where the mouse button was pressed. */
+  private double mousePressedX;
 
-  private double mouseClickX;
-
-  private double mouseClickY;
-
-  private boolean dragging = false;
-
+  /** The y co-ordinate where the mouse button was pressed. */
+  private double mousePressedY;
 
   /** The pane that picks up user interactions when there is nothing else in front of it. */
   private Pane interactivePane = new Pane();
 
-
   /** The {@link Canvas} used for drawing the grid. */
   private Canvas gridCanvas = new ResizableCanvas();
 
-
   /** The factory class for obtaining a grid renderer. */
-  private GridRendererFactory gridRendererFactory;
-
+  @Inject private GridRendererFactory gridRendererFactory;
 
   /** Sets the details for drawing the grid line. */
   private GridLine gridLine = new GridLine();
 
-
   /** The view port that maps screen to map. */
-  @Inject
   private MapViewPort mapViewPort;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
    * @param gMap The map that this <code>GameMapView</code> is a view of.
-   * @param eBus The event bus that changes to maps are registered on.
-   * @param gRendererFactory The factory used for retrieving a grid renderer.
+   * @param eBus The event bus used to subscribe to map changes.
+   * @param viewPort The viewport used to create a view into the map.
    */
   @Inject
-  public MapViewImpl(GameMap gMap, EventBus eBus, GridRendererFactory gRendererFactory) {
+  public MapViewImpl(GameMap gMap, EventBus eBus, MapViewPort viewPort) {
     gameMap = gMap;
     eventBus = eBus;
-    gridRendererFactory = gRendererFactory;
+    mapViewPort = viewPort;
 
     eventBus.register(this);
 
@@ -126,7 +119,6 @@ public class MapViewImpl implements MapView, Closeable {
     backgroundCanvas.widthProperty().bind(stackPane.widthProperty());
     backgroundCanvas.heightProperty().bind(stackPane.heightProperty());
 
-
     stackPane.getChildren().add(backgroundCanvas);
 
     backgroundCanvas.addEventHandler(
@@ -135,36 +127,35 @@ public class MapViewImpl implements MapView, Closeable {
           mouseX = e.getX();
           mouseY = e.getY();
           render();
-        }
-    );
+        });
 
     stackPane.addEventHandler(
         MouseEvent.MOUSE_PRESSED,
         e -> {
           if (e.isPrimaryButtonDown()) {
-            mouseClickX = e.getX();
-            mouseClickY = e.getY();
-            System.out.println("Mouse Clicked " + e.getX() + ", " + e.getY());
+            mousePressedX = e.getX();
+            mousePressedY = e.getY();
             e.consume();
           }
-        }
-    );
+        });
 
     stackPane.addEventHandler(
         MouseEvent.MOUSE_DRAGGED,
         e -> {
           if (e.isPrimaryButtonDown()) {
-            System.out.println(e.getX() + ", " + e.getY() + " - " + mouseClickX + ", " + mouseClickY);
-            mapViewPort.translateCentredOn(new Point2D((e.getX() - mouseClickX)/5, (e.getY() - mouseClickY)/5));
+            mapViewPort.panView(
+                new Point2D((e.getX() - mousePressedX) / 5, (e.getY() - mousePressedY) / 5));
             e.consume();
             render();
           }
-        }
-    );
+        });
 
-    // set pick on bounds to false and ensure the interactivePane background is null so that it allows mouse clicks through
-    //interactivePane.setPickOnBounds(true);
-    //interactivePane.setBackground(null);
+    stackPane.setOnScroll(
+        e -> {
+          mapViewPort.addZoomLevel(e.getDeltaY() / 20);
+          e.consume();
+          render();
+        });
 
     stackPane.getChildren().add(interactivePane);
 
@@ -172,45 +163,39 @@ public class MapViewImpl implements MapView, Closeable {
     interactivePane.prefWidth(Double.MAX_VALUE);
     interactivePane.getChildren().add(new Circle(20.0, 20.0, 19.0));
 
+    interactivePane.setOnDragOver(
+        event -> {
+          if (event.getGestureSource() != interactivePane) {
+            if (event.getDragboard().hasImage()) {
+              event.acceptTransferModes(TransferMode.ANY);
+              event.consume();
+              render();
+            }
+          }
+        });
 
-    interactivePane.setOnDragOver(event -> {
-      System.out.println("Here in drag over");
-      if (event.getGestureSource() != interactivePane) {
-        if (event.getDragboard().hasImage()) {
-          event.acceptTransferModes(TransferMode.ANY);
-          dragging = true;
+    interactivePane.setOnDragEntered(
+        event -> {
+          event.consume();
+        });
+
+    interactivePane.setOnDragExited(
+        event -> {
           event.consume();
           render();
-        }
-      }
-    });
+        });
 
-    interactivePane.setOnDragEntered(event -> {
-      System.out.println("Here in drag entered");
-      event.consume();
-    });
+    interactivePane.setOnDragDropped(
+        event -> {
+          Dragboard db = event.getDragboard();
+          boolean success = false;
+          if (db.hasImage()) {
+            success = true;
+          }
 
-    interactivePane.setOnDragExited(event -> {
-      System.out.println("Here in drag exited");
-      dragging = false;
-      event.consume();
-      render();
-    });
-
-
-    interactivePane.setOnDragDropped(event -> {
-      System.out.println("Here in drag dropped");
-      Dragboard db = event.getDragboard();
-      boolean success = false;
-      if (db.hasImage()) {
-        System.out.println("Dropped image.");
-        success = true;
-      }
-
-      event.setDropCompleted(success);
-      event.consume();
-    });
-
+          event.setDropCompleted(success);
+          event.consume();
+        });
 
     gridCanvas.setMouseTransparent(true);
 
@@ -219,10 +204,10 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane.getChildren().add(gridCanvas);
 
-
-
     stackPane.widthProperty().addListener(w -> viewResized());
     stackPane.heightProperty().addListener(h -> viewResized());
+
+    mapViewPort.setGameMap(gMap);
   }
 
   @Override
@@ -272,7 +257,6 @@ public class MapViewImpl implements MapView, Closeable {
     return mapViewPort;
   }
 
-
   /** Handle resizing of the */
   private void viewResized() {
     double width = stackPane.getWidth();
@@ -308,8 +292,6 @@ public class MapViewImpl implements MapView, Closeable {
       gc.strokeLine(0, 0, width, height);
       gc.strokeLine(0, height, width, 0);
     }
-
-
   }
 
   /** Renders the grid for the map. */

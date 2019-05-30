@@ -23,9 +23,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.map.grid.render.GridLine;
 import net.rptools.maptool.renderer.map.view.MapView;
-import net.rptools.maptool.renderer.map.grid.SquareGrid;
 import net.rptools.maptool.renderer.ui.controller.MainWindowController;
 import net.rptools.maptool.renderer.ui.controller.SidePanelController;
 

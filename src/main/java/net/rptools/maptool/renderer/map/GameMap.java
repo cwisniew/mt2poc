@@ -16,6 +16,7 @@ package net.rptools.maptool.renderer.map;
 
 import java.util.Optional;
 import java.util.UUID;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import net.rptools.maptool.renderer.map.grid.Grid;
 
@@ -39,7 +40,6 @@ public interface GameMap {
    */
   Optional<Image> getBackgroundTexture();
 
-
   /**
    * Sets the {@link Grid} for the map.
    *
@@ -47,11 +47,19 @@ public interface GameMap {
    */
   void setGrid(Grid grid);
 
-
   /**
    * Returns the {@link Grid} for the map.
    *
    * @return the grid for the map.
    */
   Optional<Grid> getGrid();
+
+  /**
+   * Returns the center of a grid the contains the passed in point. Both the point returned and the
+   * point to test are in map co-ordinates.
+   *
+   * @param mapPoint the point with in the grid cell you want to get the center of.
+   * @return the center of the grid cell.
+   */
+  Point2D getGridCenter(Point2D mapPoint);
 }

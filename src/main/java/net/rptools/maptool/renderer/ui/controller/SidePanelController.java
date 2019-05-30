@@ -24,18 +24,19 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 
+/** Controller class for the side panel. */
 public class SidePanelController {
 
-
+  /** The names of the resource files that contain the images we will be using. */
   private static String[] imageNames = {
-      "Dragon.png",
-      "Eagle.png",
-      "Elf.png",
-      "Hero.png",
-      "Mage.png",
-      "Mystic.png",
-      "Troll.png",
-      "Wolf.png"
+    "Dragon.png",
+    "Eagle.png",
+    "Elf.png",
+    "Hero.png",
+    "Mage.png",
+    "Mystic.png",
+    "Troll.png",
+    "Wolf.png"
   };
 
   @FXML // ResourceBundle that was given to the FXMLLoader
@@ -49,7 +50,8 @@ public class SidePanelController {
 
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
-    assert imageVBox != null : "fx:id=\"imageVBox\" was not injected: check your FXML file 'Untitled'.";
+    assert imageVBox != null
+        : "fx:id=\"imageVBox\" was not injected: check your FXML file 'Untitled'.";
 
     for (String iname : imageNames) {
       Image image = new Image(getClass().getResourceAsStream("/assets/images/" + iname));
@@ -58,28 +60,24 @@ public class SidePanelController {
       imageView.setFitWidth(80);
       imageView.setPreserveRatio(true);
 
-      imageView.setOnDragDetected(event -> {
-        System.out.println("Here in drag detected");
-        Dragboard dboard = imageView.startDragAndDrop(TransferMode.ANY);
+      imageView.setOnDragDetected(
+          event -> {
+            Dragboard dboard = imageView.startDragAndDrop(TransferMode.ANY);
 
-        ClipboardContent clipboardContent = new ClipboardContent();
-        clipboardContent.putImage(image);
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putImage(image);
 
-        dboard.setContent(clipboardContent);
+            dboard.setContent(clipboardContent);
 
-        event.consume();
+            event.consume();
+          });
 
-      });
-
-
-      imageView.setOnDragDone(event -> {
-        System.out.println("Here in drag done");
-        event.consume();
-      });
+      imageView.setOnDragDone(
+          event -> {
+            event.consume();
+          });
 
       imageVBox.getChildren().add(imageView);
     }
-
   }
 }
-

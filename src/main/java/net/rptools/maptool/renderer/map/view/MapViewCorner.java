@@ -12,23 +12,12 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.renderer.map.grid.render;
+package net.rptools.maptool.renderer.map.view;
 
-import com.google.inject.Inject;
-import java.util.Map;
-import java.util.Optional;
-import net.rptools.maptool.renderer.map.grid.Grid;
-
-/**
- * The default implementation of the {@link GridRendererFactory} interface used to return a {@link
- * GridRenderer} for a specific {@link Grid}.
- */
-public class GridRendererFactoryImpl implements GridRendererFactory {
-
-  @Inject private Map<Class, GridRenderer> gridRendererMap;
-
-  @Override
-  public Optional<GridRenderer> rendererFor(Grid grid) {
-    return Optional.ofNullable(gridRendererMap.get(grid.getClass()));
-  }
+/** The different corners of the the map view port. */
+public enum MapViewCorner {
+  TOP_LEFT,
+  TOP_RIGHT,
+  BOTTOM_RIGHT,
+  BOTTOM_LEFT
 }
