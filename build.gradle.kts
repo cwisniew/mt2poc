@@ -120,13 +120,16 @@ tasks.jar {
 }
 
 tasks.test {
-    jvmArgs("--enable-preview")
+    //jvmArgs("--enable-preview")
 }
 
 
 tasks {
     withType<JavaCompile>().configureEach {
         options.compilerArgs.add("--enable-preview")
+        options.compilerArgs.add("-Xlint:unchecked")
+        options.compilerArgs.add("-Xlint:deprecation")
+        options.compilerArgs.add("-Xlint:preview")
     }
 }
 
