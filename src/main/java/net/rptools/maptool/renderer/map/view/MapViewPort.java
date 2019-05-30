@@ -69,6 +69,8 @@ public interface MapViewPort {
    */
   void zoomOUt();
 
+
+
   /**
    * Returns the viewable bounds in map co-ordinates.
    *
@@ -152,6 +154,21 @@ public interface MapViewPort {
    * @param deltaVector the vector to move view in.
    */
   void panView(Point2D deltaVector);
+
+  void panView(double deltaX, double deltaY);
+
+
+  void panViewLeft();
+  void panViewRight();
+  void panViewUp();
+  void panViewDown();
+
+  void panViewLeftUp();
+  void panViewLeftDown();
+
+  void panViewRightUp();
+  void panViewRightDown();
+
 
   /**
    * Returns the passed in vector in map co-ordinates scaled to display co-ordinates.

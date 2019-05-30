@@ -21,7 +21,9 @@ import net.rptools.maptool.renderer.map.GameMap;
 /** Class that implements the {@link MapViewPort} for co-ordinate translation. */
 public class MapViewPortImpl implements MapViewPort {
 
-  private  static final double ZOOM_STEP = 1.01;
+  private static final double ZOOM_STEP = 1.01;
+
+  private static final double PAN_STEP = 5.0;
 
   /** The rectangle of the world that we are currntly "looking at". */
   private Rectangle2D mapBounds = new Rectangle2D(0, 0, 1, 1);
@@ -139,6 +141,47 @@ public class MapViewPortImpl implements MapViewPort {
   }
 
   @Override
+  public void panViewLeft() {
+    panView(-PAN_STEP, 0.0);
+  }
+
+  @Override
+  public void panViewRight() {
+    panView(PAN_STEP, 0.0);
+
+  }
+
+  @Override
+  public void panViewUp() {
+    panView(0.0, PAN_STEP);
+  }
+
+  @Override
+  public void panViewDown() {
+    panView(0.0, -PAN_STEP);
+  }
+
+  @Override
+  public void panViewLeftUp() {
+    panView(-PAN_STEP, PAN_STEP);
+  }
+
+  @Override
+  public void panViewLeftDown() {
+    panView(-PAN_STEP, -PAN_STEP);
+  }
+
+  @Override
+  public void panViewRightUp() {
+    panView(PAN_STEP, PAN_STEP);
+  }
+
+  @Override
+  public void panViewRightDown() {
+    panView(PAN_STEP, -PAN_STEP);
+  }
+
+  @Override
   public Rectangle2D getViewBounds() {
     return mapBounds;
   }
@@ -231,7 +274,12 @@ public class MapViewPortImpl implements MapViewPort {
 
   @Override
   public void panView(Point2D vect) {
-    centeredOn = centeredOn.add(vect);
+    panView(vect.getX(), vect.getY());
+  }
+
+  @Override
+  public void panView(double deltaX, double deltaY) {
+    centeredOn = centeredOn.add(deltaX, deltaY);
     recalculateBounds();
   }
 
