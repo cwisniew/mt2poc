@@ -148,7 +148,6 @@ public class MapViewPortImpl implements MapViewPort {
   @Override
   public void panViewRight() {
     panView(PAN_STEP, 0.0);
-
   }
 
   @Override
@@ -250,7 +249,7 @@ public class MapViewPortImpl implements MapViewPort {
   @Override
   public Point2D convertDisplayToMap(double displayX, double displayY) {
     double mapX = (displayX - halfDisplayWidth) / zoomLevel - mapOffsetX;
-    double mapY = - (displayY - halfDisplayHeight) / zoomLevel - mapOffsetY;
+    double mapY = -(displayY - halfDisplayHeight) / zoomLevel - mapOffsetY;
 
     return new Point2D(mapX, mapY);
   }

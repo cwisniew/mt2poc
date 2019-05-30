@@ -16,7 +16,6 @@ package net.rptools.maptool.renderer.map.grid;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
-import org.w3c.dom.css.Rect;
 
 /** Interface implemented by all grids for {@link net.rptools.maptool.renderer.map.GameMap}s. */
 public interface Grid {
@@ -61,18 +60,15 @@ public interface Grid {
    * Both the point to test and the returned center of the grid are in map co-ordinates.
    *
    * @param mapPoint the map point to find the cell for.
-   *
    * @return the center of the grid cell.
    */
   Point2D getGridCenter(Point2D mapPoint);
 
-
   /**
-   * Returns the bounds for the grid cell that contains the specified map co-ordinate.
-   * Both the point to test and returned bounds are in map co-ordinates.
+   * Returns the bounds for the grid cell that contains the specified map co-ordinate. Both the
+   * point to test and returned bounds are in map co-ordinates.
    *
    * @param mapPoint the map point to find the cell for.
-   *
    * @return the bounds of the grid cell.
    */
   Rectangle2D getGridBounds(Point2D mapPoint);

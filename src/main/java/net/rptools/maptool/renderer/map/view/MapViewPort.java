@@ -58,18 +58,11 @@ public interface MapViewPort {
    */
   void addZoomLevel(double delta);
 
-
-  /**
-   * Zooms in by a single step.
-   */
+  /** Zooms in by a single step. */
   void zoomIn();
 
-  /**
-   * Zooms out by a single step.
-   */
+  /** Zooms out by a single step. */
   void zoomOUt();
-
-
 
   /**
    * Returns the viewable bounds in map co-ordinates.
@@ -157,18 +150,21 @@ public interface MapViewPort {
 
   void panView(double deltaX, double deltaY);
 
-
   void panViewLeft();
+
   void panViewRight();
+
   void panViewUp();
+
   void panViewDown();
 
   void panViewLeftUp();
+
   void panViewLeftDown();
 
   void panViewRightUp();
-  void panViewRightDown();
 
+  void panViewRightDown();
 
   /**
    * Returns the passed in vector in map co-ordinates scaled to display co-ordinates.

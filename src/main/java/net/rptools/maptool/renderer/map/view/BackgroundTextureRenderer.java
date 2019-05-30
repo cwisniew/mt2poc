@@ -37,7 +37,8 @@ class BackgroundTextureRenderer {
      * To keep texture rendering from wandering a texture is laid out as a grid of the size of the
      * texture with the top left corner of one of the grid cells anchored at 0, 0
      */
-     Grid textureGrid = new RectangleGrid(backgroundTexture.getWidth(), backgroundTexture.getHeight());
+    Grid textureGrid =
+        new RectangleGrid(backgroundTexture.getWidth(), backgroundTexture.getHeight());
 
     /*
      * Grab the top left and bottom right of the view point in map co-ordinates this will give
@@ -46,20 +47,18 @@ class BackgroundTextureRenderer {
     final Point2D topLeft = viewPort.getCornerGridCenter(MapViewCorner.TOP_LEFT);
     final Point2D bottomRight = viewPort.getCornerGridCenter(MapViewCorner.BOTTOM_RIGHT);
 
-
-
     // Get the top and bottom grid cells center for the texture grid
     final Point2D txTopLeftC = textureGrid.getGridCenter(topLeft);
     final Point2D txBottomRightC = textureGrid.getGridCenter(bottomRight);
-
 
     // Convert from map co-ordinates to display co-ordinates.
     final Point2D topLeftDisplay = viewPort.convertMapToDisplay(txTopLeftC);
     final Point2D bottomRightDisplay = viewPort.convertMapToDisplay(txBottomRightC);
 
-
     // scale the dimensions of the texture to match display co-ordinates.
-    final Point2D txDimension = viewPort.scaleVector(new Point2D(backgroundTexture.getWidth(), backgroundTexture.getHeight()));
+    final Point2D txDimension =
+        viewPort.scaleVector(
+            new Point2D(backgroundTexture.getWidth(), backgroundTexture.getHeight()));
     final double txWidth = txDimension.getX();
     final double txHeight = txDimension.getY();
 
@@ -78,9 +77,6 @@ class BackgroundTextureRenderer {
         gc.drawImage(backgroundTexture, x, y, txWidth, txHeight);
       }
     }
-
-    gc.setFill(Color.RED);
-    gc.fillOval(-5, -5, 10, 10);
 
     gc.restore();
   }

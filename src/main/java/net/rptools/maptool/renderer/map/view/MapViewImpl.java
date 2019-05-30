@@ -31,7 +31,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import net.rptools.maptool.renderer.map.GameMap;
 import net.rptools.maptool.renderer.map.events.MapUpdateEvent;
 import net.rptools.maptool.renderer.map.grid.Grid;
@@ -217,10 +216,10 @@ public class MapViewImpl implements MapView, Closeable {
 
     interactivePane.prefHeight(Double.MAX_VALUE);
     interactivePane.prefWidth(Double.MAX_VALUE);
-    interactivePane.getChildren().add(new Circle(20.0, 20.0, 19.0));
 
     interactivePane.setOnDragOver(
         event -> {
+          System.out.println("onDragOver");
           if (event.getGestureSource() != interactivePane) {
             if (event.getDragboard().hasImage()) {
               event.acceptTransferModes(TransferMode.ANY);
@@ -232,17 +231,20 @@ public class MapViewImpl implements MapView, Closeable {
 
     interactivePane.setOnDragEntered(
         event -> {
+          System.out.println("onDragEntered");
           event.consume();
         });
 
     interactivePane.setOnDragExited(
         event -> {
+          System.out.println("onDragExited");
           event.consume();
           render();
         });
 
     interactivePane.setOnDragDropped(
         event -> {
+          System.out.println("onDragDropped");
           Dragboard db = event.getDragboard();
           boolean success = false;
           if (db.hasImage()) {
@@ -354,6 +356,7 @@ public class MapViewImpl implements MapView, Closeable {
   }
 
   /** Renders the grid for the map. */
+  @SuppressWarnings("unchecked")
   private void renderGrid() {
     if (gameMap.getGrid().isPresent()) {
       Grid grid = gameMap.getGrid().get();
