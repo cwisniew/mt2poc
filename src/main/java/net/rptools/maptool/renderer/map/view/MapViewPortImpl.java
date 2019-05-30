@@ -249,18 +249,14 @@ public class MapViewPortImpl implements MapViewPort {
 
   @Override
   public Point2D convertDisplayToMap(double displayX, double displayY) {
-    //double mapX = (displayX - halfDisplayWidth - mapOffsetX) / zoomLevel;
-    //double mapY = -(displayY - halfDisplayHeight - mapOffsetY) / zoomLevel;
     double mapX = (displayX - halfDisplayWidth) / zoomLevel - mapOffsetX;
-    double mapY = - (displayY - halfDisplayWidth) / zoomLevel - mapOffsetY;
+    double mapY = - (displayY - halfDisplayHeight) / zoomLevel - mapOffsetY;
 
     return new Point2D(mapX, mapY);
   }
 
   @Override
   public Point2D convertMapToDisplay(double mapX, double mapY) {
-    //double displayX = halfDisplayWidth + zoomLevel * mapX + mapOffsetX;
-    //double displayY = halfDisplayHeight - zoomLevel * mapY + mapOffsetY;
     double displayX = halfDisplayWidth + zoomLevel * (mapX + mapOffsetX);
     double displayY = halfDisplayHeight - zoomLevel * (mapY + mapOffsetY);
 
