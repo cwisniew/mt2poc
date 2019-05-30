@@ -15,54 +15,80 @@
 package net.rptools.maptool.renderer.map.grid;
 
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 
 /** An ordinary square grid for {@link net.rptools.maptool.renderer.map.GameMap}s. */
-public class SquareGrid implements Grid {
+public class RectangleGrid implements Grid {
 
-  /** The height and width of the grid. */
-  private double dimension;
+  /** The width of the grid. */
+  private double width;
+
+  /** The height of the grid. */
+  private double height;
 
   /**
-   * Creates a new <code>SquareGrid</code>.
+   * Creates a new <code>RectangleGrid</code>.
    *
-   * @param dim the dimensions for the square.
+   * @param dim the dimensions for a square grid
    */
-  public SquareGrid(double dim) {
-    dimension = dim;
+  public RectangleGrid(double dim) {
+    height = dim;
+    width = dim;
+  }
+
+  /**
+   * Creates a new <code>RectangleGrid</code>.
+   *
+   * @param w the width of the rectangle grid.
+   * @param h the height of the rectangle grid.
+   */
+  public RectangleGrid(double w, double h) {
+    height = h;
+    width = w;
   }
 
   @Override
   public String getName() {
-    return "Square Grid";
+    return "Rectangle Grid";
   }
 
   @Override
   public double getWidth() {
-    return dimension;
+    return width;
   }
 
   @Override
   public double getHeight() {
-    return dimension;
+    return height;
   }
 
   @Override
   public void setWidth(double w) {
-    dimension = w;
+    width = w;
   }
 
   @Override
   public void setHeight(double h) {
-    dimension = h;
+    height = h;
   }
 
   @Override
   public Point2D getGridCenter(Point2D point) {
     // Easiest way to do this for a square grid is to find the upper left corner
-    double x = Math.floor(point.getX() / dimension) * dimension;
-    double y = Math.floor(point.getY() / dimension) * dimension;
+    double x = Math.floor(point.getX() / width) * width;
+    double y = Math.floor(point.getY() / height) * height;
 
     // Then add on half of the dimension
-    return new Point2D(x + dimension / 2, y + dimension / 2);
+    return new Point2D(x + width / 2.0, y + width / 2.0);
+  }
+
+  @Override
+  public Rectangle2D getGridBounds(Point2D mapPoint) {
+    Point2D center = getGridCenter(mapPoint);
+
+    double halfW = width / 2.0;
+    double halfH = height / 2.0;
+
+    return new Rectangle2D(center.getX() - halfW, center.getY() + halfH, width, height);
   }
 }

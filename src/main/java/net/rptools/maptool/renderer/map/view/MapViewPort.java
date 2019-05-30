@@ -58,6 +58,17 @@ public interface MapViewPort {
    */
   void addZoomLevel(double delta);
 
+
+  /**
+   * Zooms in by a single step.
+   */
+  void zoomIn();
+
+  /**
+   * Zooms out by a single step.
+   */
+  void zoomOUt();
+
   /**
    * Returns the viewable bounds in map co-ordinates.
    *

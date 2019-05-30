@@ -152,7 +152,11 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane.setOnScroll(
         e -> {
-          mapViewPort.addZoomLevel(e.getDeltaY() / 20);
+          if (e.getDeltaY() > 0) {
+            viewPort.zoomOUt();
+          } else {
+            viewPort.zoomIn();
+          }
           e.consume();
           render();
         });
@@ -272,8 +276,11 @@ public class MapViewImpl implements MapView, Closeable {
 
   /** Renders the content of the Map View. */
   private void render() {
-    renderBackground();
-    renderGrid();
+    // Don't render until both width and height are set
+    if (stackPane.getWidth() != 0 && stackPane.getHeight() != 0) {
+      renderBackground();
+      renderGrid();
+    }
   }
 
   /** Render the view of the map. */

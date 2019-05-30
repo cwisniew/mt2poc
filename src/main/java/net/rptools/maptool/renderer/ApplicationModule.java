@@ -19,7 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import net.rptools.maptool.renderer.map.GameMap;
 import net.rptools.maptool.renderer.map.GameMapImpl;
-import net.rptools.maptool.renderer.map.grid.SquareGrid;
+import net.rptools.maptool.renderer.map.grid.RectangleGrid;
 import net.rptools.maptool.renderer.map.grid.render.GridRenderer;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactoryImpl;
@@ -47,7 +47,7 @@ public class ApplicationModule extends AbstractModule {
     bind(GridRendererFactory.class).toInstance(gridRendererFactory);
     MapBinder<Class, GridRenderer> grMapBinder =
         MapBinder.newMapBinder(binder(), Class.class, GridRenderer.class);
-    grMapBinder.addBinding(SquareGrid.class).to(SquareGridRenderer.class);
+    grMapBinder.addBinding(RectangleGrid.class).to(SquareGridRenderer.class);
 
     bind(MapViewPort.class).to(MapViewPortImpl.class);
   }

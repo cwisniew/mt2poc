@@ -19,6 +19,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import net.rptools.maptool.renderer.map.grid.Grid;
+import net.rptools.maptool.renderer.map.grid.RectangleGrid;
 
 /** This class renders a repeating background texture to a {@link Canvas}. */
 class BackgroundTextureRenderer {
@@ -31,40 +33,49 @@ class BackgroundTextureRenderer {
    * @param viewPort the {@link MapViewPort} used to map between co-ordinates.
    */
   public void render(Canvas canvas, Image backgroundTexture, MapViewPort viewPort) {
+    /*
+     * To keep texture rendering from wandering a texture is laid out as a grid of the size of the
+     * texture with the top left corner of one of the grid cells anchored at 0, 0
+     */
+     Grid textureGrid = new RectangleGrid(backgroundTexture.getWidth(), backgroundTexture.getHeight());
+
+    /*
+     * Grab the top left and bottom right of the view point in map co-ordinates this will give
+     * the minimum and maximum X and Y om the maps that are visible.
+     */
+    final Point2D topLeft = viewPort.getCornerGridCenter(MapViewCorner.TOP_LEFT);
+    final Point2D bottomRight = viewPort.getCornerGridCenter(MapViewCorner.BOTTOM_RIGHT);
+
+
+
+    // Get the top and bottom grid cells center for the texture grid
+    final Point2D txTopLeftC = textureGrid.getGridCenter(topLeft);
+    final Point2D txBottomRightC = textureGrid.getGridCenter(bottomRight);
+
+
+    // Convert from map co-ordinates to display co-ordinates.
+    final Point2D topLeftDisplay = viewPort.convertMapToDisplay(txTopLeftC);
+    final Point2D bottomRightDisplay = viewPort.convertMapToDisplay(txBottomRightC);
+
+
+    // scale the dimensions of the texture to match display co-ordinates.
+    final Point2D txDimension = viewPort.scaleVector(new Point2D(backgroundTexture.getWidth(), backgroundTexture.getHeight()));
+    final double txWidth = txDimension.getX();
+    final double txHeight = txDimension.getY();
+
+    final double minX = topLeftDisplay.getX() - txWidth;
+    final double maxX = bottomRightDisplay.getX() + txWidth;
+    final double minY = topLeftDisplay.getY() - txHeight;
+    final double maxY = bottomRightDisplay.getY() + txHeight;
 
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.save();
 
-    final Point2D translation = viewPort.getCentreScreenTranslate();
-    final double scale = viewPort.getZoomLevel();
-
     gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-    gc.translate(translation.getX(), translation.getY());
-    gc.scale(scale, scale);
-
-    double textureWidth = backgroundTexture.getWidth();
-    double textureHeight = backgroundTexture.getHeight();
-
-    double width = viewPort.getViewBounds().getWidth();
-    double height = viewPort.getViewBounds().getHeight();
-
-    double centerX = viewPort.getViewCenteredOn().getX();
-    double centerY = viewPort.getViewCenteredOn().getY();
-
-    double scaledTextureWidth = textureWidth * scale;
-    double scaledTextureHeight = textureHeight * scale;
-
-    // coerce centerX, centerY to a texture multiple
-    centerX = Math.floor(centerX / scaledTextureWidth) * scaledTextureWidth;
-    centerY = Math.floor(centerY / scaledTextureHeight) * scaledTextureHeight;
-
-    for (double x = 0; x <= width; x += scaledTextureWidth) {
-      for (double y = 0; y <= height; y += scaledTextureHeight) {
-        gc.drawImage(backgroundTexture, centerX + x, centerY + y);
-        gc.drawImage(backgroundTexture, centerX + x, centerY - y);
-        gc.drawImage(backgroundTexture, centerX - x, centerY - y);
-        gc.drawImage(backgroundTexture, centerX - x, centerY + y);
+    for (double x = minX; x <= maxX; x += txWidth) {
+      for (double y = minY; y <= maxY; y += txHeight) {
+        gc.drawImage(backgroundTexture, x, y, txWidth, txHeight);
       }
     }
 

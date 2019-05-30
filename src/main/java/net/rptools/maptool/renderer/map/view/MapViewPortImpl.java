@@ -21,24 +21,48 @@ import net.rptools.maptool.renderer.map.GameMap;
 /** Class that implements the {@link MapViewPort} for co-ordinate translation. */
 public class MapViewPortImpl implements MapViewPort {
 
-  /** The rectangle of the world that we are currently "looking at". */
+  private  static final double ZOOM_STEP = 1.01;
+
+  /** The rectangle of the world that we are currntly "looking at". */
   private Rectangle2D mapBounds = new Rectangle2D(0, 0, 1, 1);
 
+  /** Pre-calculated minimum x co-ordinate of the view in map co-ordinates. */
   private double minViewX;
+
+  /** Pre-calculated maximum x co-ordinate of the view in map co-ordinates. */
   private double maxViewX;
+
+  /** Pre-calculated minimum y co-ordinate of the view in map co-ordinates. */
   private double minViewY;
+
+  /** Pre-calculated maximum y co-ordinate of the view in map co-ordinates. */
   private double maxViewY;
+
+  /** Pre-calculated width of the view in map co-ordinates. */
   private double viewWidth;
+
+  /** Pre-calculated height of the view in map co-ordinates. */
   private double viewHeight;
+
+  /** Pre-calculated half of the width of the view in map co-ordinates. */
   private double halfViewWidth;
+
+  /** Pre-calculated half of the height of the view in map co-ordinates. */
   private double halfViewHeight;
 
   /** The display bounds that the view is mapped to. */
   private Rectangle2D displaySize = new Rectangle2D(0, 0, 1, 1);
 
+  /** The display with. */
   private double displayWidth;
+
+  /** The display height. */
   private double displayHeight;
+
+  /** pre-calculated half of the display width. */
   private double halfDisplayWidth;
+
+  /** pre-calculated half of the display height. */
   private double halfDisplayHeight;
 
   /** The zoom factor used. */
@@ -47,12 +71,16 @@ public class MapViewPortImpl implements MapViewPort {
   /** The point that the map view is centred on. */
   private Point2D centeredOn;
 
+  /** The x offset of the view into the map. */
   private double mapOffsetX;
+
+  /** The y offset of the view into the map. */
   private double mapOffsetY;
 
-  /** The co-ordinate for the centre of the screen. */
+  /** The x co-ordinate for the centre of the screen. */
   private double screenCenterX = 0.0;
 
+  /** The y co-ordinate for the centre of the screen. */
   private double screenCenterY = 0.0;
 
   /** The map that this view port is a view into. */
@@ -98,6 +126,16 @@ public class MapViewPortImpl implements MapViewPort {
   @Override
   public void addZoomLevel(double delta) {
     setZoomLevel(zoomLevel + delta);
+  }
+
+  @Override
+  public void zoomIn() {
+    setZoomLevel(zoomLevel * ZOOM_STEP);
+  }
+
+  @Override
+  public void zoomOUt() {
+    setZoomLevel(zoomLevel / ZOOM_STEP);
   }
 
   @Override
@@ -168,15 +206,20 @@ public class MapViewPortImpl implements MapViewPort {
 
   @Override
   public Point2D convertDisplayToMap(double displayX, double displayY) {
-    double mapX = (displayX - halfDisplayWidth - mapOffsetX) / zoomLevel;
-    double mapY = -(displayY - halfDisplayHeight - mapOffsetY) / zoomLevel;
+    //double mapX = (displayX - halfDisplayWidth - mapOffsetX) / zoomLevel;
+    //double mapY = -(displayY - halfDisplayHeight - mapOffsetY) / zoomLevel;
+    double mapX = (displayX - halfDisplayWidth) / zoomLevel - mapOffsetX;
+    double mapY = - (displayY - halfDisplayWidth) / zoomLevel - mapOffsetY;
+
     return new Point2D(mapX, mapY);
   }
 
   @Override
   public Point2D convertMapToDisplay(double mapX, double mapY) {
-    double displayX = halfDisplayWidth + zoomLevel * mapX + mapOffsetX;
-    double displayY = halfDisplayHeight - zoomLevel * mapY + mapOffsetY;
+    //double displayX = halfDisplayWidth + zoomLevel * mapX + mapOffsetX;
+    //double displayY = halfDisplayHeight - zoomLevel * mapY + mapOffsetY;
+    double displayX = halfDisplayWidth + zoomLevel * (mapX + mapOffsetX);
+    double displayY = halfDisplayHeight - zoomLevel * (mapY + mapOffsetY);
 
     return new Point2D(displayX, displayY);
   }

@@ -17,15 +17,15 @@ package net.rptools.maptool.renderer.map.grid.render;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import net.rptools.maptool.renderer.map.grid.SquareGrid;
+import net.rptools.maptool.renderer.map.grid.RectangleGrid;
 import net.rptools.maptool.renderer.map.view.MapViewCorner;
 import net.rptools.maptool.renderer.map.view.MapViewPort;
 
-/** Class used for rendering a {@link SquareGrid}. */
-public class SquareGridRenderer implements GridRenderer<SquareGrid> {
+/** Class used for rendering a {@link RectangleGrid}. */
+public class SquareGridRenderer implements GridRenderer<RectangleGrid> {
 
   @Override
-  public void render(Canvas canvas, SquareGrid grid, GridLine gridLine, MapViewPort viewPort) {
+  public void render(Canvas canvas, RectangleGrid grid, GridLine gridLine, MapViewPort viewPort) {
 
     /*
      * Grab the top left and bottom right of the view point in map co-ordinates this will give
