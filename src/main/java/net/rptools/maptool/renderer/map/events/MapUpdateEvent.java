@@ -39,4 +39,9 @@ public class MapUpdateEvent {
   public UUID getMapId() {
     return mapId;
   }
+
+  @Override
+  public String toString() {
+    return "MapUpdateEvent{" + "mapId=" + mapId + '}';
+  }
 }
