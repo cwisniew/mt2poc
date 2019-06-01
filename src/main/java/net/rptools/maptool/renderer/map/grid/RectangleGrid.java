@@ -79,7 +79,7 @@ public class RectangleGrid implements Grid {
     double y = Math.floor(point.getY() / height) * height;
 
     // Then add on half of the dimension
-    return new Point2D(x + width / 2.0, y + width / 2.0);
+    return new Point2D(x + width / 2.0, y + height / 2.0);
   }
 
   @Override

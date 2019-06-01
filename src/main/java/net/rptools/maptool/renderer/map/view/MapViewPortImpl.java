@@ -21,11 +21,13 @@ import net.rptools.maptool.renderer.map.GameMap;
 /** Class that implements the {@link MapViewPort} for co-ordinate translation. */
 public class MapViewPortImpl implements MapViewPort {
 
-  private static final double ZOOM_STEP = 1.01;
+  /** The default step size to use for the zooming functions that dont take arguments. */
+  private static final double DEFAULT_ZOOM_STEP = 1.01;
 
-  private static final double PAN_STEP = 5.0;
+  /** The default step size to use for the panning functions that dont take arguments. */
+  private static final double DEFAULT_PAN_STEP = 5.0;
 
-  /** The rectangle of the world that we are currntly "looking at". */
+  /** The rectangle of the world that we are currently "looking at". */
   private Rectangle2D mapBounds = new Rectangle2D(0, 0, 1, 1);
 
   /** Pre-calculated minimum x co-ordinate of the view in map co-ordinates. */
@@ -88,6 +90,12 @@ public class MapViewPortImpl implements MapViewPort {
   /** The map that this view port is a view into. */
   private GameMap gameMap;
 
+  /** The value to use for the zoom methods that take no arguments. */
+  double zoomStepValue = DEFAULT_ZOOM_STEP;
+
+  /** The value to use for the panView methods that take no arguments. */
+  double panViewStepValue = DEFAULT_PAN_STEP;
+
   /** Creates a new <code>MapViewPortImpl</code> object. */
   public MapViewPortImpl() {
     centeredOn = new Point2D(0, 0);
@@ -132,52 +140,52 @@ public class MapViewPortImpl implements MapViewPort {
 
   @Override
   public void zoomIn() {
-    setZoomLevel(zoomLevel * ZOOM_STEP);
+    setZoomLevel(zoomLevel * zoomStepValue);
   }
 
   @Override
-  public void zoomOUt() {
-    setZoomLevel(zoomLevel / ZOOM_STEP);
+  public void zoomOut() {
+    setZoomLevel(zoomLevel / zoomStepValue);
   }
 
   @Override
   public void panViewLeft() {
-    panView(-PAN_STEP, 0.0);
+    panView(-panViewStepValue, 0.0);
   }
 
   @Override
   public void panViewRight() {
-    panView(PAN_STEP, 0.0);
+    panView(panViewStepValue, 0.0);
   }
 
   @Override
   public void panViewUp() {
-    panView(0.0, PAN_STEP);
+    panView(0.0, panViewStepValue);
   }
 
   @Override
   public void panViewDown() {
-    panView(0.0, -PAN_STEP);
+    panView(0.0, -panViewStepValue);
   }
 
   @Override
   public void panViewLeftUp() {
-    panView(-PAN_STEP, PAN_STEP);
+    panView(-panViewStepValue, panViewStepValue);
   }
 
   @Override
   public void panViewLeftDown() {
-    panView(-PAN_STEP, -PAN_STEP);
+    panView(-panViewStepValue, -panViewStepValue);
   }
 
   @Override
   public void panViewRightUp() {
-    panView(PAN_STEP, PAN_STEP);
+    panView(panViewStepValue, panViewStepValue);
   }
 
   @Override
   public void panViewRightDown() {
-    panView(PAN_STEP, -PAN_STEP);
+    panView(panViewStepValue, -panViewStepValue);
   }
 
   @Override
@@ -210,10 +218,6 @@ public class MapViewPortImpl implements MapViewPort {
     return convertDisplayToMap(point.getX(), point.getY());
   }
 
-  @Override
-  public Point2D getCentreScreenTranslate() {
-    return new Point2D(screenCenterX - centeredOn.getX(), screenCenterY - centeredOn.getY());
-  }
 
   /**
    * Recalculates the bound and other often used values for conversion when the display changes size
@@ -248,23 +252,18 @@ public class MapViewPortImpl implements MapViewPort {
 
   @Override
   public Point2D convertDisplayToMap(double displayX, double displayY) {
-    double mapX = (displayX - halfDisplayWidth) / zoomLevel - mapOffsetX;
-    double mapY = -(displayY - halfDisplayHeight) / zoomLevel - mapOffsetY;
+    double mapX = (displayX - halfDisplayWidth) / zoomLevel + mapOffsetX;
+    double mapY = -(displayY - halfDisplayHeight) / zoomLevel + mapOffsetY;
 
     return new Point2D(mapX, mapY);
   }
 
   @Override
   public Point2D convertMapToDisplay(double mapX, double mapY) {
-    double displayX = halfDisplayWidth + zoomLevel * (mapX + mapOffsetX);
-    double displayY = halfDisplayHeight - zoomLevel * (mapY + mapOffsetY);
+    double displayX = halfDisplayWidth + zoomLevel * (mapX - mapOffsetX);
+    double displayY = halfDisplayHeight - zoomLevel * (mapY - mapOffsetY);
 
     return new Point2D(displayX, displayY);
-  }
-
-  @Override
-  public Point2D getDisplayCentre() {
-    return new Point2D(halfDisplayWidth, halfDisplayHeight);
   }
 
   @Override
@@ -325,5 +324,25 @@ public class MapViewPortImpl implements MapViewPort {
   @Override
   public Point2D getGridCenter(Point2D mapPoint) {
     return gameMap.getGridCenter(mapPoint);
+  }
+
+  @Override
+  public void setZoomStep(double value) {
+    zoomStepValue = value;
+  }
+
+  @Override
+  public void setPanViewStep(double value) {
+    panViewStepValue = value;
+  }
+
+  @Override
+  public double getZoomStep() {
+    return zoomStepValue;
+  }
+
+  @Override
+  public double getPanViewStep() {
+    return panViewStepValue;
   }
 }

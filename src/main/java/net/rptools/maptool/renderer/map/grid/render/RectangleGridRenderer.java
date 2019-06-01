@@ -22,7 +22,7 @@ import net.rptools.maptool.renderer.map.view.MapViewCorner;
 import net.rptools.maptool.renderer.map.view.MapViewPort;
 
 /** Class used for rendering a {@link RectangleGrid}. */
-public class SquareGridRenderer implements GridRenderer<RectangleGrid> {
+public class RectangleGridRenderer implements GridRenderer<RectangleGrid> {
 
   @Override
   public void render(Canvas canvas, RectangleGrid grid, GridLine gridLine, MapViewPort viewPort) {

@@ -77,6 +77,8 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation("org.junit.jupiter:junit-jupiter:5.4.0")
+    testImplementation("org.mockito:mockito-core:2.28.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:2.28.2")
 }
 
 
@@ -119,8 +121,26 @@ tasks.jar {
     }
 }
 
-tasks.test {
-    //jvmArgs("--enable-preview")
+
+tasks.withType<Test> {
+    jvmArgs("--enable-preview", "-noverify")
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
+
+
+jacoco {
+    toolVersion = "0.8.4"
+}
+
+tasks.withType<JacocoReport> {
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = true
+    }
 }
 
 
@@ -129,7 +149,7 @@ tasks {
         options.compilerArgs.add("--enable-preview")
         options.compilerArgs.add("-Xlint:unchecked")
         options.compilerArgs.add("-Xlint:deprecation")
-        options.compilerArgs.add("-Xlint:preview")
+        //options.compilerArgs.add("-Xlint:preview")
     }
 }
 

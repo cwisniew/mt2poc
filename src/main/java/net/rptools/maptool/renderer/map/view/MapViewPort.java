@@ -62,7 +62,7 @@ public interface MapViewPort {
   void zoomIn();
 
   /** Zooms out by a single step. */
-  void zoomOUt();
+  void zoomOut();
 
   /**
    * Returns the viewable bounds in map co-ordinates.
@@ -127,43 +127,82 @@ public interface MapViewPort {
   Point2D convertDisplayToMap(double displayX, double displayY);
 
   /**
-   * Returns the translation required to translate the map co-ordinate that the view iss centred on
-   * to the center of the screen.
-   *
-   * @return the translation required to translate map centred on to centre of screen.
-   */
-  Point2D getCentreScreenTranslate();
-
-  /**
-   * Returns the centre of the display.
-   *
-   * @return the centre of the display
-   */
-  Point2D getDisplayCentre();
-
-  /**
    * Pans the view in the direction of the specified vector.
    *
    * @param deltaVector the vector to move view in.
    */
   void panView(Point2D deltaVector);
 
+  /**
+   * Pans the view in the direction of the specified vector.
+   *
+   * @param deltaX the value to pan by in the x direction.
+   * @param deltaY the value to pan by in the y direction.
+   */
   void panView(double deltaX, double deltaY);
 
+  /**
+   * Pans the view left.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewLeft();
 
+  /**
+   * Pans the view right.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewRight();
 
+  /**
+   * Pans the view up.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewUp();
 
+  /**
+   * Pans the view down.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewDown();
 
+  /**
+   * Pans the view left and up.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewLeftUp();
 
+  /**
+   * Pans the view left and down.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewLeftDown();
 
+  /**
+   * Pans the view right and up.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewRightUp();
 
+  /**
+   * Pans the view right and down.
+   *
+   * @see #setPanViewStep(double)
+   * @see #getPanViewStep()
+   */
   void panViewRightDown();
 
   /**
@@ -211,10 +250,59 @@ public interface MapViewPort {
 
   /**
    * Returns the center of the grid of the specified point, both the passed in and returned points
-   * are in map co-ordinates.
+   * are iu map co-ordinates.
    *
    * @param mapPoint the point on the map to map to a grid cell.
    * @return the center of the grid cell for specified point in map co-ordinates.
    */
   Point2D getGridCenter(Point2D mapPoint);
+
+
+  /**
+   * Sets increment used by the {@link #zoomIn()} and {@link #zoomOut()} methods.
+   *
+   * @param value the zoom increment to use.
+   */
+  void setZoomStep(double value);
+
+  /**
+   * Sets the increment used by the panViewXXXX() functions that take no arguments.
+   *
+   * @param value the amount to pan in the different directions.
+   *
+   * @see #panViewLeft()
+   * @see #panViewLeftUp()
+   * @see #panViewUp()
+   * @see #panViewRightUp()
+   * @see #panViewRight()
+   * @see #panViewRightDown()
+   * @see #panViewDown()
+   * @see #panViewLeftDown()
+   */
+  void setPanViewStep(double value);
+
+
+  /**
+   * Returns the increment used by the {@link #zoomIn()} and {@link #zoomOut()} methods.
+   *
+   * @return the zoom increment to use.
+   */
+  double getZoomStep();
+
+
+  /**
+   * Returns the increment used by the panViewXXXX() functions that take no arguments.
+   *
+   * @return the increment used.
+   *
+   * @see #panViewLeft()
+   * @see #panViewLeftUp()
+   * @see #panViewUp()
+   * @see #panViewRightUp()
+   * @see #panViewRight()
+   * @see #panViewRightDown()
+   * @see #panViewDown()
+   * @see #panViewLeftDown()
+   */
+  double getPanViewStep();
 }

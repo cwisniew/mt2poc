@@ -23,7 +23,7 @@ import net.rptools.maptool.renderer.map.grid.RectangleGrid;
 import net.rptools.maptool.renderer.map.grid.render.GridRenderer;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactory;
 import net.rptools.maptool.renderer.map.grid.render.GridRendererFactoryImpl;
-import net.rptools.maptool.renderer.map.grid.render.SquareGridRenderer;
+import net.rptools.maptool.renderer.map.grid.render.RectangleGridRenderer;
 import net.rptools.maptool.renderer.map.view.MapView;
 import net.rptools.maptool.renderer.map.view.MapViewImpl;
 import net.rptools.maptool.renderer.map.view.MapViewPort;
@@ -47,7 +47,7 @@ public class ApplicationModule extends AbstractModule {
     bind(GridRendererFactory.class).toInstance(gridRendererFactory);
     MapBinder<Class, GridRenderer> grMapBinder =
         MapBinder.newMapBinder(binder(), Class.class, GridRenderer.class);
-    grMapBinder.addBinding(RectangleGrid.class).to(SquareGridRenderer.class);
+    grMapBinder.addBinding(RectangleGrid.class).to(RectangleGridRenderer.class);
 
     bind(MapViewPort.class).to(MapViewPortImpl.class);
   }

@@ -146,14 +146,17 @@ public class MapViewImpl implements MapView, Closeable {
             final double currentMouseX = e.getX();
             final double currentMouseY = e.getY();
 
-
-            // If the original click has higher X co-ordinate it was right of mouse so mouse is moving left
+            // If the original click has higher X co-ordinate it was right of mouse so mouse is
+            // moving left
             final boolean left = mousePressedX > currentMouseX;
-            // If the original click has lower X co-ordinate it was left of mouse so mouse is moving right
+            // If the original click has lower X co-ordinate it was left of mouse so mouse is moving
+            // right
             final boolean right = mousePressedX < currentMouseX;
-            // If the original click has higher Y co-ordinate it was below the mouse os mouse is moving up
+            // If the original click has higher Y co-ordinate it was below the mouse os mouse is
+            // moving up
             final boolean up = mousePressedY > currentMouseY;
-            // If the original click has lower Y co-ordinate it was above the mouse os mouse is moving down
+            // If the original click has lower Y co-ordinate it was above the mouse os mouse is
+            // moving down
             final boolean down = mousePressedY < currentMouseY;
 
             if (left && up) {
@@ -174,28 +177,6 @@ public class MapViewImpl implements MapView, Closeable {
               viewPort.panViewUp();
             }
 
-            /*mapViewPort.panView(
-
-            if (deltaX < 0 && deltaY < 0) {
-              viewPort.panViewLeftUp();
-            } else if (deltaX < 0 && deltaY > 0) {
-              viewPort.panViewLeftDown();
-            } else if (deltaX > 0 && deltaY < 0) {
-              viewPort.panViewLeftUp();
-            } else if (deltaX > 0 && deltaY > 0) {
-              viewPort.panViewRightDown();
-            } else if (deltaX < 0) {
-              viewPort.panViewLeft();
-            } else if (deltaX > 0) {
-              viewPort.panViewRight();
-            } else if (deltaY < 0) {
-              viewPort.panViewDown();
-            } else if (deltaY > 0) {
-              viewPort.panViewUp();
-            }
-
-            /*mapViewPort.panView(
-                new Point2D((e.getX() - mousePressedX) / 5, (e.getY() - mousePressedY) / 5));*/
             e.consume();
             render();
           }
@@ -204,7 +185,7 @@ public class MapViewImpl implements MapView, Closeable {
     stackPane.setOnScroll(
         e -> {
           if (e.getDeltaY() > 0) {
-            viewPort.zoomOUt();
+            viewPort.zoomOut();
           } else {
             viewPort.zoomIn();
           }

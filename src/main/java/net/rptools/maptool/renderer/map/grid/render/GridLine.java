@@ -14,6 +14,8 @@
  */
 package net.rptools.maptool.renderer.map.grid.render;
 
+import java.util.Arrays;
+import java.util.Objects;
 import javafx.scene.paint.Color;
 
 /** This class contains the information used to render the lines for the grid. */
@@ -78,5 +80,26 @@ public class GridLine {
   public void setLineDashes(double[] dashes) {
     lineDashes = new double[dashes.length];
     System.arraycopy(lineDashes, 0, dashes, 0, dashes.length);
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GridLine gridLine = (GridLine) o;
+    return Objects.equals(lineColor, gridLine.lineColor) &&
+        Arrays.equals(lineDashes, gridLine.lineDashes);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(lineColor);
+    result = 31 * result + Arrays.hashCode(lineDashes);
+    return result;
   }
 }
