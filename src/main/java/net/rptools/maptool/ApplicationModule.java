@@ -57,13 +57,10 @@ public class ApplicationModule extends AbstractModule {
 
     bind(MapViewPort.class).to(MapViewPortImpl.class);
 
-
     // Configuration values
     bind(AppConfig.class).toInstance(appConfig);
 
-
     // FXMLLoader
     bind(FXMLLoader.class).toProvider(FXMLLoaderProvier.class);
-
   }
 }

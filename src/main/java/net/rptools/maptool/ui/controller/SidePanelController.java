@@ -14,13 +14,11 @@
  */
 package net.rptools.maptool.ui.controller;
 
-import com.google.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.TitledPane;
-import net.rptools.maptool.AppConfig;
 
 /** Controller class for the side panel. */
 public class SidePanelController {
@@ -33,7 +31,6 @@ public class SidePanelController {
 
   @FXML // fx:id="imagesTitlePane"
   private TitledPane imagesTitlePane; // Value injected by FXMLLoader
-
 
   @FXML // fx:id="resourceLibrary"
   private Parent resourceLibrary;
@@ -86,7 +83,5 @@ public class SidePanelController {
 
     assert resourceLibraryController != null
         : "fx:id=\"resourceLibraryController\" was not injected: check your FXML file 'Untitled'.";
-
   }
-
 }

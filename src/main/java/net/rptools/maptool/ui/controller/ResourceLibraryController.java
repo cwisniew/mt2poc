@@ -15,7 +15,6 @@
 package net.rptools.maptool.ui.controller;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -37,9 +36,7 @@ public class ResourceLibraryController {
   @FXML // fx:id="resourceImagePanel"
   private TilePane resourceImagePanel; // Value injected by FXMLLoader
 
-
-  @Inject
-  AppConfig appConfig;
+  @Inject AppConfig appConfig;
 
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {

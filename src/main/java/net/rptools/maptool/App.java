@@ -49,8 +49,7 @@ public class App extends Application {
 
     Injector injector = Guice.createInjector(new ApplicationModule());
 
-
-    //FXMLLoader mainFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
+    // FXMLLoader mainFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
     FXMLLoader mainFxmlLoader = injector.getInstance(FXMLLoader.class);
     mainFxmlLoader.setLocation(getClass().getResource("/fxml/MainWindow.fxml"));
 
