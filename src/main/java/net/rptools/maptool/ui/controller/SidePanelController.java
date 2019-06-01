@@ -14,31 +14,16 @@
  */
 package net.rptools.maptool.ui.controller;
 
+import com.google.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.scene.control.TreeView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.TilePane;
+import javafx.scene.Parent;
+import javafx.scene.control.TitledPane;
+import net.rptools.maptool.AppConfig;
 
 /** Controller class for the side panel. */
 public class SidePanelController {
-
-  /** The names of the resource files that contain the images we will be using. */
-  private static String[] imageNames = {
-    "Dragon.png",
-    "Eagle.png",
-    "Elf.png",
-    "Hero.png",
-    "Mage.png",
-    "Mystic.png",
-    "Troll.png",
-    "Wolf.png"
-  };
 
   @FXML // ResourceBundle that was given to the FXMLLoader
   private ResourceBundle resources;
@@ -46,14 +31,18 @@ public class SidePanelController {
   @FXML // URL location of the FXML file that was given to the FXMLLoader
   private URL location;
 
-  @FXML // fx:id="imageTilePane"
-  private TilePane imageTilePane; // Value injected by FXMLLoader
+  @FXML // fx:id="imagesTitlePane"
+  private TitledPane imagesTitlePane; // Value injected by FXMLLoader
 
-  @FXML // fx:id="imageDirectories"
-  private TreeView<?> imageDirectories; // Value injected by FXMLLoader
 
-  @FXML // This method is called by the FXMLLoader when initialization is complete
-  void initialize() {
+  @FXML // fx:id="resourceLibrary"
+  private Parent resourceLibrary;
+
+  @FXML // fx:id="resourceLibraryController"
+  private ResourceLibraryController resourceLibraryController;
+
+  /** The names of the resource files that contain the images we will be using. */
+  /*void initialize() {
     assert imageTilePane != null
         : "fx:id=\"imageTilePane\" was not injected: check your FXML file.";
     assert imageDirectories != null
@@ -85,5 +74,19 @@ public class SidePanelController {
 
       imageTilePane.getChildren().add(imageView);
     }
+  }*/
+
+  @FXML // This method is called by the FXMLLoader when initialization is complete
+  void initialize() {
+    assert imagesTitlePane != null
+        : "fx:id=\"imagesTitlePane\" was not injected: check your FXML file 'Untitled'.";
+
+    assert resourceLibrary != null
+        : "fx:id=\"resourceLibrary\" was not injected: check your FXML file 'Untitled'.";
+
+    assert resourceLibraryController != null
+        : "fx:id=\"resourceLibraryController\" was not injected: check your FXML file 'Untitled'.";
+
   }
+
 }

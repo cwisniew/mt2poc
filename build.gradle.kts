@@ -116,7 +116,7 @@ tasks.jar {
         attributes(
                 "Implementation-Title" to "Renderer POC",
                 "Implementation-Version" to tagVersion,
-                "Main-Class" to "net.rptools.maptool.renderer.App"
+                "Main-Class" to "net.rptools.maptool.App"
         )
     }
 }
@@ -155,6 +155,6 @@ tasks {
 
 application {
     // Define the main class for the application
-    mainClassName = "net.rptools.maptool.renderer.App"
+    mainClassName = "net.rptools.maptool.App"
     applicationDefaultJvmArgs = listOf("--enable-preview", "--add-opens", "java.base/java.lang=com.google.guice")
 }

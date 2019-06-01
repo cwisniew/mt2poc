@@ -17,6 +17,7 @@ package net.rptools.maptool;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
+import javafx.fxml.FXMLLoader;
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.GameMapImpl;
 import net.rptools.maptool.map.grid.RectangleGrid;
@@ -28,6 +29,7 @@ import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.MapViewImpl;
 import net.rptools.maptool.map.view.MapViewPort;
 import net.rptools.maptool.map.view.MapViewPortImpl;
+import net.rptools.maptool.ui.FXMLLoaderProvier;
 
 /** <code>ApplicationModule</code> used for Google Guice injection bindings. */
 public class ApplicationModule extends AbstractModule {
@@ -38,9 +40,13 @@ public class ApplicationModule extends AbstractModule {
   /** The {@link GridRendererFactory} used to obtain renderer for grids. */
   private final GridRendererFactory gridRendererFactory = new GridRendererFactoryImpl();
 
+  private final AppConfig appConfig = new AppConfigImpl();
+
   @Override
   protected void configure() {
     bind(EventBus.class).toInstance(eventBus);
+
+    // Map Related Bindings
     bind(GameMap.class).to(GameMapImpl.class);
     bind(MapView.class).to(MapViewImpl.class);
 
@@ -50,5 +56,14 @@ public class ApplicationModule extends AbstractModule {
     grMapBinder.addBinding(RectangleGrid.class).to(RectangleGridRenderer.class);
 
     bind(MapViewPort.class).to(MapViewPortImpl.class);
+
+
+    // Configuration values
+    bind(AppConfig.class).toInstance(appConfig);
+
+
+    // FXMLLoader
+    bind(FXMLLoader.class).toProvider(FXMLLoaderProvier.class);
+
   }
 }
