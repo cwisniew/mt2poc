@@ -1,0 +1,8 @@
+language: java
+sudo: false
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.1
+script:
+  - ./gradlew spotlessCheck check assemble
