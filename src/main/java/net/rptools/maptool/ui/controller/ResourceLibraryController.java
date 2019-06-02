@@ -52,15 +52,12 @@ public class ResourceLibraryController {
   @FXML // fx:id="resourceImagePanel"
   private TilePane resourceImagePanel; // Value injected by FXMLLoader
 
-
   /** Parameters used for snapshot for drag and drop. */
   private SnapshotParameters dndSnapshotParameters;
 
-  @Inject
-  AppConfig appConfig;
+  @Inject AppConfig appConfig;
 
-  @Inject
-  EventBus eventBus;
+  @Inject EventBus eventBus;
 
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
@@ -83,28 +80,33 @@ public class ResourceLibraryController {
     resourceDirectory.setRoot(buildDirectoryTree(appConfig.getResourceLibraryDir().toFile()));
     resourceDirectory.setShowRoot(false);
 
-    resourceDirectory.setCellFactory( tv -> new TreeCell<>() {
-      @Override
-      public void updateItem(ResourceDirectory resourceDirectory, boolean empty) {
-        super.updateItem(resourceDirectory, empty);
-        if (empty) {
-          setText(null);
-        } else {
-          setText(resourceDirectory.getName());
-        }
-      }
-    });
+    resourceDirectory.setCellFactory(
+        tv ->
+            new TreeCell<>() {
+              @Override
+              public void updateItem(ResourceDirectory resourceDirectory, boolean empty) {
+                super.updateItem(resourceDirectory, empty);
+                if (empty) {
+                  setText(null);
+                } else {
+                  setText(resourceDirectory.getName());
+                }
+              }
+            });
 
-    resourceDirectory.getSelectionModel().selectedItemProperty().addListener( (ob, oldv, newv) -> {
-      getResourceDirectoryImages(newv.getValue().getPath());
-    });
+    resourceDirectory
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            (ob, oldv, newv) -> {
+              getResourceDirectoryImages(newv.getValue().getPath());
+            });
   }
 
   /**
    * Creates a tree of the specified directory with each directory as a node.
    *
    * @param dir The {@link File} that points to the directory.
-   *
    * @return a tree containing nodes that contain the subdirectories.
    */
   private TreeItem<ResourceDirectory> buildDirectoryTree(File dir) {
@@ -119,6 +121,7 @@ public class ResourceLibraryController {
 
   /**
    * Updates the images for the selected directory
+   *
    * @param dir The directory that contains the images.
    */
   private void getResourceDirectoryImages(Path dir) {
@@ -133,24 +136,23 @@ public class ResourceLibraryController {
   }
 
   private ImageView getImageView(File file) {
-    Image img = new Image("file://" +   file.getAbsolutePath(), true);
+    Image img = new Image("file://" + file.getAbsolutePath(), true);
     ImageView imageView = new ImageView(img);
     imageView.setPreserveRatio(true);
     imageView.setFitWidth(50);
 
     imageView.setOnDragDetected(
-      event -> {
-        Dragboard dboard = imageView.startDragAndDrop(TransferMode.ANY);
+        event -> {
+          Dragboard dboard = imageView.startDragAndDrop(TransferMode.ANY);
 
-        ClipboardContent clipboardContent = new ClipboardContent();
+          ClipboardContent clipboardContent = new ClipboardContent();
 
-        clipboardContent.putImage(imageView.snapshot(dndSnapshotParameters, null));
+          clipboardContent.putImage(imageView.snapshot(dndSnapshotParameters, null));
 
-        dboard.setContent(clipboardContent);
+          dboard.setContent(clipboardContent);
 
-        event.consume();
-      }
-    );
+          event.consume();
+        });
 
     imageView.setOnDragDone(Event::consume);
 
@@ -158,15 +160,21 @@ public class ResourceLibraryController {
   }
 
   /**
-   * Returns <code>true</code> if the passed in {@link File} matches one that can be loaded as an image.
+   * Returns <code>true</code> if the passed in {@link File} matches one that can be loaded as an
+   * image.
+   *
    * @param file the {@link File} to check.
    * @return <code>true</code> if the can be loaded as an image.
    */
   private boolean isImageFIleFilter(File file) {
     // TODO: This is a bit naive but will do for our purposes at the moment.
-    if (file.isFile())  {
+    if (file.isFile()) {
       String fn = file.getName().toLowerCase();
-      if (fn.endsWith(".png") || fn.endsWith("jpg") || fn.endsWith("jpeg") || fn.endsWith("gif") || fn.endsWith("mpg")) {
+      if (fn.endsWith(".png")
+          || fn.endsWith("jpg")
+          || fn.endsWith("jpeg")
+          || fn.endsWith("gif")
+          || fn.endsWith("mpg")) {
         return true;
       }
     }
