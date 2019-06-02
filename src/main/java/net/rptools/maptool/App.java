@@ -14,6 +14,7 @@
  */
 package net.rptools.maptool;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -23,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import net.rptools.maptool.general.event.GUIStartupEvent;
 import net.rptools.maptool.map.grid.RectangleGrid;
 import net.rptools.maptool.map.grid.render.GridLine;
 import net.rptools.maptool.map.view.MapView;
@@ -56,7 +58,8 @@ public class App extends Application {
     Pane mainWindow = mainFxmlLoader.load();
     MainWindowController mainWindowController = mainFxmlLoader.getController();
 
-    FXMLLoader sideFxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SidePanel.fxml"));
+    FXMLLoader sideFxmlLoader = injector.getInstance(FXMLLoader.class);
+    sideFxmlLoader.setLocation(getClass().getResource("/fxml/SidePanel.fxml"));
     Pane sidePanel = sideFxmlLoader.load();
     SidePanelController sidePanelController = sideFxmlLoader.getController();
 
@@ -74,6 +77,9 @@ public class App extends Application {
 
     primaryStage.show();
     primaryStage.setTitle("Renderer POC");
+
+    EventBus eventBus = injector.getInstance(EventBus.class);
+    eventBus.post(new GUIStartupEvent());
   }
 
   /**

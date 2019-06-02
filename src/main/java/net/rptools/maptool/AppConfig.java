@@ -22,4 +22,6 @@ public interface AppConfig {
   Path getDataDir();
 
   Path getDataDir(String dirName);
+
+  Path getResourceLibraryDir();
 }

@@ -10,7 +10,11 @@
         <panes>
           <TitledPane fx:id="imagesTitlePane" animated="false" text="Images">
                <content>
-                 <fx:include source="ResourceLibrary.fxml" fx:id="resourceLibrary"/>
+                  <AnchorPane prefWidth="200.0">
+                     <children>
+                       <fx:include fx:id="resourceLibrary" source="ResourceLibrary.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                </content>
           </TitledPane>
           <TitledPane animated="false" text="Layers" />

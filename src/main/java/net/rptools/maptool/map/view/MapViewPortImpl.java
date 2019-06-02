@@ -310,7 +310,6 @@ public class MapViewPortImpl implements MapViewPort {
       default:
         cornerPoint = null; // Shouldn't happen
     }
-    ;
 
     return cornerPoint;
   }

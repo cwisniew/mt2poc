@@ -20,11 +20,16 @@ public class AppConfigImpl implements AppConfig {
 
   @Override
   public Path getDataDir() {
-    return Path.of(System.getProperty("user.home"));
+    return Path.of(System.getProperty("user.home")).resolve(".maptool");
   }
 
   @Override
   public Path getDataDir(String dirName) {
     return getDataDir().resolve(dirName);
+  }
+
+  @Override
+  public Path getResourceLibraryDir() {
+    return getDataDir("resource");
   }
 }
