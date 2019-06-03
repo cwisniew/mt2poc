@@ -16,10 +16,17 @@ package net.rptools.maptool.map;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import net.rptools.maptool.entity.Entity;
+import net.rptools.maptool.map.events.MapEntityAddedEvent;
+import net.rptools.maptool.map.events.MapEntityRemovedEvent;
 import net.rptools.maptool.map.events.MapUpdateEvent;
 import net.rptools.maptool.map.grid.Grid;
 
@@ -36,6 +43,9 @@ public class GameMapImpl implements GameMap {
 
   /** The {@link Grid} for this map. */
   private Grid grid;
+
+  /** The {@link Entity}s on the map. */
+  private final Set<Entity> entities = new HashSet<>();
 
   /**
    * Creates a new <code>GameMapImpl</code> object.
@@ -77,5 +87,22 @@ public class GameMapImpl implements GameMap {
   @Override
   public Point2D getGridCenter(Point2D mapPoint) {
     return grid.getGridCenter(mapPoint);
+  }
+
+  @Override
+  public void putEntity(Entity entity) {
+    entities.add(entity);
+    eventBus.post(new MapEntityAddedEvent(this, entity));
+  }
+
+  @Override
+  public void removeEntity(Entity entity) {
+    entities.remove(entity);
+    eventBus.post(new MapEntityRemovedEvent(this, entity));
+  }
+
+  @Override
+  public Collection<Entity> getEntities() {
+    return Collections.unmodifiableCollection(entities);
   }
 }

@@ -18,6 +18,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import javafx.fxml.FXMLLoader;
+import net.rptools.maptool.entity.EntityFactory;
+import net.rptools.maptool.entity.EntityFactoryImpl;
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.GameMapImpl;
 import net.rptools.maptool.map.grid.RectangleGrid;
@@ -62,5 +64,8 @@ public class ApplicationModule extends AbstractModule {
 
     // FXMLLoader
     bind(FXMLLoader.class).toProvider(FXMLLoaderProvier.class);
+
+    // Entity
+    bind(EntityFactory.class).to(EntityFactoryImpl.class);
   }
 }

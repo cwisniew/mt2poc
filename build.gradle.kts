@@ -71,7 +71,6 @@ dependencies {
     implementation("com.google.code.gson", "gson", "2.8.5")
     implementation("com.google.inject", "guice", "4.2.2")
     implementation("com.github.JamzTheMan", "DockFX", "MapTool-SNAPSHOT")
-    implementation("com.github.almasb", "fxgl", "11.2-beta");
 
 
 

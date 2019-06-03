@@ -14,10 +14,12 @@
  */
 package net.rptools.maptool.map;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.grid.Grid;
 
 /** Interface implemented by classes that represent maps used in the game. */
@@ -62,4 +64,25 @@ public interface GameMap {
    * @return the center of the grid cell.
    */
   Point2D getGridCenter(Point2D mapPoint);
+
+  /**
+   * Puts an {@link Entity} om the map.
+   *
+   * @param entity {@link Entity} to add.
+   */
+  void putEntity(Entity entity);
+
+  /**
+   * Removes an {@link Entity} from the map.
+   *
+   * @param entity the {@link Entity} to remove.
+   */
+  void removeEntity(Entity entity);
+
+  /**
+   * Returns the {@link Entity}s on the map.
+   *
+   * @return the entities on the map.
+   */
+  public Collection<Entity> getEntities();
 }
