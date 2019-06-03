@@ -78,6 +78,11 @@ class GameMapImplTest {
 
     when(grid.getGridCenter(point1)).thenReturn(point1c);
     when(grid.getGridCenter(point2)).thenReturn(point2c);
+
+    gameMap.setGrid(grid);
+
+    assertEquals(point1c, gameMap.getGridCenter(point1));
+    assertEquals(point2c, gameMap.getGridCenter(point2));
   }
 
   @Test
