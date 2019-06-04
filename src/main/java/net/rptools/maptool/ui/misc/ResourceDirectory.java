@@ -12,15 +12,18 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.ui.controller;
+package net.rptools.maptool.ui.misc;
 
 import java.nio.file.Path;
 
 public class ResourceDirectory {
 
+  /** The name of the file. */
   private final String name;
 
+  /** The path of the file. */
   private final Path path;
+
 
   public ResourceDirectory(String name, Path path) {
     this.name = name;

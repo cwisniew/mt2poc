@@ -68,8 +68,8 @@ public class Entity {
    * @param component the class of the {@link Component}.
    * @return the {@link Component} for the class.
    */
-  public Optional<Component> getComponent(Class<? extends Component> component) {
-    return Optional.ofNullable(componentMap.get(component));
+  public <T extends Component> Optional<T> getComponent(Class<T> component) {
+    return Optional.ofNullable(component.cast(componentMap.get(component)));
   }
 
   /**

@@ -14,6 +14,7 @@
  */
 package net.rptools.maptool.map.view;
 
+import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import net.rptools.maptool.map.GameMap;
@@ -300,4 +301,26 @@ public interface MapViewPort {
    * @see #panViewLeftDown()
    */
   double getPanViewStep();
+
+  /**
+   * Creates a rectangle centered at <code>x, y</code> of <code>width, height</code> in map co-ordinates
+   * and converts that to display co-ordinates.
+   *
+   * @param x The x co-ordinate of the that the rectangle is centred on (map co-ordinates).
+   * @param y The x co-ordinate of the that the rectangle is centred on (map co-ordinates).
+   * @param width The width of the rectangle (map co-ordinates).
+   * @param height The height of the rectangle (map co-ordinates).
+   *
+   * @return a {@link Rectangle2D} in screen co-ordinates.
+   */
+  Rectangle2D convertCenteredMapRectangleToDisplay(double x, double y, double width, double height);
+
+  /**
+   * Converts a list of map co-ordinates into display co-ordinates.
+   *
+   * @param points the points in map co-ordinates to convert.
+   *
+   * @return a {@link List} of points converted into display co-ordinates.
+   */
+  List<Point2D> convertMapToDisplay(List<Point2D> points);
 }

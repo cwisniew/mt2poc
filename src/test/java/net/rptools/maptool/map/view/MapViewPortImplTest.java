@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Random;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -614,4 +615,67 @@ class MapViewPortImplTest {
     assertEquals(bottomRightC, viewPort.getCornerGridCenter(MapViewCorner.BOTTOM_RIGHT));
     assertEquals(bottomLeftC, viewPort.getCornerGridCenter(MapViewCorner.BOTTOM_LEFT));
   }
+
+  @Test
+  void convertCenteredMapRectangleToDisplay() {
+    MapViewPort viewPort = new MapViewPortImpl();
+    for (int i = 0; i < 100; i++) {
+      double zoom = random.nextDouble();
+      double panX = random.nextDouble();
+      double panY = random.nextDouble();
+
+      double x = random.nextDouble();
+      double y = random.nextDouble();
+      double w = random.nextDouble();
+      double h = random.nextDouble();
+
+      double cx = x + w / 2.0;
+      double cy = y - h / 2.0;
+
+      viewPort.setZoomLevel(zoom);
+      viewPort.panView(panX, panY);
+
+      var rect = viewPort.convertCenteredMapRectangleToDisplay(cx, cy, w, h);
+      var p1 = viewPort.convertMapToDisplay(new Point2D(x, y));
+      var p2 = viewPort.convertMapToDisplay(new Point2D(x + w, y - h));
+
+      assertEquals(p1.getX(), rect.getMinX(), 0.001, "Min X");
+      assertEquals(p1.getY(), rect.getMinY(), 0.001, "Min Y");
+      assertEquals(p2.getX(), rect.getMaxX(), 0.001, "Max X");
+      assertEquals(p2.getY(), rect.getMaxY(), 0.001, "Max Y");
+    }
+
+  }
+
+  @Test
+  void convertMapToDisplayList() {
+    MapViewPort viewPort = new MapViewPortImpl();
+    for (int i = 0; i < 10; i++) {
+      double zoom = random.nextDouble();
+      double panX = random.nextDouble();
+      double panY = random.nextDouble();
+
+      double w = random.nextDouble();
+      double h = random.nextDouble();
+
+      viewPort.setZoomLevel(zoom);
+      viewPort.panView(panX, panY);
+
+      var pointList = new ArrayList<Point2D>();
+      for (int j = 0; j < 20; j++) {
+        double x = random.nextDouble();
+        double y = random.nextDouble();
+
+        pointList.add(new Point2D(x, y));
+      }
+      var convPointList = viewPort.convertMapToDisplay(pointList);
+
+      for (int j = 0; j < pointList.size(); j++) {
+        var convPoint = viewPort.convertMapToDisplay(pointList.get(j));
+        assertEquals(convPoint.getX(), convPointList.get(j).getX(), 0.0001);
+        assertEquals(convPoint.getY(), convPointList.get(j).getY(), 0.0001);
+      }
+    }
+  }
+
 }

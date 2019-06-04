@@ -14,6 +14,8 @@
  */
 package net.rptools.maptool.map.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import net.rptools.maptool.map.GameMap;
@@ -253,7 +255,6 @@ public class MapViewPortImpl implements MapViewPort {
   public Point2D convertDisplayToMap(double displayX, double displayY) {
     double mapX = (displayX - halfDisplayWidth) / zoomLevel + mapOffsetX;
     double mapY = -(displayY - halfDisplayHeight) / zoomLevel + mapOffsetY;
-
     return new Point2D(mapX, mapY);
   }
 
@@ -261,7 +262,6 @@ public class MapViewPortImpl implements MapViewPort {
   public Point2D convertMapToDisplay(double mapX, double mapY) {
     double displayX = halfDisplayWidth + zoomLevel * (mapX - mapOffsetX);
     double displayY = halfDisplayHeight - zoomLevel * (mapY - mapOffsetY);
-
     return new Point2D(displayX, displayY);
   }
 
@@ -343,4 +343,26 @@ public class MapViewPortImpl implements MapViewPort {
   public double getPanViewStep() {
     return panViewStepValue;
   }
+
+  @Override
+  public Rectangle2D convertCenteredMapRectangleToDisplay(double x, double y, double width, double height) {
+    double halfWidth = width / 2.0;
+    double halfHeight = height / 2.0;
+    Point2D topLeft = convertMapToDisplay(new Point2D(x - halfWidth, y + halfHeight));
+    Point2D bottomRight = convertMapToDisplay(new Point2D(x + halfWidth, y - halfHeight));
+
+    return new Rectangle2D(topLeft.getX(), topLeft.getY(), bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
+  }
+
+  @Override
+  public List<Point2D> convertMapToDisplay(List<Point2D> points) {
+    var convPoints = new ArrayList<Point2D>(points.size());
+    for (var p : points) {
+      convPoints.add(convertMapToDisplay(p));
+    }
+
+    return convPoints;
+  }
+
+
 }

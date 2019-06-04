@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -37,6 +38,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import net.rptools.maptool.AppConfig;
 import net.rptools.maptool.general.event.GUIStartupEvent;
+import net.rptools.maptool.ui.misc.ResourceDirectory;
 
 public class ResourceLibraryController {
 
@@ -148,6 +150,7 @@ public class ResourceLibraryController {
           ClipboardContent clipboardContent = new ClipboardContent();
 
           clipboardContent.putImage(imageView.snapshot(dndSnapshotParameters, null));
+          clipboardContent.putFiles(List.of(file));
 
           dboard.setContent(clipboardContent);
 

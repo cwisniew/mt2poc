@@ -18,12 +18,14 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -31,6 +33,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import net.rptools.maptool.component.ImageComponent;
+import net.rptools.maptool.component.PositionComponent;
+import net.rptools.maptool.entity.Entity;
+import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.events.MapUpdateEvent;
 import net.rptools.maptool.map.grid.Grid;
@@ -78,7 +85,8 @@ public class MapViewImpl implements MapView, Closeable {
   private double mousePressedY;
 
   /** The pane that picks up user interactions when there is nothing else in front of it. */
-  private Pane interactivePane = new Pane();
+  private Pane interactiveLayer = new Pane();
+  //private Canvas interactiveLayer = new Canvas();
 
   /** The {@link Canvas} used for drawing the grid. */
   private Canvas gridCanvas = new ResizableCanvas();
@@ -91,6 +99,10 @@ public class MapViewImpl implements MapView, Closeable {
 
   /** The view port that maps screen to map. */
   private MapViewPort mapViewPort;
+
+  /** The factory class for creating {@link Entity}s */
+  @Inject
+  private EntityFactory entityFactory;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -120,12 +132,12 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane.getChildren().add(backgroundCanvas);
 
-    backgroundCanvas.addEventHandler(
+    stackPane.addEventHandler(
         MouseEvent.MOUSE_MOVED,
         e -> {
           mouseX = e.getX();
           mouseY = e.getY();
-          render();
+          //render();
         });
 
     stackPane.addEventHandler(
@@ -193,43 +205,51 @@ public class MapViewImpl implements MapView, Closeable {
           render();
         });
 
-    stackPane.getChildren().add(interactivePane);
+    stackPane.getChildren().add(interactiveLayer);
 
-    interactivePane.prefHeight(Double.MAX_VALUE);
-    interactivePane.prefWidth(Double.MAX_VALUE);
+    interactiveLayer.prefHeight(Double.MAX_VALUE);
+    interactiveLayer.prefWidth(Double.MAX_VALUE);
 
-    interactivePane.setOnDragOver(
+    interactiveLayer.setOnDragOver(
         event -> {
           System.out.println("onDragOver");
-          if (event.getGestureSource() != interactivePane) {
-            if (event.getDragboard().hasImage()) {
+          if (event.getGestureSource() != interactiveLayer) {
+            if (event.getDragboard().hasFiles()) {
               event.acceptTransferModes(TransferMode.ANY);
               event.consume();
-              render();
             }
           }
         });
 
-    interactivePane.setOnDragEntered(
+    interactiveLayer.setOnDragEntered(
         event -> {
           System.out.println("onDragEntered");
           event.consume();
         });
 
-    interactivePane.setOnDragExited(
+    interactiveLayer.setOnDragExited(
         event -> {
           System.out.println("onDragExited");
           event.consume();
           render();
         });
 
-    interactivePane.setOnDragDropped(
+    interactiveLayer.setOnDragDropped(
         event -> {
           System.out.println("onDragDropped");
           Dragboard db = event.getDragboard();
           boolean success = false;
-          if (db.hasImage()) {
+          if (db.hasFiles()) {
             success = true;
+            File file = event.getDragboard().getFiles().get(0);
+
+            // TODO:
+            Point2D mapPoint = mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
+            System.out.println("Drag Dropped: " +  event.getX() + ", " + event.getY() + " -> " + mapPoint.getX() + ", " + mapPoint.getY());
+            Image img = new Image("file://" + file.getAbsolutePath(), true);
+            Entity entity = entityFactory.createMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
+            gameMap.putEntity(entity);
+            render();
           }
 
           event.setDropCompleted(success);
@@ -315,7 +335,51 @@ public class MapViewImpl implements MapView, Closeable {
     if (stackPane.getWidth() != 0 && stackPane.getHeight() != 0) {
       renderBackground();
       renderGrid();
+      renderInteractives();
     }
+  }
+
+
+  private void renderInteractives() {
+    // TODO:
+    //GraphicsContext gc = interactiveLayer.getGraphicsContext2D();
+    //gc.clearRect(0, 0, interactiveLayer.getWidth(), interactiveLayer.getHeight());
+    interactiveLayer.getChildren().clear();
+    gameMap.getEntities().stream().filter(e -> e.hasComponent(ImageComponent.class)).forEach(e -> {
+      PositionComponent pc = e.getComponent(PositionComponent.class).get();
+      ImageComponent ic = e.getComponent(ImageComponent.class).get();
+      Image img = ic.getImage();
+      ImageView iv = new ImageView(img);
+
+      interactiveLayer.getChildren().add(iv);
+
+      double imgWidth;
+      double imgHeight;
+      if (gameMap.getGrid().isPresent()) {
+        Grid grid = gameMap.getGrid().get();
+        imgWidth = grid.getWidth();
+        imgHeight = grid.getHeight();
+      } else {
+        imgWidth = img.getWidth();
+        imgHeight = img.getHeight();
+      }
+
+      var rect = mapViewPort.convertCenteredMapRectangleToDisplay(pc.getX(), pc.getY(), imgWidth, imgHeight);
+
+      iv.setX(rect.getMinX());
+      iv.setY(rect.getMinY());
+
+      iv.setFitWidth(rect.getWidth());
+      iv.setFitHeight(rect.getHeight());
+
+      /*GraphicsContext gc = gridCanvas.getGraphicsContext2D();
+      gc.save();
+      gc.setFill(Color.RED);
+
+      gc.fillRect(rect.getMinX(), rect.getMinY(), rect.getWidth(), rect.getHeight());
+      gc.fillRect(dTopLeft.getX(), dTopLeft.getY(), dBottomRight.getX() - dTopLeft.getX(), dBottomRight.getY() - dTopLeft.getY());
+      gc.restore();*/
+    });
   }
 
   /** Render the view of the map. */
@@ -347,6 +411,11 @@ public class MapViewImpl implements MapView, Closeable {
         gridRenderer.render(gridCanvas, grid, gridLine, mapViewPort);
       }
     }
+    GraphicsContext gc = gridCanvas.getGraphicsContext2D();
+    gc.save();
+    gc.setStroke(Color.RED);
+    gc.strokeRect(mouseX -25, mouseY - 25, 50, 50);
+    gc.restore();
   }
 
   @Override
