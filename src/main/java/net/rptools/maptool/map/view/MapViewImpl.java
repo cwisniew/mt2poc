@@ -33,7 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+import javafx.scene.shape.Rectangle;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.PositionComponent;
 import net.rptools.maptool.entity.Entity;
@@ -212,7 +212,6 @@ public class MapViewImpl implements MapView, Closeable {
 
     interactiveLayer.setOnDragOver(
         event -> {
-          System.out.println("onDragOver");
           if (event.getGestureSource() != interactiveLayer) {
             if (event.getDragboard().hasFiles()) {
               event.acceptTransferModes(TransferMode.ANY);
@@ -223,20 +222,17 @@ public class MapViewImpl implements MapView, Closeable {
 
     interactiveLayer.setOnDragEntered(
         event -> {
-          System.out.println("onDragEntered");
           event.consume();
         });
 
     interactiveLayer.setOnDragExited(
         event -> {
-          System.out.println("onDragExited");
           event.consume();
           render();
         });
 
     interactiveLayer.setOnDragDropped(
         event -> {
-          System.out.println("onDragDropped");
           Dragboard db = event.getDragboard();
           boolean success = false;
           if (db.hasFiles()) {
@@ -245,7 +241,6 @@ public class MapViewImpl implements MapView, Closeable {
 
             // TODO:
             Point2D mapPoint = mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
-            System.out.println("Drag Dropped: " +  event.getX() + ", " + event.getY() + " -> " + mapPoint.getX() + ", " + mapPoint.getY());
             Image img = new Image("file://" + file.getAbsolutePath(), true);
             Entity entity = entityFactory.createMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
             gameMap.putEntity(entity);
@@ -316,7 +311,7 @@ public class MapViewImpl implements MapView, Closeable {
     return mapViewPort;
   }
 
-  /** Handle resizing of the */
+  /** Handle resizing of the view */
   private void viewResized() {
     double width = stackPane.getWidth();
     double height = stackPane.getHeight();
@@ -326,6 +321,8 @@ public class MapViewImpl implements MapView, Closeable {
     translation = new Point2D(width / 2, height / 2);
 
     mapViewPort.adjustDisplaySize(new Rectangle2D(0, 0, width, height));
+
+    stackPane.setClip(new Rectangle(0, 0 ,width, height));
     render();
   }
 
@@ -341,9 +338,6 @@ public class MapViewImpl implements MapView, Closeable {
 
 
   private void renderInteractives() {
-    // TODO:
-    //GraphicsContext gc = interactiveLayer.getGraphicsContext2D();
-    //gc.clearRect(0, 0, interactiveLayer.getWidth(), interactiveLayer.getHeight());
     interactiveLayer.getChildren().clear();
     gameMap.getEntities().stream().filter(e -> e.hasComponent(ImageComponent.class)).forEach(e -> {
       PositionComponent pc = e.getComponent(PositionComponent.class).get();
@@ -372,13 +366,6 @@ public class MapViewImpl implements MapView, Closeable {
       iv.setFitWidth(rect.getWidth());
       iv.setFitHeight(rect.getHeight());
 
-      /*GraphicsContext gc = gridCanvas.getGraphicsContext2D();
-      gc.save();
-      gc.setFill(Color.RED);
-
-      gc.fillRect(rect.getMinX(), rect.getMinY(), rect.getWidth(), rect.getHeight());
-      gc.fillRect(dTopLeft.getX(), dTopLeft.getY(), dBottomRight.getX() - dTopLeft.getX(), dBottomRight.getY() - dTopLeft.getY());
-      gc.restore();*/
     });
   }
 
