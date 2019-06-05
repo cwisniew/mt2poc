@@ -50,6 +50,7 @@ public class PositionComponent implements Component {
 
   /**
    * Creates a new <code>PositionComponent></code> object.
+   * This will create a component with snap to grid defaulting to <code>false</code>.
    *
    * @param x The x co-ordinate on the map.
    * @param y The y co-ordinate on the map
