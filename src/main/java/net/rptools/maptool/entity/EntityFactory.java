@@ -37,4 +37,17 @@ public interface EntityFactory {
    * @return an {@link Entity} that represents a simple figure on the map.
    */
   public Entity createMapFigure(double x, double y, double z, Image image);
+
+  /**
+   * Creates a new {@link Entity} which represents a simple figure on a {@link
+   * net.rptools.maptool.map.GameMap} that has snap to grid set.
+   *
+   * @param x The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param y The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param z The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param image The {@link Image} to display for the simple figure.
+   * @return an {@link Entity} that represents a simple figure on the map.
+   */
+  public Entity createSnapToGridMapFigure(double x, double y, double z, Image image);
+
 }

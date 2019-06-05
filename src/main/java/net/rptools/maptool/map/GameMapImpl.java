@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import net.rptools.maptool.component.PositionComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.events.MapEntityAddedEvent;
 import net.rptools.maptool.map.events.MapEntityRemovedEvent;
@@ -91,6 +92,12 @@ public class GameMapImpl implements GameMap {
 
   @Override
   public void putEntity(Entity entity) {
+    if (PositionComponent.isSnapToGrid(entity)) {
+      var pc = entity.getComponent(PositionComponent.class).get();
+      Point2D snapCenter = grid.getGridCenter(pc.getX(), pc.getY());
+      pc.setX(snapCenter.getX());
+      pc.setY(snapCenter.getY());
+    }
     entities.add(entity);
     eventBus.post(new MapEntityAddedEvent(this, entity));
   }

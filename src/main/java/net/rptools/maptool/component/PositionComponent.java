@@ -16,6 +16,7 @@ package net.rptools.maptool.component;
 
 import java.util.Objects;
 import java.util.UUID;
+import net.rptools.maptool.entity.Entity;
 
 /** The component the denotes position on a {@link net.rptools.maptool.map.GameMap}. */
 public class PositionComponent implements Component {
@@ -33,6 +34,20 @@ public class PositionComponent implements Component {
   /** should this component snap to grid? */
   private boolean snapToGrid;
 
+
+  /**
+   * Convenience method for checking if the {@link Entity} contains a {@link PositionComponent} with
+   * the snap to grid property set. If the {@link Entity} does not contain a {@link PositionComponent}
+   * it will return <code>false</code>.
+   *
+   * @param entity the entity to check.
+   *
+   * @return <code>true</code> if the {@link PositionComponent} is present and snap to grid is set.
+   */
+  public static boolean isSnapToGrid(Entity entity) {
+    return (entity.hasComponent(PositionComponent.class) && entity.getComponent(PositionComponent.class).get().isSnapToGrid());
+  }
+
   /**
    * Creates a new <code>PositionComponent></code> object.
    *
@@ -49,8 +64,8 @@ public class PositionComponent implements Component {
   }
 
   /**
-   * Creates a new <code>PositionComponent></code> object.
-   * This will create a component with snap to grid defaulting to <code>false</code>.
+   * Creates a new <code>PositionComponent></code> object. This will create a component with snap to
+   * grid defaulting to <code>false</code>.
    *
    * @param x The x co-ordinate on the map.
    * @param y The y co-ordinate on the map
@@ -131,6 +146,7 @@ public class PositionComponent implements Component {
   public void setSnapToGrid(boolean snapToGrid) {
     this.snapToGrid = snapToGrid;
   }
+
 
   @Override
   public boolean equals(Object o) {

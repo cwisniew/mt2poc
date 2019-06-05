@@ -65,6 +65,16 @@ public interface Grid {
   Point2D getGridCenter(Point2D mapPoint);
 
   /**
+   * Returns the point in the center of the grid cell that contains the specified map co-ordinate.
+   * Both the point to test and the returned center of the grid are in map co-ordinates.
+   *
+   * @param mapX the X map point to find the cell for.
+   * @param mapX the Y map point to find the cell for.
+   * @return the center of the grid cell.
+   */
+  Point2D getGridCenter(double mapX, double mapY);
+
+  /**
    * Returns the bounds for the grid cell that contains the specified map co-ordinate. Both the
    * point to test and returned bounds are in map co-ordinates.
    *

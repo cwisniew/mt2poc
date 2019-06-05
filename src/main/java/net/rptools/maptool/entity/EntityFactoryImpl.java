@@ -33,4 +33,12 @@ public class EntityFactoryImpl implements EntityFactory {
         .with(new ImageComponent(image))
         .build();
   }
+
+  @Override
+  public Entity createSnapToGridMapFigure(double x, double y, double z, Image image) {
+    return createEntity()
+        .with(new PositionComponent(x, y, z, true))
+        .with(new ImageComponent(image))
+        .build();
+  }
 }

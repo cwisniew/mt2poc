@@ -74,9 +74,14 @@ public class RectangleGrid implements Grid {
 
   @Override
   public Point2D getGridCenter(Point2D point) {
+    return getGridCenter(point.getX(), point.getY());
+  }
+
+  @Override
+  public Point2D getGridCenter(double mapX, double mapY) {
     // Easiest way to do this for a square grid is to find the upper left corner
-    double x = Math.floor(point.getX() / width) * width;
-    double y = Math.floor(point.getY() / height) * height;
+    double x = Math.floor(mapX / width) * width;
+    double y = Math.floor(mapY / height) * height;
 
     // Then add on half of the dimension
     return new Point2D(x + width / 2.0, y + height / 2.0);
