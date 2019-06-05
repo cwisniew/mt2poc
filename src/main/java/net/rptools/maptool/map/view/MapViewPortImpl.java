@@ -339,7 +339,6 @@ public class MapViewPortImpl implements MapViewPort {
     return convertMapToDisplay(convertDisplayToMapGridCenter(displayX, displayY));
   }
 
-
   @Override
   public void setZoomStep(double value) {
     zoomStepValue = value;

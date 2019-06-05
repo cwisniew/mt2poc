@@ -72,8 +72,10 @@ public class ApplicationModule extends AbstractModule {
     // Entity
     bind(EntityFactory.class).to(EntityFactoryImpl.class);
 
-
     // Mappable objects
-    install(new FactoryModuleBuilder().implement(MapFigure.class, MapFigureImpl.class).build(MapFigureFactory.class));
+    install(
+        new FactoryModuleBuilder()
+            .implement(MapFigure.class, MapFigureImpl.class)
+            .build(MapFigureFactory.class));
   }
 }

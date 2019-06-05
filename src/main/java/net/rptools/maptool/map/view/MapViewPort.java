@@ -268,24 +268,20 @@ public interface MapViewPort {
    */
   Point2D getGridCenter(double mapX, double mapY);
 
-
   /**
    * Returns the center of the grid in map co-ordinates for a given display x,y.
    *
    * @param displayX The X display co-ordinate.
    * @param displayY The Y display co-ordinate.
-   *
    * @return The point in the center of the grid in map co-ordinates.
    */
   Point2D convertDisplayToMapGridCenter(double displayX, double displayY);
-
 
   /**
    * Returns the center of the grid in display co-ordinates for a given display x,y.
    *
    * @param displayX The X display co-ordinate.
    * @param displayY The Y display co-ordinate.
-   *
    * @return The point in the center of the grid in display co-ordinates.
    */
   Point2D getDisplayGridCenter(double displayX, double displayY);

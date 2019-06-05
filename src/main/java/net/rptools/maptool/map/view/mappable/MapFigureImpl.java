@@ -1,3 +1,17 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.map.view.mappable;
 
 import com.google.common.eventbus.EventBus;
@@ -23,25 +37,26 @@ public class MapFigureImpl implements MapFigure {
   private final MapViewPort mapViewPort;
   private final Entity entity;
 
-  @Inject
-  private EventBus eventBus;
-
+  @Inject private EventBus eventBus;
 
   @Inject
-  public MapFigureImpl(@Assisted GameMap map, @Assisted MapViewPort viewPort, @Assisted Entity ent) {
+  public MapFigureImpl(
+      @Assisted GameMap map, @Assisted MapViewPort viewPort, @Assisted Entity ent) {
     gameMap = map;
     mapViewPort = viewPort;
     entity = ent;
 
-    imageView.setOnMouseEntered(e -> {
-      imageView.getScene().setCursor(Cursor.HAND);
-      e.consume();
-    });
+    imageView.setOnMouseEntered(
+        e -> {
+          imageView.getScene().setCursor(Cursor.HAND);
+          e.consume();
+        });
 
-    imageView.setOnMouseExited(e -> {
-      imageView.getScene().setCursor(Cursor.DEFAULT);
-      e.consume();
-    });
+    imageView.setOnMouseExited(
+        e -> {
+          imageView.getScene().setCursor(Cursor.DEFAULT);
+          e.consume();
+        });
 
     imageView.setOnMouseDragged(
         e -> {
@@ -111,20 +126,17 @@ public class MapFigureImpl implements MapFigure {
     imageView.setImage(image);
 
     var rect =
-        mapViewPort.convertCenteredMapRectangleToDisplay(
-            pc.getX(), pc.getY(), imgWidth, imgHeight);
+        mapViewPort.convertCenteredMapRectangleToDisplay(pc.getX(), pc.getY(), imgWidth, imgHeight);
 
     imageView.setX(rect.getMinX());
     imageView.setY(rect.getMinY());
 
     imageView.setFitWidth(rect.getWidth());
     imageView.setFitHeight(rect.getHeight());
-
   }
 
   @Override
   public ImageView getImageView() {
     return imageView;
   }
-
 }

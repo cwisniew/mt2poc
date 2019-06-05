@@ -107,8 +107,7 @@ public class MapViewImpl implements MapView, Closeable {
   /** The factory class for creating {@link Entity}s */
   @Inject private EntityFactory entityFactory;
 
-  @Inject
-  MapFigureFactory mapFigureFactory;
+  @Inject MapFigureFactory mapFigureFactory;
 
   /** The {@link MapFigureImpl}s for {@link Entity}s. */
   private final Map<Entity, MapFigureImpl> mapFigures = new HashMap<>();
