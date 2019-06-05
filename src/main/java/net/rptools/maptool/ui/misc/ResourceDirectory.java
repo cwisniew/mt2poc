@@ -24,7 +24,6 @@ public class ResourceDirectory {
   /** The path of the file. */
   private final Path path;
 
-
   public ResourceDirectory(String name, Path path) {
     this.name = name;
     this.path = path;

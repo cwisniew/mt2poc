@@ -86,7 +86,7 @@ public class MapViewImpl implements MapView, Closeable {
 
   /** The pane that picks up user interactions when there is nothing else in front of it. */
   private Pane interactiveLayer = new Pane();
-  //private Canvas interactiveLayer = new Canvas();
+  // private Canvas interactiveLayer = new Canvas();
 
   /** The {@link Canvas} used for drawing the grid. */
   private Canvas gridCanvas = new ResizableCanvas();
@@ -101,8 +101,7 @@ public class MapViewImpl implements MapView, Closeable {
   private MapViewPort mapViewPort;
 
   /** The factory class for creating {@link Entity}s */
-  @Inject
-  private EntityFactory entityFactory;
+  @Inject private EntityFactory entityFactory;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -137,7 +136,7 @@ public class MapViewImpl implements MapView, Closeable {
         e -> {
           mouseX = e.getX();
           mouseY = e.getY();
-          //render();
+          // render();
         });
 
     stackPane.addEventHandler(
@@ -240,7 +239,8 @@ public class MapViewImpl implements MapView, Closeable {
             File file = event.getDragboard().getFiles().get(0);
 
             // TODO:
-            Point2D mapPoint = mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
+            Point2D mapPoint =
+                mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
             Image img = new Image("file://" + file.getAbsolutePath(), true);
             Entity entity = entityFactory.createMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
             gameMap.putEntity(entity);
@@ -322,7 +322,7 @@ public class MapViewImpl implements MapView, Closeable {
 
     mapViewPort.adjustDisplaySize(new Rectangle2D(0, 0, width, height));
 
-    stackPane.setClip(new Rectangle(0, 0 ,width, height));
+    stackPane.setClip(new Rectangle(0, 0, width, height));
     render();
   }
 
@@ -336,37 +336,40 @@ public class MapViewImpl implements MapView, Closeable {
     }
   }
 
-
   private void renderInteractives() {
     interactiveLayer.getChildren().clear();
-    gameMap.getEntities().stream().filter(e -> e.hasComponent(ImageComponent.class)).forEach(e -> {
-      PositionComponent pc = e.getComponent(PositionComponent.class).get();
-      ImageComponent ic = e.getComponent(ImageComponent.class).get();
-      Image img = ic.getImage();
-      ImageView iv = new ImageView(img);
+    gameMap.getEntities().stream()
+        .filter(e -> e.hasComponent(ImageComponent.class))
+        .forEach(
+            e -> {
+              PositionComponent pc = e.getComponent(PositionComponent.class).get();
+              ImageComponent ic = e.getComponent(ImageComponent.class).get();
+              Image img = ic.getImage();
+              ImageView iv = new ImageView(img);
 
-      interactiveLayer.getChildren().add(iv);
+              interactiveLayer.getChildren().add(iv);
 
-      double imgWidth;
-      double imgHeight;
-      if (gameMap.getGrid().isPresent()) {
-        Grid grid = gameMap.getGrid().get();
-        imgWidth = grid.getWidth();
-        imgHeight = grid.getHeight();
-      } else {
-        imgWidth = img.getWidth();
-        imgHeight = img.getHeight();
-      }
+              double imgWidth;
+              double imgHeight;
+              if (gameMap.getGrid().isPresent()) {
+                Grid grid = gameMap.getGrid().get();
+                imgWidth = grid.getWidth();
+                imgHeight = grid.getHeight();
+              } else {
+                imgWidth = img.getWidth();
+                imgHeight = img.getHeight();
+              }
 
-      var rect = mapViewPort.convertCenteredMapRectangleToDisplay(pc.getX(), pc.getY(), imgWidth, imgHeight);
+              var rect =
+                  mapViewPort.convertCenteredMapRectangleToDisplay(
+                      pc.getX(), pc.getY(), imgWidth, imgHeight);
 
-      iv.setX(rect.getMinX());
-      iv.setY(rect.getMinY());
+              iv.setX(rect.getMinX());
+              iv.setY(rect.getMinY());
 
-      iv.setFitWidth(rect.getWidth());
-      iv.setFitHeight(rect.getHeight());
-
-    });
+              iv.setFitWidth(rect.getWidth());
+              iv.setFitHeight(rect.getHeight());
+            });
   }
 
   /** Render the view of the map. */
@@ -401,7 +404,7 @@ public class MapViewImpl implements MapView, Closeable {
     GraphicsContext gc = gridCanvas.getGraphicsContext2D();
     gc.save();
     gc.setStroke(Color.RED);
-    gc.strokeRect(mouseX -25, mouseY - 25, 50, 50);
+    gc.strokeRect(mouseX - 25, mouseY - 25, 50, 50);
     gc.restore();
   }
 

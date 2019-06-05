@@ -47,6 +47,18 @@ public class PositionComponent implements Component {
     this.z = z;
     this.snapToGrid = snap;
   }
+
+  /**
+   * Creates a new <code>PositionComponent></code> object.
+   *
+   * @param x The x co-ordinate on the map.
+   * @param y The y co-ordinate on the map
+   * @param z The z co-ordinate on the map.
+   */
+  public PositionComponent(double x, double y, double z) {
+    this(x, y, z, false);
+  }
+
   /**
    * Returns the x co-ordinate on the {@link net.rptools.maptool.map.GameMap}.
    *
@@ -109,7 +121,6 @@ public class PositionComponent implements Component {
   public boolean isSnapToGrid() {
     return snapToGrid;
   }
-
 
   /**
    * Sets if this component should snap to grid.

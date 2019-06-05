@@ -14,12 +14,9 @@
  */
 package net.rptools.maptool.map.grid.render;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import net.rptools.maptool.map.grid.RectangleGrid;
 import net.rptools.maptool.map.view.MapViewCorner;
 import net.rptools.maptool.map.view.MapViewPort;
@@ -74,5 +71,4 @@ public class RectangleGridRenderer implements GridRenderer<RectangleGrid> {
 
     gc.restore();
   }
-
 }

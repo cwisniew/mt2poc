@@ -644,7 +644,6 @@ class MapViewPortImplTest {
       assertEquals(p2.getX(), rect.getMaxX(), 0.001, "Max X");
       assertEquals(p2.getY(), rect.getMaxY(), 0.001, "Max Y");
     }
-
   }
 
   @Test
@@ -677,5 +676,4 @@ class MapViewPortImplTest {
       }
     }
   }
-
 }

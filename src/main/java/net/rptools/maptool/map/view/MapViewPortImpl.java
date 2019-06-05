@@ -345,13 +345,18 @@ public class MapViewPortImpl implements MapViewPort {
   }
 
   @Override
-  public Rectangle2D convertCenteredMapRectangleToDisplay(double x, double y, double width, double height) {
+  public Rectangle2D convertCenteredMapRectangleToDisplay(
+      double x, double y, double width, double height) {
     double halfWidth = width / 2.0;
     double halfHeight = height / 2.0;
     Point2D topLeft = convertMapToDisplay(new Point2D(x - halfWidth, y + halfHeight));
     Point2D bottomRight = convertMapToDisplay(new Point2D(x + halfWidth, y - halfHeight));
 
-    return new Rectangle2D(topLeft.getX(), topLeft.getY(), bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
+    return new Rectangle2D(
+        topLeft.getX(),
+        topLeft.getY(),
+        bottomRight.getX() - topLeft.getX(),
+        bottomRight.getY() - topLeft.getY());
   }
 
   @Override
@@ -363,6 +368,4 @@ public class MapViewPortImpl implements MapViewPort {
 
     return convPoints;
   }
-
-
 }
