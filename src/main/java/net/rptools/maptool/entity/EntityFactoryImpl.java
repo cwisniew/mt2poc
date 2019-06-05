@@ -15,6 +15,7 @@
 package net.rptools.maptool.entity;
 
 import javafx.scene.image.Image;
+import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.PositionComponent;
 
@@ -39,6 +40,7 @@ public class EntityFactoryImpl implements EntityFactory {
     return createEntity()
         .with(new PositionComponent(x, y, z, true))
         .with(new ImageComponent(image))
+        .with(new DraggableComponent())
         .build();
   }
 }

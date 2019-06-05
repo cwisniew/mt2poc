@@ -87,7 +87,12 @@ public class GameMapImpl implements GameMap {
 
   @Override
   public Point2D getGridCenter(Point2D mapPoint) {
-    return grid.getGridCenter(mapPoint);
+    return grid.getGridCenter(mapPoint.getX(), mapPoint.getY());
+  }
+
+  @Override
+  public Point2D getGridCenter(double mapX, double mapY) {
+    return grid.getGridCenter(mapX, mapY);
   }
 
   @Override

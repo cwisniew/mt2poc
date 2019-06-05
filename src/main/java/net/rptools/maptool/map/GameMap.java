@@ -65,6 +65,18 @@ public interface GameMap {
    */
   Point2D getGridCenter(Point2D mapPoint);
 
+
+  /**
+   * Returns the center of a grid the contains the passed in point. Both the point returned and the
+   * point to test are in map co-ordinates.
+   *
+   * @param mapX the X point with in the grid cell you want to get the center of.
+   * @param mapY the Y point with in the grid cell you want to get the center of.
+   *
+   * @return the center of the grid cell.
+   */
+  Point2D getGridCenter(double mapX, double mapY);
+
   /**
    * Puts an {@link Entity} om the map.
    *

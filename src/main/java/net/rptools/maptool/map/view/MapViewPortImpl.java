@@ -325,6 +325,22 @@ public class MapViewPortImpl implements MapViewPort {
   }
 
   @Override
+  public Point2D getGridCenter(double x, double y) {
+    return gameMap.getGridCenter(x, y);
+  }
+
+  @Override
+  public Point2D convertDisplayToMapGridCenter(double displayX, double displayY) {
+    return getGridCenter(convertDisplayToMap(displayX, displayY));
+  }
+
+  @Override
+  public Point2D getDisplayGridCenter(double displayX, double displayY) {
+    return convertMapToDisplay(convertDisplayToMapGridCenter(displayX, displayY));
+  }
+
+
+  @Override
   public void setZoomStep(double value) {
     zoomStepValue = value;
   }

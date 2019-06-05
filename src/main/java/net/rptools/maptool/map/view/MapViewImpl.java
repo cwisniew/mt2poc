@@ -20,12 +20,13 @@ import com.google.inject.Inject;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
@@ -34,15 +35,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.rptools.maptool.component.ImageComponent;
-import net.rptools.maptool.component.PositionComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.map.GameMap;
+import net.rptools.maptool.map.events.MapEntityAddedEvent;
+import net.rptools.maptool.map.events.MapEntityRemovedEvent;
+import net.rptools.maptool.map.events.MapFigureUpdate;
 import net.rptools.maptool.map.events.MapUpdateEvent;
 import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.grid.render.GridLine;
 import net.rptools.maptool.map.grid.render.GridRendererFactory;
+import net.rptools.maptool.map.view.mappable.MapFigureFactory;
+import net.rptools.maptool.map.view.mappable.MapFigureImpl;
 import net.rptools.maptool.ui.controls.ResizableCanvas;
 
 /** Class that implements a view of a {@link GameMap}. */
@@ -103,6 +107,12 @@ public class MapViewImpl implements MapView, Closeable {
   /** The factory class for creating {@link Entity}s */
   @Inject private EntityFactory entityFactory;
 
+  @Inject
+  MapFigureFactory mapFigureFactory;
+
+  /** The {@link MapFigureImpl}s for {@link Entity}s. */
+  private final Map<Entity, MapFigureImpl> mapFigures = new HashMap<>();
+
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
@@ -136,7 +146,6 @@ public class MapViewImpl implements MapView, Closeable {
         e -> {
           mouseX = e.getX();
           mouseY = e.getY();
-          // render();
         });
 
     stackPane.addEventHandler(
@@ -189,7 +198,7 @@ public class MapViewImpl implements MapView, Closeable {
             }
 
             e.consume();
-            render();
+            render(true);
           }
         });
 
@@ -201,7 +210,7 @@ public class MapViewImpl implements MapView, Closeable {
             viewPort.zoomIn();
           }
           e.consume();
-          render();
+          render(true);
         });
 
     stackPane.getChildren().add(interactiveLayer);
@@ -227,7 +236,6 @@ public class MapViewImpl implements MapView, Closeable {
     interactiveLayer.setOnDragExited(
         event -> {
           event.consume();
-          render();
         });
 
     interactiveLayer.setOnDragDropped(
@@ -245,7 +253,6 @@ public class MapViewImpl implements MapView, Closeable {
             Entity entity =
                 entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
             gameMap.putEntity(entity);
-            render();
           }
 
           event.setDropCompleted(success);
@@ -278,8 +285,34 @@ public class MapViewImpl implements MapView, Closeable {
   @Subscribe
   void handleMapUpdateEvent(MapUpdateEvent mapUpdateEvent) {
     if (gameMap.getId() == mapUpdateEvent.getMapId()) {
-      render();
+      render(false);
     }
+  }
+
+  @Subscribe
+  void handleEntityAddedEvent(MapEntityAddedEvent mapEntityAddedEvent) {
+    Entity entity = mapEntityAddedEvent.getEntity();
+    MapFigureImpl mf = mapFigureFactory.create(gameMap, mapViewPort, entity);
+    mf.update();
+    mapFigures.put(entity, mf);
+    interactiveLayer.getChildren().add(mf.getImageView());
+    render(false);
+  }
+
+  @Subscribe
+  void handleEntityRemovedEvent(MapEntityRemovedEvent mapEntityRemovedEvent) {
+    Entity entity = mapEntityRemovedEvent.getEntity();
+    MapFigureImpl mf = mapFigures.get(entity);
+    if (mf != null) {
+      interactiveLayer.getChildren().remove(mf.getImageView());
+      mapFigures.remove(entity);
+    }
+    render(false);
+  }
+
+  @Subscribe
+  void handleMapFigureUpdate(MapFigureUpdate mapFigureUpdate) {
+    System.out.println("mapFigureUpdate");
   }
 
   /**
@@ -294,7 +327,7 @@ public class MapViewImpl implements MapView, Closeable {
   @Override
   public void setScale(double scaleFactor) {
     scale = scaleFactor;
-    render();
+    render(true);
   }
 
   @Override
@@ -324,53 +357,25 @@ public class MapViewImpl implements MapView, Closeable {
     mapViewPort.adjustDisplaySize(new Rectangle2D(0, 0, width, height));
 
     stackPane.setClip(new Rectangle(0, 0, width, height));
-    render();
+    render(true);
   }
 
   /** Renders the content of the Map View. */
-  private void render() {
+  private void render(boolean viewChanged) {
     // Don't render until both width and height are set
     if (stackPane.getWidth() != 0 && stackPane.getHeight() != 0) {
       renderBackground();
       renderGrid();
-      renderInteractives();
+      if (viewChanged) {
+        renderInteractives();
+      }
     }
   }
 
   private void renderInteractives() {
-    interactiveLayer.getChildren().clear();
-    gameMap.getEntities().stream()
-        .filter(e -> e.hasComponent(ImageComponent.class))
-        .forEach(
-            e -> {
-              PositionComponent pc = e.getComponent(PositionComponent.class).get();
-              ImageComponent ic = e.getComponent(ImageComponent.class).get();
-              Image img = ic.getImage();
-              ImageView iv = new ImageView(img);
-
-              interactiveLayer.getChildren().add(iv);
-
-              double imgWidth;
-              double imgHeight;
-              if (gameMap.getGrid().isPresent()) {
-                Grid grid = gameMap.getGrid().get();
-                imgWidth = grid.getWidth();
-                imgHeight = grid.getHeight();
-              } else {
-                imgWidth = img.getWidth();
-                imgHeight = img.getHeight();
-              }
-
-              var rect =
-                  mapViewPort.convertCenteredMapRectangleToDisplay(
-                      pc.getX(), pc.getY(), imgWidth, imgHeight);
-
-              iv.setX(rect.getMinX());
-              iv.setY(rect.getMinY());
-
-              iv.setFitWidth(rect.getWidth());
-              iv.setFitHeight(rect.getHeight());
-            });
+    for (MapFigureImpl mf : mapFigures.values()) {
+      mf.update();
+    }
   }
 
   /** Render the view of the map. */
@@ -402,11 +407,6 @@ public class MapViewImpl implements MapView, Closeable {
         gridRenderer.render(gridCanvas, grid, gridLine, mapViewPort);
       }
     }
-    GraphicsContext gc = gridCanvas.getGraphicsContext2D();
-    gc.save();
-    gc.setStroke(Color.RED);
-    gc.strokeRect(mouseX - 25, mouseY - 25, 50, 50);
-    gc.restore();
   }
 
   @Override

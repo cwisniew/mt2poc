@@ -70,7 +70,10 @@ dependencies {
     implementation("org.apache.logging.log4j", "log4j-core", "2.11.2")
     implementation("com.google.code.gson", "gson", "2.8.5")
     implementation("com.google.inject", "guice", "4.2.2")
+    implementation("com.google.inject.extensions", "guice-assistedinject", "4.2.2");
     implementation("com.github.JamzTheMan", "DockFX", "MapTool-SNAPSHOT")
+    implementation("org.kordamp.ikonli", "ikonli-zondicons-pack", "11.3.4")
+
 
 
 

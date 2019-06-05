@@ -259,6 +259,38 @@ public interface MapViewPort {
   Point2D getGridCenter(Point2D mapPoint);
 
   /**
+   * Returns the center of the grid of the specified point, both the passed in and returned points
+   * are iu map co-ordinates.
+   *
+   * @param mapX the X point on the map to map to a grid cell.
+   * @param mapY the X point on the map to map to a grid cell.
+   * @return the center of the grid cell for specified point in map co-ordinates.
+   */
+  Point2D getGridCenter(double mapX, double mapY);
+
+
+  /**
+   * Returns the center of the grid in map co-ordinates for a given display x,y.
+   *
+   * @param displayX The X display co-ordinate.
+   * @param displayY The Y display co-ordinate.
+   *
+   * @return The point in the center of the grid in map co-ordinates.
+   */
+  Point2D convertDisplayToMapGridCenter(double displayX, double displayY);
+
+
+  /**
+   * Returns the center of the grid in display co-ordinates for a given display x,y.
+   *
+   * @param displayX The X display co-ordinate.
+   * @param displayY The Y display co-ordinate.
+   *
+   * @return The point in the center of the grid in display co-ordinates.
+   */
+  Point2D getDisplayGridCenter(double displayX, double displayY);
+
+  /**
    * Sets increment used by the {@link #zoomIn()} and {@link #zoomOut()} methods.
    *
    * @param value the zoom increment to use.
