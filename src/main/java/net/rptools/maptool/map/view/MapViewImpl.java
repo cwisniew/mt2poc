@@ -242,7 +242,8 @@ public class MapViewImpl implements MapView, Closeable {
             Point2D mapPoint =
                 mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
             Image img = new Image("file://" + file.getAbsolutePath(), true);
-            Entity entity = entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
+            Entity entity =
+                entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
             gameMap.putEntity(entity);
             render();
           }

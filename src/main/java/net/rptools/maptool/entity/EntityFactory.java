@@ -49,5 +49,4 @@ public interface EntityFactory {
    * @return an {@link Entity} that represents a simple figure on the map.
    */
   public Entity createSnapToGridMapFigure(double x, double y, double z, Image image);
-
 }
