@@ -32,6 +32,7 @@ public class EntityFactoryImpl implements EntityFactory {
     return createEntity()
         .with(new PositionComponent(x, y, z))
         .with(new ImageComponent(image))
+        .with(new DraggableComponent())
         .build();
   }
 

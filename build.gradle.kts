@@ -62,7 +62,7 @@ configure<JavaPluginConvention> {
 }
 
 
-dependencies {
+    dependencies {
     implementation("com.google.guava:guava:27.0.1-jre")
     implementation("org.reflections", "reflections", "0.9.11")
     implementation("com.jfoenix", "jfoenix", "9.0.8")

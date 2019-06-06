@@ -12,15 +12,15 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.map.view.mappable;
+package net.rptools.maptool.map.events;
 
-import javafx.scene.Node;
+import net.rptools.maptool.map.GameMap;
 
-public interface MapFigure {
+public class MapItemSelectionClearedEvent {
 
-  void update();
+  private final GameMap gameMap;
 
-  Node getNode();
-
-  Node getDraggedNode();
+  public MapItemSelectionClearedEvent(GameMap map) {
+    gameMap = map;
+  }
 }

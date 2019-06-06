@@ -19,6 +19,7 @@ import static org.mockito.Mockito.mock;
 
 import javafx.scene.image.Image;
 import net.rptools.maptool.component.Component;
+import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.PositionComponent;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,26 @@ class EntityFactoryImplTest {
 
     assertTrue(entity.hasComponent(PositionComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
+    assertTrue(entity.hasComponent(DraggableComponent.class));
 
-    assertEquals(2, entity.getComponentTypes().size());
+    assertEquals(3, entity.getComponentTypes().size());
+
+    PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+    assertFalse(pc.isSnapToGrid());
+  }
+
+  @Test
+  void createSnapToGridMapFigure() {
+    EntityFactory ef = new EntityFactoryImpl();
+    var entity = ef.createSnapToGridMapFigure(1, 1, 1, mock(Image.class));
+
+    assertTrue(entity.hasComponent(PositionComponent.class));
+    assertTrue(entity.hasComponent(ImageComponent.class));
+    assertTrue(entity.hasComponent(DraggableComponent.class));
+
+    assertEquals(3, entity.getComponentTypes().size());
+
+    PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+    assertTrue(pc.isSnapToGrid());
   }
 }

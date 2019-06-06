@@ -54,6 +54,7 @@ class ImageComponentTest {
     assertTrue(ic1.equals(ic1));
     assertTrue(ic1.equals(ic3));
     assertFalse(ic1.equals(ic2));
+    assertFalse(ic1.equals(null));
   }
 
   @Test
@@ -69,5 +70,24 @@ class ImageComponentTest {
     assertEquals(ic1.hashCode(), ic1.hashCode());
     assertEquals(ic1.hashCode(), ic3.hashCode());
     assertNotEquals(ic1.hashCode(), ic2.hashCode());
+  }
+
+  @Test
+  void getId() {
+    ImageComponent[] imageComponents = new ImageComponent[100];
+    Image img = mock(Image.class);
+    for (int i = 0; i < imageComponents.length; i++) {
+      imageComponents[i] = new ImageComponent(img);
+    }
+
+    for (int i = 0; i < imageComponents.length; i++) {
+      for (int j = 0; j < imageComponents.length; j++) {
+        if (i == j) {
+          assertEquals(imageComponents[i].getId(), imageComponents[j].getId());
+        } else {
+          assertNotEquals(imageComponents[i].getId(), imageComponents[j].getId());
+        }
+      }
+    }
   }
 }

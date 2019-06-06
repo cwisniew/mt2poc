@@ -21,9 +21,13 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -35,6 +39,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import net.rptools.maptool.component.DraggableComponent;
+import net.rptools.maptool.component.PositionComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.map.GameMap;
@@ -45,7 +51,7 @@ import net.rptools.maptool.map.events.MapUpdateEvent;
 import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.grid.render.GridLine;
 import net.rptools.maptool.map.grid.render.GridRendererFactory;
-import net.rptools.maptool.map.view.mappable.MapFigureFactory;
+import net.rptools.maptool.map.view.mappable.MapFigure;
 import net.rptools.maptool.map.view.mappable.MapFigureImpl;
 import net.rptools.maptool.ui.controls.ResizableCanvas;
 
@@ -107,10 +113,12 @@ public class MapViewImpl implements MapView, Closeable {
   /** The factory class for creating {@link Entity}s */
   @Inject private EntityFactory entityFactory;
 
-  @Inject MapFigureFactory mapFigureFactory;
+  // @Inject MapFigureFactory mapFigureFactory;
 
   /** The {@link MapFigureImpl}s for {@link Entity}s. */
-  private final Map<Entity, MapFigureImpl> mapFigures = new HashMap<>();
+  private final Map<Entity, MapFigure> mapFigures = new HashMap<>();
+
+  private final Set<Entity> selected = new HashSet<>();
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -140,14 +148,30 @@ public class MapViewImpl implements MapView, Closeable {
 
     stackPane.getChildren().add(backgroundCanvas);
 
-    stackPane.addEventHandler(
+    gridCanvas.setMouseTransparent(true);
+
+    gridCanvas.widthProperty().bind(stackPane.widthProperty());
+    gridCanvas.heightProperty().bind(stackPane.heightProperty());
+
+    stackPane.getChildren().add(gridCanvas);
+
+    stackPane.widthProperty().addListener(w -> viewResized());
+    stackPane.heightProperty().addListener(h -> viewResized());
+
+    mapViewPort.setGameMap(gMap);
+
+    registerListeners();
+  }
+
+  private void registerListeners() {
+    interactiveLayer.addEventHandler(
         MouseEvent.MOUSE_MOVED,
         e -> {
           mouseX = e.getX();
           mouseY = e.getY();
         });
 
-    stackPane.addEventHandler(
+    interactiveLayer.addEventHandler(
         MouseEvent.MOUSE_PRESSED,
         e -> {
           if (e.isPrimaryButtonDown()) {
@@ -157,7 +181,7 @@ public class MapViewImpl implements MapView, Closeable {
           }
         });
 
-    stackPane.addEventHandler(
+    interactiveLayer.addEventHandler(
         MouseEvent.MOUSE_DRAGGED,
         e -> {
           if (e.isPrimaryButtonDown()) {
@@ -179,21 +203,21 @@ public class MapViewImpl implements MapView, Closeable {
             final boolean down = mousePressedY < currentMouseY;
 
             if (left && up) {
-              viewPort.panViewLeftUp();
+              mapViewPort.panViewLeftUp();
             } else if (left && down) {
-              viewPort.panViewLeftDown();
+              mapViewPort.panViewLeftDown();
             } else if (right && up) {
-              viewPort.panViewRightUp();
+              mapViewPort.panViewRightUp();
             } else if (right && down) {
-              viewPort.panViewRightDown();
+              mapViewPort.panViewRightDown();
             } else if (left) {
-              viewPort.panViewLeft();
+              mapViewPort.panViewLeft();
             } else if (right) {
-              viewPort.panViewRight();
+              mapViewPort.panViewRight();
             } else if (down) {
-              viewPort.panViewDown();
+              mapViewPort.panViewDown();
             } else if (up) {
-              viewPort.panViewUp();
+              mapViewPort.panViewUp();
             }
 
             e.consume();
@@ -201,12 +225,12 @@ public class MapViewImpl implements MapView, Closeable {
           }
         });
 
-    stackPane.setOnScroll(
+    interactiveLayer.setOnScroll(
         e -> {
           if (e.getDeltaY() > 0) {
-            viewPort.zoomOut();
+            mapViewPort.zoomOut();
           } else {
-            viewPort.zoomIn();
+            mapViewPort.zoomIn();
           }
           e.consume();
           render(true);
@@ -257,18 +281,6 @@ public class MapViewImpl implements MapView, Closeable {
           event.setDropCompleted(success);
           event.consume();
         });
-
-    gridCanvas.setMouseTransparent(true);
-
-    gridCanvas.widthProperty().bind(stackPane.widthProperty());
-    gridCanvas.heightProperty().bind(stackPane.heightProperty());
-
-    stackPane.getChildren().add(gridCanvas);
-
-    stackPane.widthProperty().addListener(w -> viewResized());
-    stackPane.heightProperty().addListener(h -> viewResized());
-
-    mapViewPort.setGameMap(gMap);
   }
 
   @Override
@@ -288,22 +300,134 @@ public class MapViewImpl implements MapView, Closeable {
     }
   }
 
+  /**
+   * Adds the mouse listeners to the node that represents the map figure.
+   *
+   * @param node The {@link Node} that represents the map figure.
+   * @param entity The {@link Entity} that this map figure represents.
+   */
+  private void addFigureListeners(Node node, Entity entity) {
+    node.setOnMouseEntered(e -> figureMouseEntered(node, e));
+    node.setOnMouseExited(e -> figureMouseExited(node, e));
+    node.setOnMouseDragged(e -> figureMouseDragged(node, entity, e));
+    node.setOnMouseReleased(e -> figureMouseReleased(node, entity, e));
+  }
+
+  /**
+   * Callback for mouse release event when mouse press originated on the {@link Node} for the map
+   * figure.
+   *
+   * @param node The {@link Node} that represents the map figure.
+   * @param entity The {@link Entity} that the map figure represents.
+   * @param mouseEvent The {@link MouseEvent} The mouse release event.
+   */
+  private void figureMouseReleased(Node node, Entity entity, MouseEvent mouseEvent) {
+    if (DraggableComponent.isBeingDragged(entity)) {
+      PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+      DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
+
+      node.getScene().setCursor(Cursor.DEFAULT);
+      Point2D mapPoint =
+          mapViewPort.convertDisplayToMapGridCenter(mouseEvent.getX(), mouseEvent.getY());
+      pc.setX(mapPoint.getX());
+      pc.setY(mapPoint.getY());
+
+      dc.setFromX(0);
+      dc.setFromY(0);
+      dc.setToX(0);
+      dc.setToY(0);
+      dc.setBeingDragged(false);
+
+      if (mapFigures.get(entity).getDraggedNode() != null) {
+        interactiveLayer.getChildren().remove(mapFigures.get(entity).getDraggedNode());
+      }
+      mapFigures.get(entity).update();
+    }
+    mouseEvent.consume();
+  }
+
+  /**
+   * Callback for mouse drag event on the {@link Node} for the map figure.
+   *
+   * @param node The {@link Node} that represents the map figure.
+   * @param entity The {@link Entity} that the map figure represents.
+   * @param mouseEvent The {@link MouseEvent} The mouse dragged event.
+   */
+  private void figureMouseDragged(Node node, Entity entity, MouseEvent mouseEvent) {
+    if (DraggableComponent.isDraggable(entity)) {
+      PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+      DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
+
+      if (PositionComponent.isSnapToGrid(entity)) {
+        Point2D mapPoint =
+            mapViewPort.convertDisplayToMapGridCenter(mouseEvent.getX(), mouseEvent.getY());
+        dc.setToX(mapPoint.getX());
+        dc.setToY(mapPoint.getY());
+      } else {
+        dc.setToX(mouseEvent.getX());
+        dc.setToY(mouseEvent.getY());
+      }
+
+      if (!DraggableComponent.isBeingDragged(entity)) {
+
+        dc.setFromX(pc.getX());
+        dc.setFromY(pc.getY());
+        dc.setBeingDragged(true);
+
+        interactiveLayer.getChildren().add(mapFigures.get(entity).getDraggedNode());
+      }
+
+      mapFigures.get(entity).update();
+
+      // TODO:
+      // eventBus.post(new MapFigureUpdate(gameMap, this));
+    }
+    mouseEvent.consume();
+  }
+
+  /**
+   * Callback for mouse exited mouse the {@link Node} for the map figure.
+   *
+   * @param node The {@link Node} that represents the map figure.
+   * @param mouseEvent The {@link MouseEvent} The mouse exited event.
+   */
+  private void figureMouseExited(Node node, MouseEvent mouseEvent) {
+    node.getScene().setCursor(Cursor.DEFAULT);
+    mouseEvent.consume();
+  }
+
+  /**
+   * Callback for mouse entered mouse the {@link Node} for the map figure.
+   *
+   * @param node The {@link Node} that represents the map figure.
+   * @param mouseEvent The {@link MouseEvent} The mouse exited event.
+   */
+  private void figureMouseEntered(Node node, MouseEvent mouseEvent) {
+    node.getScene().setCursor(Cursor.HAND);
+    mouseEvent.consume();
+  }
+
   @Subscribe
   void handleEntityAddedEvent(MapEntityAddedEvent mapEntityAddedEvent) {
     Entity entity = mapEntityAddedEvent.getEntity();
-    MapFigureImpl mf = mapFigureFactory.create(gameMap, mapViewPort, entity);
+    MapFigure mf = new MapFigureImpl(gameMap, mapViewPort, entity);
     mf.update();
     mapFigures.put(entity, mf);
-    interactiveLayer.getChildren().add(mf.getImageView());
+
+    Node mFNode = mf.getNode();
+    addFigureListeners(mFNode, entity);
+
+    interactiveLayer.getChildren().add(mFNode);
+
     render(false);
   }
 
   @Subscribe
   void handleEntityRemovedEvent(MapEntityRemovedEvent mapEntityRemovedEvent) {
     Entity entity = mapEntityRemovedEvent.getEntity();
-    MapFigureImpl mf = mapFigures.get(entity);
+    MapFigure mf = mapFigures.get(entity);
     if (mf != null) {
-      interactiveLayer.getChildren().remove(mf.getImageView());
+      interactiveLayer.getChildren().remove(mf.getNode());
       mapFigures.remove(entity);
     }
     render(false);
@@ -372,7 +496,7 @@ public class MapViewImpl implements MapView, Closeable {
   }
 
   private void renderInteractives() {
-    for (MapFigureImpl mf : mapFigures.values()) {
+    for (MapFigure mf : mapFigures.values()) {
       mf.update();
     }
   }

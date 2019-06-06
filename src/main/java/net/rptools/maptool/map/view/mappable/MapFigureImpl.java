@@ -14,11 +14,7 @@
  */
 package net.rptools.maptool.map.view.mappable;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
-import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.rptools.maptool.component.DraggableComponent;
@@ -26,7 +22,6 @@ import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.PositionComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.GameMap;
-import net.rptools.maptool.map.events.MapFigureUpdate;
 import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.view.MapViewPort;
 
@@ -37,73 +32,12 @@ public class MapFigureImpl implements MapFigure {
   private final MapViewPort mapViewPort;
   private final Entity entity;
 
-  @Inject private EventBus eventBus;
+  private ImageView draggedImageView;
 
-  @Inject
-  public MapFigureImpl(
-      @Assisted GameMap map, @Assisted MapViewPort viewPort, @Assisted Entity ent) {
+  public MapFigureImpl(GameMap map, MapViewPort viewPort, Entity ent) {
     gameMap = map;
     mapViewPort = viewPort;
     entity = ent;
-
-    imageView.setOnMouseEntered(
-        e -> {
-          imageView.getScene().setCursor(Cursor.HAND);
-          e.consume();
-        });
-
-    imageView.setOnMouseExited(
-        e -> {
-          imageView.getScene().setCursor(Cursor.DEFAULT);
-          e.consume();
-        });
-
-    imageView.setOnMouseDragged(
-        e -> {
-          if (DraggableComponent.isDraggable(entity)) {
-            if (!DraggableComponent.isBeingDragged(entity)) {
-              PositionComponent pc = entity.getComponent(PositionComponent.class).get();
-              DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
-              dc.setFromX(pc.getX());
-              dc.setFromY(pc.getY());
-              dc.setBeingDragged(true);
-
-              if (PositionComponent.isSnapToGrid(entity)) {
-                Point2D mapPoint = mapViewPort.convertDisplayToMapGridCenter(e.getX(), e.getY());
-                dc.setToX(mapPoint.getX());
-                dc.setToY(mapPoint.getY());
-              } else {
-                dc.setToX(e.getX());
-                dc.setToY(e.getY());
-              }
-            }
-
-            eventBus.post(new MapFigureUpdate(gameMap, this));
-          }
-          e.consume();
-        });
-
-    imageView.setOnMouseReleased(
-        e -> {
-          if (DraggableComponent.isBeingDragged(entity)) {
-            PositionComponent pc = entity.getComponent(PositionComponent.class).get();
-            DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
-
-            imageView.getScene().setCursor(Cursor.DEFAULT);
-            Point2D mapPoint = mapViewPort.convertDisplayToMapGridCenter(e.getX(), e.getY());
-            pc.setX(mapPoint.getX());
-            pc.setY(mapPoint.getY());
-
-            dc.setFromX(0);
-            dc.setFromY(0);
-            dc.setToX(0);
-            dc.setToY(0);
-            dc.setBeingDragged(false);
-
-            update();
-          }
-          e.consume();
-        });
   }
 
   @Override
@@ -125,18 +59,57 @@ public class MapFigureImpl implements MapFigure {
 
     imageView.setImage(image);
 
-    var rect =
-        mapViewPort.convertCenteredMapRectangleToDisplay(pc.getX(), pc.getY(), imgWidth, imgHeight);
+    if (draggedImageView != null) {
+      if (DraggableComponent.isBeingDragged(entity)) {
+        DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
 
-    imageView.setX(rect.getMinX());
-    imageView.setY(rect.getMinY());
+        var rect =
+            mapViewPort.convertCenteredMapRectangleToDisplay(
+                dc.getToX(), dc.getToY(), imgWidth, imgHeight);
 
-    imageView.setFitWidth(rect.getWidth());
-    imageView.setFitHeight(rect.getHeight());
+        imageView.setX(rect.getMinX());
+        imageView.setY(rect.getMinY());
+
+        imageView.setFitWidth(rect.getWidth());
+        imageView.setFitHeight(rect.getHeight());
+
+        var draggedRect =
+            mapViewPort.convertCenteredMapRectangleToDisplay(
+                dc.getFromX(), dc.getFromY(), imgWidth, imgHeight);
+
+        draggedImageView.setX(draggedRect.getMinX());
+        draggedImageView.setY(draggedRect.getMinY());
+
+        draggedImageView.setFitWidth(draggedRect.getWidth());
+        draggedImageView.setFitHeight(draggedRect.getHeight());
+      } else {
+        draggedImageView = null;
+      }
+    } else {
+      var rect =
+          mapViewPort.convertCenteredMapRectangleToDisplay(
+              pc.getX(), pc.getY(), imgWidth, imgHeight);
+
+      imageView.setX(rect.getMinX());
+      imageView.setY(rect.getMinY());
+
+      imageView.setFitWidth(rect.getWidth());
+      imageView.setFitHeight(rect.getHeight());
+    }
   }
 
   @Override
-  public ImageView getImageView() {
+  public Node getNode() {
     return imageView;
+  }
+
+  @Override
+  public Node getDraggedNode() {
+    if (draggedImageView == null && DraggableComponent.isBeingDragged(entity)) {
+      draggedImageView = new ImageView(imageView.getImage());
+      draggedImageView.setOpacity(0.6);
+      update();
+    }
+    return draggedImageView;
   }
 }

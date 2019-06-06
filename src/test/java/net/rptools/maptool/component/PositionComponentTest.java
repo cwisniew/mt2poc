@@ -15,8 +15,12 @@
 package net.rptools.maptool.component;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.Random;
+import net.rptools.maptool.entity.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -132,6 +136,7 @@ class PositionComponentTest {
       assertNotEquals(pc1, pcx2);
       assertNotEquals(pc1, pcy2);
       assertNotEquals(pc1, pcz2);
+      assertFalse(pc1.equals(null));
     }
   }
 
@@ -158,6 +163,50 @@ class PositionComponentTest {
       assertNotEquals(pc1.hashCode(), pcx2.hashCode());
       assertNotEquals(pc1.hashCode(), pcy2.hashCode());
       assertNotEquals(pc1.hashCode(), pcz2.hashCode());
+    }
+  }
+
+  @Test
+  void snapToGrid() {
+    PositionComponent positionComponent = new PositionComponent(0, 0, 0);
+    for (int i = 0; i < 100; i++) {
+      boolean snap = random.nextBoolean();
+      positionComponent.setSnapToGrid(snap);
+
+      assertEquals(snap, positionComponent.isSnapToGrid());
+    }
+
+    Entity entity = mock(Entity.class);
+    when(entity.getComponent(PositionComponent.class)).thenReturn(Optional.empty());
+    when(entity.hasComponent(PositionComponent.class)).thenReturn(false);
+
+    assertFalse(PositionComponent.isSnapToGrid(entity));
+
+    when(entity.getComponent(PositionComponent.class)).thenReturn(Optional.of(positionComponent));
+    when(entity.hasComponent(PositionComponent.class)).thenReturn(true);
+
+    positionComponent.setSnapToGrid(true);
+    assertTrue(PositionComponent.isSnapToGrid(entity));
+
+    positionComponent.setSnapToGrid(false);
+    assertFalse(PositionComponent.isSnapToGrid(entity));
+  }
+
+  @Test
+  void getUUID() {
+    PositionComponent[] positionComponents = new PositionComponent[100];
+    for (int i = 0; i < positionComponents.length; i++) {
+      positionComponents[i] = new PositionComponent(0, 0, 0);
+    }
+
+    for (int i = 0; i < positionComponents.length; i++) {
+      for (int j = 0; j < positionComponents.length; j++) {
+        if (i == j) {
+          assertEquals(positionComponents[i].getId(), positionComponents[j].getId());
+        } else {
+          assertNotEquals(positionComponents[i].getId(), positionComponents[j].getId());
+        }
+      }
     }
   }
 }

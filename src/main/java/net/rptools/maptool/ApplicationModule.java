@@ -16,7 +16,6 @@ package net.rptools.maptool;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.MapBinder;
 import javafx.fxml.FXMLLoader;
 import net.rptools.maptool.entity.EntityFactory;
@@ -32,9 +31,6 @@ import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.MapViewImpl;
 import net.rptools.maptool.map.view.MapViewPort;
 import net.rptools.maptool.map.view.MapViewPortImpl;
-import net.rptools.maptool.map.view.mappable.MapFigure;
-import net.rptools.maptool.map.view.mappable.MapFigureFactory;
-import net.rptools.maptool.map.view.mappable.MapFigureImpl;
 import net.rptools.maptool.ui.FXMLLoaderProvier;
 
 /** <code>ApplicationModule</code> used for Google Guice injection bindings. */
@@ -71,11 +67,5 @@ public class ApplicationModule extends AbstractModule {
 
     // Entity
     bind(EntityFactory.class).to(EntityFactoryImpl.class);
-
-    // Mappable objects
-    install(
-        new FactoryModuleBuilder()
-            .implement(MapFigure.class, MapFigureImpl.class)
-            .build(MapFigureFactory.class));
   }
 }

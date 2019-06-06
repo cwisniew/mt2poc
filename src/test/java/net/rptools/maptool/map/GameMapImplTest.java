@@ -76,8 +76,8 @@ class GameMapImplTest {
     Point2D point2 = new Point2D(20, 20);
     Point2D point2c = new Point2D(25, 25);
 
-    when(grid.getGridCenter(point1)).thenReturn(point1c);
-    when(grid.getGridCenter(point2)).thenReturn(point2c);
+    when(grid.getGridCenter(point1.getX(), point1.getY())).thenReturn(point1c);
+    when(grid.getGridCenter(point2.getX(), point2.getY())).thenReturn(point2c);
 
     gameMap.setGrid(grid);
 
