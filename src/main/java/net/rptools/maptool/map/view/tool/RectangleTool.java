@@ -16,6 +16,8 @@ package net.rptools.maptool.map.view.tool;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
 import net.rptools.maptool.map.view.MapView;
 
 public class RectangleTool extends MapViewTool {
@@ -26,7 +28,20 @@ public class RectangleTool extends MapViewTool {
    * @param view the {@link MapView}.
    */
   @Inject
-  public RectangleTool(@Assisted MapView view) {
-    super(view);
+  public RectangleTool(
+      @Assisted MapView view,
+      @Assisted("backgroundCanvas") Canvas backgroundCanvas,
+      @Assisted("foregroundCanvas") Canvas foregroundCanvas) {
+    super(view, backgroundCanvas, foregroundCanvas);
+  }
+
+  @Override
+  public void mousePressed(MouseEvent event) {
+    super.mousePressed(event);
+  }
+
+  @Override
+  public void mouseDragged(MouseEvent event) {
+    super.mouseDragged(event);
   }
 }

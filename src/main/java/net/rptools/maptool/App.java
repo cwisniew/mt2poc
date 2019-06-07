@@ -68,8 +68,8 @@ public class App extends Application {
     mainWindow.prefWidthProperty().bind(scene.widthProperty());
     mainWindow.prefHeightProperty().bind(scene.heightProperty());
 
-    Pane mapViewPane = createDefaultMapView(injector);
-    mainWindowController.setMain(mapViewPane);
+    MapView mapView = createDefaultMapView(injector);
+    mainWindowController.setMapView(mapView);
 
     mainWindowController.setLeft(sidePanel);
 
@@ -86,14 +86,14 @@ public class App extends Application {
    * Creates a default {@link MapView} with a default {@link net.rptools.maptool.map.GameMap}/
    *
    * @param injector The google guice {@link Injector} for dependency injection.
-   * @return the {@link Pane} where the view of the map is rendered.
+   * @return the {@link MapView} for the map.
    */
-  private Pane createDefaultMapView(Injector injector) {
+  private MapView createDefaultMapView(Injector injector) {
     mainMapView = injector.getInstance(MapView.class);
     Image image = new Image(getClass().getResourceAsStream("/assets/textures/Grass.png"));
     mainMapView.getGameMap().setTexturedBackground(image);
     mainMapView.getGameMap().setGrid(new RectangleGrid(50));
     mainMapView.setGridLine(new GridLine(Color.BLACK, 1, 3));
-    return mainMapView.getParentNode();
+    return mainMapView;
   }
 }

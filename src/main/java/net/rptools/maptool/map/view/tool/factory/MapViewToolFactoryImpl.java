@@ -15,6 +15,7 @@
 package net.rptools.maptool.map.view.tool.factory;
 
 import com.google.inject.Inject;
+import javafx.scene.canvas.Canvas;
 import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.tool.PointerTool;
 import net.rptools.maptool.map.view.tool.RectangleTool;
@@ -27,12 +28,14 @@ public class MapViewToolFactoryImpl implements MapViewToolFactory {
   @Inject private RectangleToolFactory rectangleToolFactory;
 
   @Override
-  public PointerTool createPointerTool(MapView view) {
-    return pointerToolFactory.create(view);
+  public PointerTool createPointerTool(
+      MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas) {
+    return pointerToolFactory.create(view, backgroundCanvas, foregroundCanvas);
   }
 
   @Override
-  public RectangleTool createRectangleTool(MapView view) {
-    return rectangleToolFactory.create(view);
+  public RectangleTool createRectangleTool(
+      MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas) {
+    return rectangleToolFactory.create(view, backgroundCanvas, foregroundCanvas);
   }
 }

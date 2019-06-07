@@ -112,7 +112,13 @@ public class MapViewImpl implements MapView, Closeable {
   private MapViewTool mapViewTool;
 
   /** The factory used for creating {@link MapViewTool}s. */
-  MapViewToolFactory mapViewToolFactory;
+  private MapViewToolFactory mapViewToolFactory;
+
+  /** The {@link Canvas} available for the the tool to render to in the background. */
+  private Canvas backgroundToolCanvas = new ResizableCanvas();
+
+  /** The {@link Canvas} available for the the tool to render to in the foreground. */
+  private Canvas foregroundToolCanvas = new ResizableCanvas();
 
   private final Set<Entity> selected = new HashSet<>();
 
@@ -161,7 +167,8 @@ public class MapViewImpl implements MapView, Closeable {
 
     registerListeners();
 
-    mapViewTool = mapViewToolFactory.createPointerTool(this);
+    mapViewTool =
+        mapViewToolFactory.createPointerTool(this, backgroundCanvas, foregroundToolCanvas);
   }
 
   private void registerListeners() {
@@ -374,12 +381,14 @@ public class MapViewImpl implements MapView, Closeable {
 
   @Override
   public void setRectangleTool() {
-    mapViewTool = mapViewToolFactory.createRectangleTool(this);
+    mapViewTool =
+        mapViewToolFactory.createRectangleTool(this, backgroundCanvas, foregroundToolCanvas);
   }
 
   @Override
   public void setPointerTool() {
-    mapViewTool = mapViewToolFactory.createPointerTool(this);
+    mapViewTool =
+        mapViewToolFactory.createPointerTool(this, backgroundCanvas, foregroundToolCanvas);
   }
 
   /** Handle resizing of the view */

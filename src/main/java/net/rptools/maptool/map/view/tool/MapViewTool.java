@@ -14,6 +14,7 @@
  */
 package net.rptools.maptool.map.view.tool;
 
+import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import net.rptools.maptool.entity.Entity;
@@ -26,12 +27,22 @@ public abstract class MapViewTool {
   /** The {@link MapView} this tool is for. */
   private final MapView mapView;
 
+  /** a {@link Canvas} in the background for drawing on. */
+  private Canvas backgroundCanvas;
+
+  /** a {@link Canvas} in the foreground for drawing on. */
+  private Canvas foregroundCanvas;
+
   /**
    * Creates a new <code>MapViewTool</code>.
    *
    * @param view the {@link MapView}.
+   * @param backgroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
+   * @param foregroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
    */
-  protected MapViewTool(MapView view) {
+  protected MapViewTool(MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas) {
     mapView = view;
   }
 
@@ -42,6 +53,24 @@ public abstract class MapViewTool {
    */
   protected MapView getMapView() {
     return mapView;
+  }
+
+  /**
+   * Returns the background {@link Canvas} that can be used to draw on.
+   *
+   * @return the {@link Canvas} that can be used to draw on.
+   */
+  protected Canvas getBackgroundCanvas() {
+    return backgroundCanvas;
+  }
+
+  /**
+   * Returns the foreground {@link Canvas} that can be used to draw on.
+   *
+   * @return the {@link Canvas} that can be used to draw on.
+   */
+  protected Canvas getForegroundCanvas() {
+    return foregroundCanvas;
   }
 
   /**
@@ -72,11 +101,39 @@ public abstract class MapViewTool {
    */
   public void scroll(ScrollEvent event) {}
 
+  /**
+   * Handle mouse pointer entering a child node for a {@link MapFigure}.
+   *
+   * @param figure The {@link MapFigure} the mouse is over.
+   * @param entity The {@link Entity} for the {@link MapFigure}.
+   * @param event The {@link MouseEvent}.
+   */
   public void childNodeEntered(MapFigure figure, Entity entity, MouseEvent event) {};
 
+  /**
+   * Handle mouse pointer exiting a child node for a {@link MapFigure}.
+   *
+   * @param figure The {@link MapFigure} the mouse moved off of.
+   * @param entity The {@link Entity} for the {@link MapFigure}.
+   * @param event The {@link MouseEvent}.
+   */
   public void childNodeExited(MapFigure figure, Entity entity, MouseEvent event) {};
 
+  /**
+   * Handle mouse dragged for a child node for a {@link MapFigure}.
+   *
+   * @param figure The {@link MapFigure} that was dragged.
+   * @param entity The {@link Entity} for the {@link MapFigure}.
+   * @param event The {@link MouseEvent}.
+   */
   public void childNodeDragged(MapFigure figure, Entity entity, MouseEvent event) {};
 
+  /**
+   * Handle mouse released for a child node for a {@link MapFigure}.
+   *
+   * @param figure The {@link MapFigure} the mouse is released event is for.
+   * @param entity The {@link Entity} for the {@link MapFigure}.
+   * @param event The {@link MouseEvent}.
+   */
   public void childNodeReleased(MapFigure figure, Entity entity, MouseEvent event) {};
 }

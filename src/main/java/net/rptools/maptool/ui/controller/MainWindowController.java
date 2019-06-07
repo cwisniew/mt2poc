@@ -24,6 +24,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import net.rptools.maptool.map.view.MapView;
 
 public class MainWindowController {
 
@@ -42,6 +43,9 @@ public class MainWindowController {
   @FXML // fx:id="drawSquareButton"
   private Button drawSquareButton;
 
+  /** The main {@link MapView}. */
+  private MapView mapView;
+
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
     assert quitMenu != null
@@ -52,8 +56,9 @@ public class MainWindowController {
         : "fx:id=\"drawSquareButton\" was not injected: check your FXML file 'Untitled'.";
   }
 
-  public void setMain(Pane pane) {
-    mainBorderPane.setCenter(pane);
+  public void setMapView(MapView view) {
+    mainBorderPane.setCenter(view.getParentNode());
+    mapView = view;
   }
 
   public void setLeft(Pane pane) {
@@ -68,11 +73,11 @@ public class MainWindowController {
 
   @FXML
   void doPointerTool(MouseEvent event) {
-    System.out.println("in doPointerTool()");
+    mapView.setPointerTool();
   }
 
   @FXML
-  void doSquareTool(MouseEvent event) {
-    System.out.println("in doSquareTool()");
+  void doRectangleTool(MouseEvent event) {
+    mapView.setRectangleTool();
   }
 }

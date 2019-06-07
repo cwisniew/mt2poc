@@ -14,6 +14,8 @@
  */
 package net.rptools.maptool.map.view.tool.factory;
 
+import com.google.inject.assistedinject.Assisted;
+import javafx.scene.canvas.Canvas;
 import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.tool.RectangleTool;
 
@@ -24,7 +26,14 @@ public interface RectangleToolFactory {
    * Creates the new {@link RectangleTool}.
    *
    * @param view The {@link MapView} this tool is for.
+   * @param backgroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
+   * @param foregroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
    * @return the tool.
    */
-  RectangleTool create(MapView view);
+  RectangleTool create(
+      MapView view,
+      @Assisted("backgroundCanvas") Canvas backgroundCanvas,
+      @Assisted("foregroundCanvas") Canvas foregroundCanvas);
 }

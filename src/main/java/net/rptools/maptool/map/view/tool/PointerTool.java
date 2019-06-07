@@ -20,6 +20,7 @@ import com.google.inject.assistedinject.Assisted;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import net.rptools.maptool.component.DraggableComponent;
@@ -50,10 +51,17 @@ public class PointerTool extends MapViewTool {
    * Creates a new <code>PointerTool</code>.
    *
    * @param view the {@link MapView}.
+   * @param backgroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
+   * @param foregroundCanvas a {@link Canvas} that the tool can render to behind most other
+   *     controls.
    */
   @Inject
-  public PointerTool(@Assisted MapView view) {
-    super(view);
+  public PointerTool(
+      @Assisted MapView view,
+      @Assisted("backgroundCanvas") Canvas backgroundCanvas,
+      @Assisted("foregroundCanvas") Canvas foregroundCanvas) {
+    super(view, backgroundCanvas, foregroundCanvas);
   }
 
   @Override

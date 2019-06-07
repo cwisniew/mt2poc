@@ -34,16 +34,16 @@
                     <items>
                         <Button fx:id="pointerTool" mnemonicParsing="false" onMouseClicked="#doPointerTool">
                            <graphic>
-                              <ImageView pickOnBounds="true" preserveRatio="true">
+                              <ImageView pickOnBounds="true" preserveRatio="true" smooth="false">
                                  <image>
                                     <Image url="@../assets/images/tool/pointer-blue.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
-                      <Button fx:id="drawSquareButton" mnemonicParsing="false" onMouseClicked="#doSquareTool">
+                      <Button fx:id="drawSquareButton" mnemonicParsing="false" onMouseClicked="#doRectangleTool">
                            <graphic>
-                              <ImageView onMouseClicked="#doSquareTool" pickOnBounds="true" preserveRatio="true" smooth="false">
+                              <ImageView pickOnBounds="true" preserveRatio="true" smooth="false">
                                  <image>
                                     <Image url="@../assets/images/tool/draw-blue-box.png" />
                                  </image>

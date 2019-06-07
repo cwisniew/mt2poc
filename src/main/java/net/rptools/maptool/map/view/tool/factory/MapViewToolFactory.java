@@ -14,13 +14,14 @@
  */
 package net.rptools.maptool.map.view.tool.factory;
 
+import javafx.scene.canvas.Canvas;
 import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.tool.PointerTool;
 import net.rptools.maptool.map.view.tool.RectangleTool;
 
 public interface MapViewToolFactory {
 
-  PointerTool createPointerTool(MapView view);
+  PointerTool createPointerTool(MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas);
 
-  RectangleTool createRectangleTool(MapView view);
+  RectangleTool createRectangleTool(MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas);
 }
