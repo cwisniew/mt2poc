@@ -487,9 +487,9 @@ public class MapViewImpl implements MapView, Closeable {
   private void render(boolean viewChanged) {
     // Don't render until both width and height are set
     if (stackPane.getWidth() != 0 && stackPane.getHeight() != 0) {
-      renderBackground();
-      renderGrid();
       if (viewChanged) {
+        renderBackground();
+        renderGrid();
         renderInteractives();
       }
     }
