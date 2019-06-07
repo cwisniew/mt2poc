@@ -15,14 +15,15 @@
 package net.rptools.maptool.map.events;
 
 import net.rptools.maptool.map.GameMap;
+import net.rptools.maptool.map.view.mappable.MapFigure;
 import net.rptools.maptool.map.view.mappable.MapFigureImpl;
 
 public class MapFigureUpdate {
 
   private final GameMap gameMap;
-  private final MapFigureImpl mapFigureImpl;
+  private final MapFigure mapFigureImpl;
 
-  public MapFigureUpdate(GameMap gameMap, MapFigureImpl mapFigureImpl) {
+  public MapFigureUpdate(GameMap gameMap, MapFigure mapFigureImpl) {
     this.gameMap = gameMap;
     this.mapFigureImpl = mapFigureImpl;
   }
@@ -31,7 +32,7 @@ public class MapFigureUpdate {
     return gameMap;
   }
 
-  public MapFigureImpl getMapFigureImpl() {
+  public MapFigure getMapFigure() {
     return mapFigureImpl;
   }
 }

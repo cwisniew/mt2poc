@@ -60,12 +60,12 @@ class MapEntityRemovedEventTest {
   @Test
   void getMapId() {
     var event = new MapEntityRemovedEvent(gameMap1, entity1);
-    assertEquals(gameMap1.getId(), event.getGameMap().getId());
+    assertEquals(gameMap1.getId(), event.getMapId());
   }
 
   @Test
   void getEntityId() {
     var event = new MapEntityRemovedEvent(gameMap1, entity1);
-    assertEquals(entity1.getId(), event.getEntity().getId());
+    assertEquals(entity1.getId(), event.getEntityId());
   }
 }

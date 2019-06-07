@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 
 /** Controller class for the side panel. */
@@ -38,40 +39,10 @@ public class SidePanelController {
   @FXML // fx:id="resourceLibraryController"
   private ResourceLibraryController resourceLibraryController;
 
+  @FXML // fx:id="layersListView"
+  private ListView<String> layersListView;
+
   /** The names of the resource files that contain the images we will be using. */
-  /*void initialize() {
-    assert imageTilePane != null
-        : "fx:id=\"imageTilePane\" was not injected: check your FXML file.";
-    assert imageDirectories != null
-        : "fx:id=\"imageDirectories\" was not injected: check your FXML file.";
-
-    for (String iname : imageNames) {
-      Image image = new Image(getClass().getResourceAsStream("/assets/images/" + iname));
-
-      ImageView imageView = new ImageView(image);
-      imageView.setFitWidth(80);
-      imageView.setPreserveRatio(true);
-
-      imageView.setOnDragDetected(
-          event -> {
-            Dragboard dboard = imageView.startDragAndDrop(TransferMode.ANY);
-
-            ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putImage(image);
-
-            dboard.setContent(clipboardContent);
-
-            event.consume();
-          });
-
-      imageView.setOnDragDone(
-          event -> {
-            event.consume();
-          });
-
-      imageTilePane.getChildren().add(imageView);
-    }
-  }*/
 
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
@@ -83,9 +54,9 @@ public class SidePanelController {
 
     assert resourceLibraryController != null
         : "fx:id=\"resourceLibraryController\" was not injected: check your FXML file 'Untitled'.";
+
+    assert layersListView != null
+        : "fx:id=\"layersListView\" was not injected: check your FXML file 'Untitled'.";
   }
 
-  public void setup() {
-    System.out.println("Here now!");
-  }
 }

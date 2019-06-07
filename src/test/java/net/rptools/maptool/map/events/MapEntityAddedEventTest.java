@@ -60,12 +60,13 @@ class MapEntityAddedEventTest {
   @Test
   void getMapId() {
     var event = new MapEntityAddedEvent(gameMap1, entity1);
-    assertEquals(gameMap1.getId(), event.getGameMap().getId());
+    assertEquals(gameMap1.getId(), event.getMapId());
   }
 
   @Test
   void getEntityId() {
     var event = new MapEntityAddedEvent(gameMap1, entity1);
-    assertEquals(entity1.getId(), event.getEntity().getId());
+    assertEquals(entity1.getId(), event.getEntityId());
   }
+
 }

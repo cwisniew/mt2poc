@@ -23,4 +23,8 @@ public class MapItemSelectionClearedEvent {
   public MapItemSelectionClearedEvent(GameMap map) {
     gameMap = map;
   }
+
+  public GameMap getGameMap() {
+    return gameMap;
+  }
 }

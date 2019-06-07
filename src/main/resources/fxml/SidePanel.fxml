@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -17,7 +18,10 @@
                   </AnchorPane>
                </content>
           </TitledPane>
-          <TitledPane animated="false" text="Layers" />
+          <TitledPane animated="false" text="Layers">
+               <content>
+                  <ListView fx:id="layersListView" prefHeight="200.0" prefWidth="200.0" />
+               </content></TitledPane>
         </panes>
       </Accordion>
    </children>
