@@ -19,7 +19,9 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
@@ -37,12 +39,17 @@ public class MainWindowController {
   @FXML // fx:id="mainBorderPane"
   private BorderPane mainBorderPane; // Value injected by FXMLLoader
 
+  @FXML // fx:id="drawSquareButton"
+  private Button drawSquareButton;
+
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
     assert quitMenu != null
         : "fx:id=\"quitMenu\" was not injected: check your FXML file 'MainScreen.fxml'.";
     assert mainBorderPane != null
         : "fx:id=\"mainBorderPane\" was not injected: check your FXML file 'MainScreen.fxml'.";
+    assert drawSquareButton != null
+        : "fx:id=\"drawSquareButton\" was not injected: check your FXML file 'Untitled'.";
   }
 
   public void setMain(Pane pane) {
@@ -57,5 +64,15 @@ public class MainWindowController {
   private void handleQuitAction(ActionEvent event) {
     System.exit(0);
     Platform.exit();
+  }
+
+  @FXML
+  void doPointerTool(MouseEvent event) {
+    System.out.println("in doPointerTool()");
+  }
+
+  @FXML
+  void doSquareTool(MouseEvent event) {
+    System.out.println("in doSquareTool()");
   }
 }

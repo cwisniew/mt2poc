@@ -25,15 +25,28 @@ import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.view.MapViewPort;
 
+/** This class implements the {@link MapFigure} */
 public class MapFigureImpl implements MapFigure {
 
+  /** The {@link ImageView} to be displayed on the map. */
   private final ImageView imageView = new ImageView();
+  /** The {@link GameMap} that {@link Entity} is on. */
   private final GameMap gameMap;
+  /** The {@link MapViewPort} that is being used to translate co-ordinates. */
   private final MapViewPort mapViewPort;
+  /** The {@link Entity} to represent. */
   private final Entity entity;
 
+  /** The {@link ImageView} to be displayed when dragging. */
   private ImageView draggedImageView;
 
+  /**
+   * Creates a new <code>MapFigureImpl</code> object.
+   *
+   * @param map The {@link GameMap} that this <code>MapFigure</code> on.
+   * @param viewPort The {@link MapViewPort} used to translate co-ordinates.
+   * @param ent The {@link Entity} that this <code>MapFigure</code> represents..
+   */
   public MapFigureImpl(GameMap map, MapViewPort viewPort, Entity ent) {
     gameMap = map;
     mapViewPort = viewPort;

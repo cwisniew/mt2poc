@@ -16,6 +16,7 @@ package net.rptools.maptool;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.MapBinder;
 import javafx.fxml.FXMLLoader;
 import net.rptools.maptool.entity.EntityFactory;
@@ -31,6 +32,12 @@ import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.MapViewImpl;
 import net.rptools.maptool.map.view.MapViewPort;
 import net.rptools.maptool.map.view.MapViewPortImpl;
+import net.rptools.maptool.map.view.tool.PointerTool;
+import net.rptools.maptool.map.view.tool.RectangleTool;
+import net.rptools.maptool.map.view.tool.factory.MapViewToolFactory;
+import net.rptools.maptool.map.view.tool.factory.MapViewToolFactoryImpl;
+import net.rptools.maptool.map.view.tool.factory.PointerToolFactory;
+import net.rptools.maptool.map.view.tool.factory.RectangleToolFactory;
 import net.rptools.maptool.ui.FXMLLoaderProvier;
 
 /** <code>ApplicationModule</code> used for Google Guice injection bindings. */
@@ -67,5 +74,18 @@ public class ApplicationModule extends AbstractModule {
 
     // Entity
     bind(EntityFactory.class).to(EntityFactoryImpl.class);
+
+    // Map View Tools
+    bind(MapViewToolFactory.class).to(MapViewToolFactoryImpl.class);
+
+    install(
+        new FactoryModuleBuilder()
+            .implement(PointerTool.class, PointerTool.class)
+            .build(PointerToolFactory.class));
+
+    install(
+        new FactoryModuleBuilder()
+            .implement(RectangleTool.class, RectangleTool.class)
+            .build(RectangleToolFactory.class));
   }
 }

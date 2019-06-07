@@ -22,7 +22,7 @@ import net.rptools.maptool.map.view.mappable.MapFigure;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class MapFigureUpdateTest {
+class MapFigureDragStartTest {
 
   private static GameMap gameMap1;
 
@@ -37,13 +37,13 @@ class MapFigureUpdateTest {
 
   @Test
   void getGameMap() {
-    var event = new MapFigureUpdate(gameMap1, mapFigure1);
+    var event = new MapFigureDragStart(gameMap1, mapFigure1);
     assertEquals(gameMap1, event.getGameMap());
   }
 
   @Test
   void getMapFigure() {
-    var event = new MapFigureUpdate(gameMap1, mapFigure1);
+    var event = new MapFigureDragStart(gameMap1, mapFigure1);
     assertEquals(mapFigure1, event.getMapFigure());
   }
 }

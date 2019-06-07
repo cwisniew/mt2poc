@@ -62,4 +62,13 @@ public interface MapView {
    * @return the {@link MapViewPortImpl} that maps between screen and map co-ordinates.
    */
   MapViewPort getMapViewPort();
+
+  /** Triggers a re-rendering of the view. */
+  public void rerender();
+
+  /** Sets the rectangle tool as the current tool for this view. */
+  void setRectangleTool();
+
+  /** Sets the pointer tool as the current tool for this view. */
+  void setPointerTool();
 }
