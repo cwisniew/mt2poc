@@ -43,7 +43,6 @@ public class SidePanelController {
   private ListView<String> layersListView;
 
   /** The names of the resource files that contain the images we will be using. */
-
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
     assert imagesTitlePane != null
@@ -58,5 +57,4 @@ public class SidePanelController {
     assert layersListView != null
         : "fx:id=\"layersListView\" was not injected: check your FXML file 'Untitled'.";
   }
-
 }

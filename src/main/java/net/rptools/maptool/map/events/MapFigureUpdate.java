@@ -16,7 +16,6 @@ package net.rptools.maptool.map.events;
 
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.view.mappable.MapFigure;
-import net.rptools.maptool.map.view.mappable.MapFigureImpl;
 
 public class MapFigureUpdate {
 

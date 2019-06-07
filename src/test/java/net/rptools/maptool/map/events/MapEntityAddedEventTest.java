@@ -68,5 +68,4 @@ class MapEntityAddedEventTest {
     var event = new MapEntityAddedEvent(gameMap1, entity1);
     assertEquals(entity1.getId(), event.getEntityId());
   }
-
 }
