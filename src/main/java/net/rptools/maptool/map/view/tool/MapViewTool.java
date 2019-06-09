@@ -37,13 +37,13 @@ public abstract class MapViewTool {
    * Creates a new <code>MapViewTool</code>.
    *
    * @param view the {@link MapView}.
-   * @param backgroundCanvas a {@link Canvas} that the tool can render to behind most other
-   *     controls.
-   * @param foregroundCanvas a {@link Canvas} that the tool can render to behind most other
-   *     controls.
+   * @param bgCanvas a {@link Canvas} that the tool can render to behind most other controls.
+   * @param fgCanvas a {@link Canvas} that the tool can render to behind most other controls.
    */
-  protected MapViewTool(MapView view, Canvas backgroundCanvas, Canvas foregroundCanvas) {
+  protected MapViewTool(MapView view, Canvas bgCanvas, Canvas fgCanvas) {
     mapView = view;
+    backgroundCanvas = bgCanvas;
+    foregroundCanvas = fgCanvas;
   }
 
   /**
@@ -93,6 +93,13 @@ public abstract class MapViewTool {
    * @param event The {@link MouseEvent}.
    */
   public void mouseDragged(MouseEvent event) {}
+
+  /**
+   * Handle mouse released events.
+   *
+   * @param event The {@link MouseEvent}.
+   */
+  public void mouseReleased(MouseEvent event) {}
 
   /**
    * Handle scroll events.

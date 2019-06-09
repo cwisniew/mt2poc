@@ -39,7 +39,7 @@ class PositionComponentTest {
       double y = x - 2;
       double z = x + 2;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       assertEquals(x, pc.getX());
     }
   }
@@ -53,7 +53,7 @@ class PositionComponentTest {
 
       double x2 = x + 10;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       pc.setX(x2);
       assertEquals(x2, pc.getX());
     }
@@ -66,7 +66,7 @@ class PositionComponentTest {
       double y = x - 2;
       double z = x + 2;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       assertEquals(y, pc.getY());
     }
   }
@@ -80,7 +80,7 @@ class PositionComponentTest {
 
       double y2 = x + 10;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       pc.setY(y2);
       assertEquals(y2, pc.getY());
     }
@@ -95,7 +95,7 @@ class PositionComponentTest {
 
       double z2 = x + 10;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       pc.setZ(z2);
       assertEquals(z2, pc.getZ());
     }
@@ -108,7 +108,7 @@ class PositionComponentTest {
       double y = x - 2;
       double z = x + 2;
 
-      PositionComponent pc = new PositionComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z);
       assertEquals(z, pc.getZ());
     }
   }
@@ -124,12 +124,12 @@ class PositionComponentTest {
       double y2 = x + 10;
       double z2 = x + 10;
 
-      PositionComponent pc1 = new PositionComponent(x, y, z);
-      PositionComponent pc2 = new PositionComponent(x, y, z);
+      MapFigureComponent pc1 = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc2 = new MapFigureComponent(x, y, z);
 
-      PositionComponent pcx2 = new PositionComponent(x2, y, z);
-      PositionComponent pcy2 = new PositionComponent(x, y2, z);
-      PositionComponent pcz2 = new PositionComponent(x, y, z2);
+      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, z);
+      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, z);
+      MapFigureComponent pcz2 = new MapFigureComponent(x, y, z2);
 
       assertEquals(pc1, pc2);
       assertEquals(pc1, pc1);
@@ -151,12 +151,12 @@ class PositionComponentTest {
       double y2 = x + 10;
       double z2 = x + 10;
 
-      PositionComponent pc1 = new PositionComponent(x, y, z);
-      PositionComponent pc2 = new PositionComponent(x, y, z);
+      MapFigureComponent pc1 = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc2 = new MapFigureComponent(x, y, z);
 
-      PositionComponent pcx2 = new PositionComponent(x2, y, z);
-      PositionComponent pcy2 = new PositionComponent(x, y2, z);
-      PositionComponent pcz2 = new PositionComponent(x, y, z2);
+      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, z);
+      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, z);
+      MapFigureComponent pcz2 = new MapFigureComponent(x, y, z2);
 
       assertEquals(pc1.hashCode(), pc2.hashCode());
       assertEquals(pc1.hashCode(), pc1.hashCode());
@@ -168,7 +168,7 @@ class PositionComponentTest {
 
   @Test
   void snapToGrid() {
-    PositionComponent positionComponent = new PositionComponent(0, 0, 0);
+    MapFigureComponent positionComponent = new MapFigureComponent(0, 0, 0);
     for (int i = 0; i < 100; i++) {
       boolean snap = random.nextBoolean();
       positionComponent.setSnapToGrid(snap);
@@ -177,26 +177,26 @@ class PositionComponentTest {
     }
 
     Entity entity = mock(Entity.class);
-    when(entity.getComponent(PositionComponent.class)).thenReturn(Optional.empty());
-    when(entity.hasComponent(PositionComponent.class)).thenReturn(false);
+    when(entity.getComponent(MapFigureComponent.class)).thenReturn(Optional.empty());
+    when(entity.hasComponent(MapFigureComponent.class)).thenReturn(false);
 
-    assertFalse(PositionComponent.isSnapToGrid(entity));
+    assertFalse(MapFigureComponent.isSnapToGrid(entity));
 
-    when(entity.getComponent(PositionComponent.class)).thenReturn(Optional.of(positionComponent));
-    when(entity.hasComponent(PositionComponent.class)).thenReturn(true);
+    when(entity.getComponent(MapFigureComponent.class)).thenReturn(Optional.of(positionComponent));
+    when(entity.hasComponent(MapFigureComponent.class)).thenReturn(true);
 
     positionComponent.setSnapToGrid(true);
-    assertTrue(PositionComponent.isSnapToGrid(entity));
+    assertTrue(MapFigureComponent.isSnapToGrid(entity));
 
     positionComponent.setSnapToGrid(false);
-    assertFalse(PositionComponent.isSnapToGrid(entity));
+    assertFalse(MapFigureComponent.isSnapToGrid(entity));
   }
 
   @Test
   void getUUID() {
-    PositionComponent[] positionComponents = new PositionComponent[100];
+    MapFigureComponent[] positionComponents = new MapFigureComponent[100];
     for (int i = 0; i < positionComponents.length; i++) {
-      positionComponents[i] = new PositionComponent(0, 0, 0);
+      positionComponents[i] = new MapFigureComponent(0, 0, 0);
     }
 
     for (int i = 0; i < positionComponents.length; i++) {

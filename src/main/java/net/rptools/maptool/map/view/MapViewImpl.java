@@ -120,6 +120,7 @@ public class MapViewImpl implements MapView, Closeable {
   /** The {@link Canvas} available for the the tool to render to in the foreground. */
   private Canvas foregroundToolCanvas = new ResizableCanvas();
 
+
   private final Set<Entity> selected = new HashSet<>();
 
   /**
@@ -151,19 +152,32 @@ public class MapViewImpl implements MapView, Closeable {
     backgroundCanvas.widthProperty().bind(stackPane.widthProperty());
     backgroundCanvas.heightProperty().bind(stackPane.heightProperty());
 
-    stackPane.getChildren().add(backgroundCanvas);
+    foregroundToolCanvas.widthProperty().bind(stackPane.widthProperty());
+    foregroundToolCanvas.heightProperty().bind(stackPane.heightProperty());
 
-    gridCanvas.setMouseTransparent(true);
+    backgroundToolCanvas.widthProperty().bind(stackPane.widthProperty());
+    backgroundToolCanvas.heightProperty().bind(stackPane.heightProperty());
+
+
 
     gridCanvas.widthProperty().bind(stackPane.widthProperty());
     gridCanvas.heightProperty().bind(stackPane.heightProperty());
 
-    stackPane.getChildren().add(gridCanvas);
 
     stackPane.widthProperty().addListener(w -> viewResized());
     stackPane.heightProperty().addListener(h -> viewResized());
 
     mapViewPort.setGameMap(gMap);
+
+    gridCanvas.setMouseTransparent(true);
+    backgroundToolCanvas.setMouseTransparent(true);
+    foregroundToolCanvas.setMouseTransparent(true);
+
+    stackPane.getChildren().add(backgroundCanvas);
+    stackPane.getChildren().add(backgroundToolCanvas);
+    stackPane.getChildren().add(tokenLayer);
+    stackPane.getChildren().add(foregroundToolCanvas);
+    stackPane.getChildren().add(gridCanvas);
 
     registerListeners();
 
@@ -172,15 +186,16 @@ public class MapViewImpl implements MapView, Closeable {
   }
 
   private void registerListeners() {
-    tokenLayer.addEventHandler(MouseEvent.MOUSE_MOVED, e -> mapViewTool.mouseDragged(e));
+    tokenLayer.addEventHandler(MouseEvent.MOUSE_MOVED, e -> mapViewTool.mouseMoved(e));
 
     tokenLayer.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> mapViewTool.mousePressed(e));
 
     tokenLayer.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> mapViewTool.mouseDragged(e));
 
+    tokenLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> mapViewTool.mouseReleased(e));
+
     tokenLayer.setOnScroll(e -> mapViewTool.scroll(e));
 
-    stackPane.getChildren().add(tokenLayer);
 
     tokenLayer.prefHeight(Double.MAX_VALUE);
     tokenLayer.prefWidth(Double.MAX_VALUE);
@@ -217,8 +232,20 @@ public class MapViewImpl implements MapView, Closeable {
             Point2D mapPoint =
                 mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
             Image img = new Image("file://" + file.getAbsolutePath(), true);
+
+            double width;
+            double height;
+            if (getGameMap().getGrid().isPresent()) {
+              Grid grid = getGameMap().getGrid().get();
+              width = grid.getWidth();
+              height = grid.getHeight();
+            } else {
+              width = img.getWidth();
+              height = img.getHeight();
+            }
+
             Entity entity =
-                entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), 0, img);
+                entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), width, height,0, img);
             gameMap.putEntity(entity);
           }
 

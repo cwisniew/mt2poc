@@ -32,11 +32,13 @@ public interface EntityFactory {
    *
    * @param x The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
    * @param y The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param w The width.
+   * @param h The height.
    * @param z The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
    * @param image The {@link Image} to display for the simple figure.
    * @return an {@link Entity} that represents a simple figure on the map.
    */
-  public Entity createMapFigure(double x, double y, double z, Image image);
+  public Entity createMapFigure(double x, double y, double w, double h,  double z, Image image);
 
   /**
    * Creates a new {@link Entity} which represents a simple figure on a {@link
@@ -44,9 +46,14 @@ public interface EntityFactory {
    *
    * @param x The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
    * @param y The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param w The width.
+   * @param h The height.
    * @param z The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
    * @param image The {@link Image} to display for the simple figure.
    * @return an {@link Entity} that represents a simple figure on the map.
    */
-  public Entity createSnapToGridMapFigure(double x, double y, double z, Image image);
+  public Entity createSnapToGridMapFigure(double x, double y,  double w, double h, double z, Image image);
+
+
+  public Entity createDrableRectabgle(double x, double y, double w, double h, double z);
 }

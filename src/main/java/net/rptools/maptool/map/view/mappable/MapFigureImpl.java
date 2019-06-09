@@ -19,14 +19,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
-import net.rptools.maptool.component.PositionComponent;
+import net.rptools.maptool.component.MapFigureComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.GameMap;
-import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.view.MapViewPort;
 
 /** This class implements the {@link MapFigure} */
 public class MapFigureImpl implements MapFigure {
+
+  /** The default opacity used for the the image at the starting drag point. */
+  private static double DEFAULT_DRAG_START_OPACITY = 0.6;
 
   /** The {@link ImageView} to be displayed on the map. */
   private final ImageView imageView = new ImageView();
@@ -55,20 +57,9 @@ public class MapFigureImpl implements MapFigure {
 
   @Override
   public void update() {
-    PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+    MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
     ImageComponent ic = entity.getComponent(ImageComponent.class).get();
     Image image = ic.getImage();
-
-    double imgWidth;
-    double imgHeight;
-    if (gameMap.getGrid().isPresent()) {
-      Grid grid = gameMap.getGrid().get();
-      imgWidth = grid.getWidth();
-      imgHeight = grid.getHeight();
-    } else {
-      imgWidth = image.getWidth();
-      imgHeight = image.getHeight();
-    }
 
     imageView.setImage(image);
 
@@ -78,7 +69,7 @@ public class MapFigureImpl implements MapFigure {
 
         var rect =
             mapViewPort.convertCenteredMapRectangleToDisplay(
-                dc.getToX(), dc.getToY(), imgWidth, imgHeight);
+                dc.getToX(), dc.getToY(), pc.getWidth(), pc.getHeight());
 
         imageView.setX(rect.getMinX());
         imageView.setY(rect.getMinY());
@@ -88,7 +79,7 @@ public class MapFigureImpl implements MapFigure {
 
         var draggedRect =
             mapViewPort.convertCenteredMapRectangleToDisplay(
-                dc.getFromX(), dc.getFromY(), imgWidth, imgHeight);
+                dc.getFromX(), dc.getFromY(), pc.getWidth(), pc.getHeight());
 
         draggedImageView.setX(draggedRect.getMinX());
         draggedImageView.setY(draggedRect.getMinY());
@@ -101,7 +92,7 @@ public class MapFigureImpl implements MapFigure {
     } else {
       var rect =
           mapViewPort.convertCenteredMapRectangleToDisplay(
-              pc.getX(), pc.getY(), imgWidth, imgHeight);
+              pc.getX(), pc.getY(), pc.getWidth(), pc.getHeight());
 
       imageView.setX(rect.getMinX());
       imageView.setY(rect.getMinY());
@@ -120,7 +111,7 @@ public class MapFigureImpl implements MapFigure {
   public Node getDraggedNode() {
     if (draggedImageView == null && DraggableComponent.isBeingDragged(entity)) {
       draggedImageView = new ImageView(imageView.getImage());
-      draggedImageView.setOpacity(0.6);
+      draggedImageView.setOpacity(DEFAULT_DRAG_START_OPACITY);
       update();
     }
     return draggedImageView;

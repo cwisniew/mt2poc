@@ -24,7 +24,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import net.rptools.maptool.component.DraggableComponent;
-import net.rptools.maptool.component.PositionComponent;
+import net.rptools.maptool.component.MapFigureComponent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.events.MapFigureDragEnd;
 import net.rptools.maptool.map.events.MapFigureDragStart;
@@ -149,10 +149,10 @@ public class PointerTool extends MapViewTool {
   @Override
   public void childNodeDragged(MapFigure figure, Entity entity, MouseEvent event) {
     if (DraggableComponent.isDraggable(entity)) {
-      PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+      MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
       DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
 
-      if (PositionComponent.isSnapToGrid(entity)) {
+      if (MapFigureComponent.isSnapToGrid(entity)) {
         Point2D mapPoint =
             getMapView().getMapViewPort().convertDisplayToMapGridCenter(event.getX(), event.getY());
         dc.setToX(mapPoint.getX());
@@ -180,7 +180,7 @@ public class PointerTool extends MapViewTool {
     if (DraggableComponent.isBeingDragged(entity)) {
       Node node = figure.getNode();
 
-      PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+      MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
       DraggableComponent dc = entity.getComponent(DraggableComponent.class).get();
 
       node.getScene().setCursor(Cursor.DEFAULT);

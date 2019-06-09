@@ -17,7 +17,7 @@ package net.rptools.maptool.entity;
 import javafx.scene.image.Image;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
-import net.rptools.maptool.component.PositionComponent;
+import net.rptools.maptool.component.MapFigureComponent;
 
 /** Factory class for creating {@link Entity}s. */
 public class EntityFactoryImpl implements EntityFactory {
@@ -28,20 +28,25 @@ public class EntityFactoryImpl implements EntityFactory {
   }
 
   @Override
-  public Entity createMapFigure(double x, double y, double z, Image image) {
+  public Entity createMapFigure(double x, double y, double w, double h, double z, Image image) {
     return createEntity()
-        .with(new PositionComponent(x, y, z))
+        .with(new MapFigureComponent(x, y, w, h, z))
         .with(new ImageComponent(image))
         .with(new DraggableComponent())
         .build();
   }
 
   @Override
-  public Entity createSnapToGridMapFigure(double x, double y, double z, Image image) {
+  public Entity createSnapToGridMapFigure(double x, double y, double h, double w, double z, Image image) {
     return createEntity()
-        .with(new PositionComponent(x, y, z, true))
+        .with(new MapFigureComponent(x, y, w, h, z, true))
         .with(new ImageComponent(image))
         .with(new DraggableComponent())
         .build();
+  }
+
+  @Override
+  public Entity createDrableRectabgle(double x, double y, double w, double h, double z) {
+    return null;
   }
 }

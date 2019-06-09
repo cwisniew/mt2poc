@@ -21,7 +21,7 @@ import javafx.scene.image.Image;
 import net.rptools.maptool.component.Component;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
-import net.rptools.maptool.component.PositionComponent;
+import net.rptools.maptool.component.MapFigureComponent;
 import org.junit.jupiter.api.Test;
 
 class EntityFactoryImplTest {
@@ -42,13 +42,13 @@ class EntityFactoryImplTest {
     EntityFactory ef = new EntityFactoryImpl();
     var entity = ef.createMapFigure(1, 1, 1, mock(Image.class));
 
-    assertTrue(entity.hasComponent(PositionComponent.class));
+    assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
     assertTrue(entity.hasComponent(DraggableComponent.class));
 
     assertEquals(3, entity.getComponentTypes().size());
 
-    PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+    MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
     assertFalse(pc.isSnapToGrid());
   }
 
@@ -57,13 +57,13 @@ class EntityFactoryImplTest {
     EntityFactory ef = new EntityFactoryImpl();
     var entity = ef.createSnapToGridMapFigure(1, 1, 1, mock(Image.class));
 
-    assertTrue(entity.hasComponent(PositionComponent.class));
+    assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
     assertTrue(entity.hasComponent(DraggableComponent.class));
 
     assertEquals(3, entity.getComponentTypes().size());
 
-    PositionComponent pc = entity.getComponent(PositionComponent.class).get();
+    MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
     assertTrue(pc.isSnapToGrid());
   }
 }
