@@ -40,7 +40,7 @@ class EntityFactoryImplTest {
   @Test
   void createMapFigure() {
     EntityFactory ef = new EntityFactoryImpl();
-    var entity = ef.createMapFigure(1, 1, 1, mock(Image.class));
+    var entity = ef.createMapFigure(1, 1, 1, 0, 0, mock(Image.class));
 
     assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
@@ -55,7 +55,7 @@ class EntityFactoryImplTest {
   @Test
   void createSnapToGridMapFigure() {
     EntityFactory ef = new EntityFactoryImpl();
-    var entity = ef.createSnapToGridMapFigure(1, 1, 1, mock(Image.class));
+    var entity = ef.createSnapToGridMapFigure(1, 1, 1, 0, 0,  mock(Image.class));
 
     assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));

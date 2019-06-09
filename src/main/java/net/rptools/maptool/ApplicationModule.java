@@ -23,6 +23,8 @@ import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.entity.EntityFactoryImpl;
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.GameMapImpl;
+import net.rptools.maptool.map.geom.GeometryHelper;
+import net.rptools.maptool.map.geom.GeometryHelperImpl;
 import net.rptools.maptool.map.grid.RectangleGrid;
 import net.rptools.maptool.map.grid.render.GridRenderer;
 import net.rptools.maptool.map.grid.render.GridRendererFactory;
@@ -49,7 +51,10 @@ public class ApplicationModule extends AbstractModule {
   /** The {@link GridRendererFactory} used to obtain renderer for grids. */
   private final GridRendererFactory gridRendererFactory = new GridRendererFactoryImpl();
 
+  /** Class used for application configuration. */
   private final AppConfig appConfig = new AppConfigImpl();
+
+  private final GeometryHelper geometryHelper = new GeometryHelperImpl();
 
   @Override
   protected void configure() {
@@ -87,5 +92,10 @@ public class ApplicationModule extends AbstractModule {
         new FactoryModuleBuilder()
             .implement(RectangleTool.class, RectangleTool.class)
             .build(RectangleToolFactory.class));
+
+
+    // Geometry Helper
+    bind(GeometryHelper.class).toInstance(geometryHelper);
   }
+
 }

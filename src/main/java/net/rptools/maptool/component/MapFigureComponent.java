@@ -41,8 +41,8 @@ public class MapFigureComponent implements Component {
   private boolean snapToGrid;
 
   /**
-   * Convenience method for checking if the {@link Entity} contains a {@link MapFigureComponent} with
-   * the snap to grid property set. If the {@link Entity} does not contain a {@link
+   * Convenience method for checking if the {@link Entity} contains a {@link MapFigureComponent}
+   * with the snap to grid property set. If the {@link Entity} does not contain a {@link
    * MapFigureComponent} it will return <code>false</code>.
    *
    * @param entity the entity to check.
@@ -73,8 +73,8 @@ public class MapFigureComponent implements Component {
   }
 
   /**
-   * Creates a new <code>MapFigureComponent></code> object. This will create a component with snap to
-   * grid defaulting to <code>false</code>.
+   * Creates a new <code>MapFigureComponent></code> object. This will create a component with snap
+   * to grid defaulting to <code>false</code>.
    *
    * @param x The x co-ordinate on the map.
    * @param y The y co-ordinate on the map
@@ -203,9 +203,13 @@ public class MapFigureComponent implements Component {
       return false;
     }
     MapFigureComponent that = (MapFigureComponent) o;
-    return Double.compare(that.x, x) == 0
-        && Double.compare(that.y, y) == 0
-        && Double.compare(that.z, z) == 0;
+    return Double.compare(that.x, x) == 0 &&
+        Double.compare(that.y, y) == 0 &&
+        Double.compare(that.z, z) == 0 &&
+        Double.compare(that.width, width) == 0 &&
+        Double.compare(that.height, height) == 0 &&
+        snapToGrid == that.snapToGrid &&
+        id.equals(that.id);
   }
 
   @Override

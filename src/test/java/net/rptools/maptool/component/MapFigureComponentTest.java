@@ -24,7 +24,7 @@ import net.rptools.maptool.entity.Entity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class PositionComponentTest {
+class MapFigureComponentTest {
   private static Random random;
 
   @BeforeAll
@@ -38,8 +38,10 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, z);
       assertEquals(x, pc.getX());
     }
   }
@@ -53,7 +55,10 @@ class PositionComponentTest {
 
       double x2 = x + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      double w = z + 10;
+      double h = w + 10;
+
+      MapFigureComponent pc = new MapFigureComponent(x, y, h, w, z);
       pc.setX(x2);
       assertEquals(x2, pc.getX());
     }
@@ -65,8 +70,10 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, w);
       assertEquals(y, pc.getY());
     }
   }
@@ -77,10 +84,12 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
       double y2 = x + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, z);
       pc.setY(y2);
       assertEquals(y2, pc.getY());
     }
@@ -92,10 +101,12 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
       double z2 = x + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, z, h, z);
       pc.setZ(z2);
       assertEquals(z2, pc.getZ());
     }
@@ -107,9 +118,77 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
-      MapFigureComponent pc = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, z);
       assertEquals(z, pc.getZ());
+    }
+  }
+
+  @Test
+  void getWidth() {
+    for (int i = 0; i < 20; i++) {
+      double x = random.nextDouble();
+      double y = x - 2;
+      double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
+
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, z);
+      assertEquals(w, pc.getWidth());
+    }
+  }
+
+  @Test
+  void setWidth() {
+    for (int i = 0; i < 20; i++) {
+      double x = random.nextDouble();
+      double y = x - 2;
+      double z = x + 2;
+
+      double w2 = x + 10;
+
+      double w = z + 10;
+      double h = w + 10;
+
+      MapFigureComponent pc = new MapFigureComponent(x, y, h, w, z);
+      pc.setWidth(w2);
+      assertEquals(w2, pc.getWidth());
+    }
+  }
+
+
+
+  @Test
+  void getHeight() {
+    for (int i = 0; i < 20; i++) {
+      double x = random.nextDouble();
+      double y = x - 2;
+      double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
+
+      MapFigureComponent pc = new MapFigureComponent(x, y, w, h, z);
+      assertEquals(h, pc.getHeight());
+    }
+  }
+
+  @Test
+  void setHeight() {
+    for (int i = 0; i < 20; i++) {
+      double x = random.nextDouble();
+      double y = x - 2;
+      double z = x + 2;
+
+      double h2 = x + 10;
+
+      double w = z + 10;
+      double h = w + 10;
+
+      MapFigureComponent pc = new MapFigureComponent(x, y, h, w, z);
+      pc.setHeight(h2);
+      assertEquals(h2, pc.getHeight());
     }
   }
 
@@ -119,19 +198,21 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
       double x2 = x + 10;
       double y2 = x + 10;
       double z2 = x + 10;
 
-      MapFigureComponent pc1 = new MapFigureComponent(x, y, z);
-      MapFigureComponent pc2 = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc1 = new MapFigureComponent(x, y, w, h, z);
+      MapFigureComponent pc2 = new MapFigureComponent(x, y, w, h, z);
 
-      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, z);
-      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, z);
-      MapFigureComponent pcz2 = new MapFigureComponent(x, y, z2);
+      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, w, h, z);
+      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, w, h, z);
+      MapFigureComponent pcz2 = new MapFigureComponent(x, y, w, h, z2);
 
-      assertEquals(pc1, pc2);
+      assertNotEquals(pc1, pc2);
       assertEquals(pc1, pc1);
       assertNotEquals(pc1, pcx2);
       assertNotEquals(pc1, pcy2);
@@ -146,17 +227,19 @@ class PositionComponentTest {
       double x = random.nextDouble();
       double y = x - 2;
       double z = x + 2;
+      double w = z + 10;
+      double h = w + 10;
 
       double x2 = x + 10;
       double y2 = x + 10;
       double z2 = x + 10;
 
-      MapFigureComponent pc1 = new MapFigureComponent(x, y, z);
-      MapFigureComponent pc2 = new MapFigureComponent(x, y, z);
+      MapFigureComponent pc1 = new MapFigureComponent(x, y, w, h, z);
+      MapFigureComponent pc2 = new MapFigureComponent(x, y, w, h, z);
 
-      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, z);
-      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, z);
-      MapFigureComponent pcz2 = new MapFigureComponent(x, y, z2);
+      MapFigureComponent pcx2 = new MapFigureComponent(x2, y, w, h, z);
+      MapFigureComponent pcy2 = new MapFigureComponent(x, y2, w, h, z);
+      MapFigureComponent pcz2 = new MapFigureComponent(x, y, w, h, z2);
 
       assertEquals(pc1.hashCode(), pc2.hashCode());
       assertEquals(pc1.hashCode(), pc1.hashCode());
@@ -168,7 +251,7 @@ class PositionComponentTest {
 
   @Test
   void snapToGrid() {
-    MapFigureComponent positionComponent = new MapFigureComponent(0, 0, 0);
+    MapFigureComponent positionComponent = new MapFigureComponent(0, 0, 0, 0, 0);
     for (int i = 0; i < 100; i++) {
       boolean snap = random.nextBoolean();
       positionComponent.setSnapToGrid(snap);
@@ -196,7 +279,7 @@ class PositionComponentTest {
   void getUUID() {
     MapFigureComponent[] positionComponents = new MapFigureComponent[100];
     for (int i = 0; i < positionComponents.length; i++) {
-      positionComponents[i] = new MapFigureComponent(0, 0, 0);
+      positionComponents[i] = new MapFigureComponent(0, 0, 0, 0,0);
     }
 
     for (int i = 0; i < positionComponents.length; i++) {

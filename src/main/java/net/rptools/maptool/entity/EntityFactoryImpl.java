@@ -37,7 +37,8 @@ public class EntityFactoryImpl implements EntityFactory {
   }
 
   @Override
-  public Entity createSnapToGridMapFigure(double x, double y, double h, double w, double z, Image image) {
+  public Entity createSnapToGridMapFigure(
+      double x, double y, double h, double w, double z, Image image) {
     return createEntity()
         .with(new MapFigureComponent(x, y, w, h, z, true))
         .with(new ImageComponent(image))
@@ -46,7 +47,7 @@ public class EntityFactoryImpl implements EntityFactory {
   }
 
   @Override
-  public Entity createDrableRectabgle(double x, double y, double w, double h, double z) {
+  public Entity createDrawableRectangle(double x, double y, double w, double h, double z) {
     return null;
   }
 }

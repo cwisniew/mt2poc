@@ -120,7 +120,6 @@ public class MapViewImpl implements MapView, Closeable {
   /** The {@link Canvas} available for the the tool to render to in the foreground. */
   private Canvas foregroundToolCanvas = new ResizableCanvas();
 
-
   private final Set<Entity> selected = new HashSet<>();
 
   /**
@@ -158,11 +157,8 @@ public class MapViewImpl implements MapView, Closeable {
     backgroundToolCanvas.widthProperty().bind(stackPane.widthProperty());
     backgroundToolCanvas.heightProperty().bind(stackPane.heightProperty());
 
-
-
     gridCanvas.widthProperty().bind(stackPane.widthProperty());
     gridCanvas.heightProperty().bind(stackPane.heightProperty());
-
 
     stackPane.widthProperty().addListener(w -> viewResized());
     stackPane.heightProperty().addListener(h -> viewResized());
@@ -195,7 +191,6 @@ public class MapViewImpl implements MapView, Closeable {
     tokenLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> mapViewTool.mouseReleased(e));
 
     tokenLayer.setOnScroll(e -> mapViewTool.scroll(e));
-
 
     tokenLayer.prefHeight(Double.MAX_VALUE);
     tokenLayer.prefWidth(Double.MAX_VALUE);
@@ -245,7 +240,8 @@ public class MapViewImpl implements MapView, Closeable {
             }
 
             Entity entity =
-                entityFactory.createSnapToGridMapFigure(mapPoint.getX(), mapPoint.getY(), width, height,0, img);
+                entityFactory.createSnapToGridMapFigure(
+                    mapPoint.getX(), mapPoint.getY(), width, height, 0, img);
             gameMap.putEntity(entity);
           }
 
