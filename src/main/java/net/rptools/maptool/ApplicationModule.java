@@ -93,9 +93,7 @@ public class ApplicationModule extends AbstractModule {
             .implement(RectangleTool.class, RectangleTool.class)
             .build(RectangleToolFactory.class));
 
-
     // Geometry Helper
     bind(GeometryHelper.class).toInstance(geometryHelper);
   }
-
 }

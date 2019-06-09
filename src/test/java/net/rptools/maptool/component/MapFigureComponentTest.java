@@ -158,8 +158,6 @@ class MapFigureComponentTest {
     }
   }
 
-
-
   @Test
   void getHeight() {
     for (int i = 0; i < 20; i++) {
@@ -279,7 +277,7 @@ class MapFigureComponentTest {
   void getUUID() {
     MapFigureComponent[] positionComponents = new MapFigureComponent[100];
     for (int i = 0; i < positionComponents.length; i++) {
-      positionComponents[i] = new MapFigureComponent(0, 0, 0, 0,0);
+      positionComponents[i] = new MapFigureComponent(0, 0, 0, 0, 0);
     }
 
     for (int i = 0; i < positionComponents.length; i++) {

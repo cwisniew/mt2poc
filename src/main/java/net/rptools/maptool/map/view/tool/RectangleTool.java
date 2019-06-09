@@ -24,9 +24,7 @@ import javafx.scene.paint.Color;
 import net.rptools.maptool.map.geom.GeometryHelper;
 import net.rptools.maptool.map.view.MapView;
 
-/**
- * The <code>RectangleTool</code> is used to create a rectangle drawable entity.
- */
+/** The <code>RectangleTool</code> is used to create a rectangle drawable entity. */
 public class RectangleTool extends MapViewTool {
 
   /** The X co-ordinate of location that the mouse button was pressed, */
@@ -36,8 +34,7 @@ public class RectangleTool extends MapViewTool {
   private double mousePressedY;
 
   /** Utility class for geometry based functions. */
-  @Inject
-  private GeometryHelper geometryHelper;
+  @Inject private GeometryHelper geometryHelper;
 
   /**
    * Creates a new <code>RectangleTool</code>.
@@ -78,7 +75,8 @@ public class RectangleTool extends MapViewTool {
 
     gc.setFill(new Color(rectColor.getRed(), rectColor.getGreen(), rectColor.getBlue(), 0.4));
 
-    Rectangle2D rect = geometryHelper.getRectangle2D(event.getX(), event.getY(), mousePressedX, mousePressedY);
+    Rectangle2D rect =
+        geometryHelper.getRectangle2D(event.getX(), event.getY(), mousePressedX, mousePressedY);
     gc.fillRect(rect.getMinX(), rect.getMinY(), rect.getWidth(), rect.getHeight());
 
     gc.restore();
@@ -93,8 +91,7 @@ public class RectangleTool extends MapViewTool {
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.clearRect(0, 0, width, height);
 
-    Rectangle2D rect = geometryHelper.getRectangle2D(event.getX(), event.getY(), mousePressedX, mousePressedY);
+    Rectangle2D rect =
+        geometryHelper.getRectangle2D(event.getX(), event.getY(), mousePressedX, mousePressedY);
   }
-
-
 }

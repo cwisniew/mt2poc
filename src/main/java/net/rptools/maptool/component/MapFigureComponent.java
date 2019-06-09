@@ -203,13 +203,13 @@ public class MapFigureComponent implements Component {
       return false;
     }
     MapFigureComponent that = (MapFigureComponent) o;
-    return Double.compare(that.x, x) == 0 &&
-        Double.compare(that.y, y) == 0 &&
-        Double.compare(that.z, z) == 0 &&
-        Double.compare(that.width, width) == 0 &&
-        Double.compare(that.height, height) == 0 &&
-        snapToGrid == that.snapToGrid &&
-        id.equals(that.id);
+    return Double.compare(that.x, x) == 0
+        && Double.compare(that.y, y) == 0
+        && Double.compare(that.z, z) == 0
+        && Double.compare(that.width, width) == 0
+        && Double.compare(that.height, height) == 0
+        && snapToGrid == that.snapToGrid
+        && id.equals(that.id);
   }
 
   @Override
