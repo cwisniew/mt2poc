@@ -15,7 +15,7 @@
 package net.rptools.maptool.map.events;
 
 import net.rptools.maptool.map.GameMap;
-import net.rptools.maptool.map.view.mappable.MapFigure;
+import net.rptools.maptool.map.view.mappable.figures.MapFigure;
 
 /** Event fired when dragging of a {@link MapFigure} starts. */
 public class MapFigureDragEnd {

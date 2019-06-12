@@ -30,7 +30,7 @@ import net.rptools.maptool.map.events.MapFigureDragEnd;
 import net.rptools.maptool.map.events.MapFigureDragStart;
 import net.rptools.maptool.map.view.MapView;
 import net.rptools.maptool.map.view.MapViewPort;
-import net.rptools.maptool.map.view.mappable.MapFigure;
+import net.rptools.maptool.map.view.mappable.figures.MapFigure;
 
 /** The type Pointer tool. */
 public class PointerTool extends MapViewTool {

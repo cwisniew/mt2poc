@@ -21,6 +21,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import net.rptools.maptool.entity.Entity;
+import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.map.geom.GeometryHelper;
 import net.rptools.maptool.map.view.MapView;
 
@@ -35,6 +37,9 @@ public class RectangleTool extends MapViewTool {
 
   /** Utility class for geometry based functions. */
   @Inject private GeometryHelper geometryHelper;
+
+  /** The entity factory that is used to create a new entity to place on the map. */
+  @Inject private EntityFactory entityFactory;
 
   /**
    * Creates a new <code>RectangleTool</code>.
@@ -91,7 +96,15 @@ public class RectangleTool extends MapViewTool {
     GraphicsContext gc = canvas.getGraphicsContext2D();
     gc.clearRect(0, 0, width, height);
 
+    var viewPort = getMapView().getMapViewPort();
+
     Rectangle2D rect =
-        geometryHelper.getRectangle2D(event.getX(), event.getY(), mousePressedX, mousePressedY);
+        viewPort.convertDisplayRectangleToMap(
+            event.getX(), event.getY(), mousePressedX, mousePressedY);
+
+    Entity entity =
+        entityFactory.createDrawableRectangle(
+            rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY(), 0);
+    getMapView().getGameMap().putEntity(entity);
   }
 }

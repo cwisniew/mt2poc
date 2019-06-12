@@ -14,13 +14,19 @@
  */
 package net.rptools.maptool.entity;
 
+import com.google.inject.Inject;
 import javafx.scene.image.Image;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.MapFigureComponent;
+import net.rptools.maptool.component.PolygonDrawableComponent;
+import net.rptools.maptool.map.geom.GeometryHelper;
 
 /** Factory class for creating {@link Entity}s. */
 public class EntityFactoryImpl implements EntityFactory {
+
+  /** The helper class for geometry. */
+  @Inject private GeometryHelper geometryHelper;
 
   @Override
   public EntityBuilder createEntity() {
@@ -47,7 +53,11 @@ public class EntityFactoryImpl implements EntityFactory {
   }
 
   @Override
-  public Entity createDrawableRectangle(double x, double y, double w, double h, double z) {
-    return null;
+  public Entity createDrawableRectangle(double x1, double y1, double x2, double y2, double z) {
+    var rect = geometryHelper.rectangleToPolygon(x1, y1, x2, y2);
+
+    return createEntity()
+        .with(new PolygonDrawableComponent(rect.getPoints().toArray(new Double[8])))
+        .build();
   }
 }

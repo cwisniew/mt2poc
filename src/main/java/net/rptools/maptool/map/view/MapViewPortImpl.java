@@ -14,11 +14,13 @@
  */
 package net.rptools.maptool.map.view;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import net.rptools.maptool.map.GameMap;
+import net.rptools.maptool.map.geom.GeometryHelper;
 
 /** Class that implements the {@link MapViewPort} for co-ordinate translation. */
 public class MapViewPortImpl implements MapViewPort {
@@ -97,6 +99,8 @@ public class MapViewPortImpl implements MapViewPort {
 
   /** The value to use for the panView methods that take no arguments. */
   double panViewStepValue = DEFAULT_PAN_STEP;
+
+  @Inject private GeometryHelper geometryHelper;
 
   /** Creates a new <code>MapViewPortImpl</code> object. */
   public MapViewPortImpl() {
@@ -382,5 +386,32 @@ public class MapViewPortImpl implements MapViewPort {
     }
 
     return convPoints;
+  }
+
+  @Override
+  public List<Double> convertMapDoublesToDisplay(List<Double> xy) {
+    var conv = new ArrayList<Double>(xy.size());
+
+    for (int i = 0; i < xy.size(); i += 2) {
+      Point2D point = convertMapToDisplay(xy.get(i), xy.get(i + 1));
+
+      conv.add(point.getX());
+      conv.add(point.getY());
+    }
+    return conv;
+  }
+
+  @Override
+  public Rectangle2D convertDisplayRectangleToMap(Rectangle2D rect) {
+    return convertDisplayRectangleToMap(
+        rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMinY());
+  }
+
+  @Override
+  public Rectangle2D convertDisplayRectangleToMap(double x1, double y1, double x2, double y2) {
+    Point2D p1 = convertDisplayToMap(x1, y1);
+    Point2D p2 = convertDisplayToMap(x2, y2);
+
+    return geometryHelper.getRectangle2D(p1.getX(), p1.getY(), p2.getX(), p2.getY());
   }
 }

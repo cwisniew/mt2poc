@@ -12,15 +12,28 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.map.view.mappable;
+package net.rptools.maptool.map.view.mappable.figures;
 
 import javafx.scene.Node;
 
+/** Interface for classes that represent figures on the map. */
 public interface MapFigure {
 
+  /** Called when the map wants to notify the <code>MapFigure</code> tht there has been a change. */
   void update();
 
+  /**
+   * Return the {@link Node} used for rendering the figure on the view of the map.
+   *
+   * @return the {@link Node} used for rendering the figure.
+   */
   Node getNode();
 
+  /**
+   * Returns the {@link Node} used for rendering where the figure is being dragged from on the view
+   * of the map..
+   *
+   * @return the {@link Node} used for rendering where the figure is being dragged from.
+   */
   Node getDraggedNode();
 }

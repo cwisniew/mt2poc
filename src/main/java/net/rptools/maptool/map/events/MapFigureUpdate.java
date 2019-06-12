@@ -15,23 +15,43 @@
 package net.rptools.maptool.map.events;
 
 import net.rptools.maptool.map.GameMap;
-import net.rptools.maptool.map.view.mappable.MapFigure;
+import net.rptools.maptool.map.view.mappable.figures.MapFigure;
 
+/** Event sent when a Map Figure is updated. */
 public class MapFigureUpdate {
 
+  /** * The {@link GameMap} that the game {@link MapFigure} is on. */
   private final GameMap gameMap;
-  private final MapFigure mapFigureImpl;
 
-  public MapFigureUpdate(GameMap gameMap, MapFigure mapFigureImpl) {
+  /** The {@link MapFigure} that was updated. */
+  private final MapFigure mapFigure;
+
+  /**
+   * Creates a new <code>MapFigureUpdate</code> object.
+   *
+   * @param gameMap The game map that the game figure is on.
+   * @param mapFigure The map figure that was updated.
+   */
+  public MapFigureUpdate(GameMap gameMap, MapFigure mapFigure) {
     this.gameMap = gameMap;
-    this.mapFigureImpl = mapFigureImpl;
+    this.mapFigure = mapFigure;
   }
 
+  /**
+   * Returns the game map that the figure that was updated is on.
+   *
+   * @return the game map.
+   */
   public GameMap getGameMap() {
     return gameMap;
   }
 
+  /**
+   * Returns the map figure that was updated.
+   *
+   * @return the map figure that was updated.
+   */
   public MapFigure getMapFigure() {
-    return mapFigureImpl;
+    return mapFigure;
   }
 }

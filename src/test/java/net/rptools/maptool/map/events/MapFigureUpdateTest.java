@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import net.rptools.maptool.map.GameMap;
-import net.rptools.maptool.map.view.mappable.MapFigure;
+import net.rptools.maptool.map.view.mappable.figures.MapFigure;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

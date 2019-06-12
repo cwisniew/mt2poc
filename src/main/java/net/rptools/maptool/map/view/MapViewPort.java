@@ -349,4 +349,32 @@ public interface MapViewPort {
    * @return a {@link List} of points converted into display co-ordinates.
    */
   List<Point2D> convertMapToDisplay(List<Point2D> points);
+
+  /**
+   * Returns a list of {@link Double}s taken as x,y pairs from map co-ordinates to display
+   * co-ordinates.
+   *
+   * @param xy The list of x,y co-ordinates.
+   * @return list of {@link Double}s x,y display co-ordinates.
+   */
+  List<Double> convertMapDoublesToDisplay(List<Double> xy);
+
+  /**
+   * Returns a rectangle converted from display co-ordinates to map co-ordinates.
+   *
+   * @param rect the rectangle in display co-ordinates.
+   * @return the rectangle in map co-ordinates.
+   */
+  Rectangle2D convertDisplayRectangleToMap(Rectangle2D rect);
+
+  /**
+   * Returns a rectangle converted from display co-ordinates to map co-ordinates.
+   *
+   * @param x1 the x co-ordinate of one of the corners of the rectangle.
+   * @param y1 the y co-ordinate of one of the corners of the rectangle.
+   * @param x2 the x co-ordinate of the opposite corner of the rectangle.
+   * @param y2 the y co-ordinate of the opposite corner of the rectangle.
+   * @return the rectangle in map co-ordinates.
+   */
+  Rectangle2D convertDisplayRectangleToMap(double x1, double y1, double x2, double y2);
 }

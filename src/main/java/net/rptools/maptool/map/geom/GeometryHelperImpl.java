@@ -15,6 +15,7 @@
 package net.rptools.maptool.map.geom;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.shape.Polygon;
 
 public class GeometryHelperImpl implements GeometryHelper {
 
@@ -42,5 +43,32 @@ public class GeometryHelperImpl implements GeometryHelper {
     }
 
     return new Rectangle2D(minX, minY, rectWidth, rectHeight);
+  }
+
+  @Override
+  public Polygon rectangleToPolygon(double x1, double y1, double x2, double y2) {
+    Rectangle2D rect = getRectangle2D(x1, y1, x2, y2);
+
+    double[] points = new double[8];
+
+    // This is in the co-ordinate system where y gets larger in the up direction
+
+    // Top left
+    points[0] = rect.getMinX();
+    points[1] = rect.getMaxY();
+
+    // Top right
+    points[2] = rect.getMaxX();
+    points[3] = rect.getMaxY();
+
+    // Bottom right
+    points[4] = rect.getMaxX();
+    points[5] = rect.getMinY();
+
+    // Bottom left
+    points[6] = rect.getMinX();
+    points[7] = rect.getMinY();
+
+    return new Polygon(points);
   }
 }

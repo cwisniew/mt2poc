@@ -19,7 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.view.MapView;
-import net.rptools.maptool.map.view.mappable.MapFigure;
+import net.rptools.maptool.map.view.mappable.figures.MapFigure;
 
 /** Interface implemented by tools used by {@link MapViewTool}s. */
 public abstract class MapViewTool {

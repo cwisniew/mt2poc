@@ -24,7 +24,7 @@ public interface EntityFactory {
    *
    * @return an empty {@link EntityBuilder}.
    */
-  public EntityBuilder createEntity();
+  EntityBuilder createEntity();
 
   /**
    * Creates a new {@link Entity} which represents a simple figure on a {@link
@@ -38,22 +38,31 @@ public interface EntityFactory {
    * @param image The {@link Image} to display for the simple figure.
    * @return an {@link Entity} that represents a simple figure on the map.
    */
-  public Entity createMapFigure(double x, double y, double w, double h, double z, Image image);
+  Entity createMapFigure(double x, double y, double w, double h, double z, Image image);
 
   /**
    * Creates a new {@link Entity} which represents a simple figure on a {@link
    * net.rptools.maptool.map.GameMap} that has snap to grid set.
    *
-   * @param x The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
-   * @param y The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
+   * @param x The x co-ordinate of the {@link Entity} on the {@link
+   *     net.rptools.maptool.map.GameMap}.
+   * @param y The x co-ordinate of the {@link Entity} on the {@link
+   *     net.rptools.maptool.map.GameMap}.
    * @param w The width.
    * @param h The height.
    * @param z The x co-ordinate of the {@link Entity} on the {@link net.rptools.maptool.map.GameMap}
    * @param image The {@link Image} to display for the simple figure.
    * @return an {@link Entity} that represents a simple figure on the map.
    */
-  public Entity createSnapToGridMapFigure(
-      double x, double y, double w, double h, double z, Image image);
+  Entity createSnapToGridMapFigure(double x, double y, double w, double h, double z, Image image);
 
-  public Entity createDrawableRectangle(double x, double y, double w, double h, double z);
+  /**
+   * @param x1 The x co-ordinate of one corner of the rectangle.
+   * @param y1 The y co-ordinate of one corner of the rectangle.
+   * @param x2 The x co-ordinate of the opposite corner of the rectangle.
+   * @param y2 The y co-ordinate of the opposite corner of the rectangle.
+   * @param z The Z co-ordinate of the rectangle.
+   * @return the rectangle.
+   */
+  Entity createDrawableRectangle(double x1, double y1, double x2, double y2, double z);
 }

@@ -12,7 +12,7 @@
  * <http://www.gnu.org/licenses/> and specifically the Affero license
  * text at <http://www.gnu.org/licenses/agpl.html>.
  */
-package net.rptools.maptool.map.view.mappable;
+package net.rptools.maptool.map.view.mappable.figures;
 
 import javafx.scene.Node;
 import javafx.scene.image.Image;
