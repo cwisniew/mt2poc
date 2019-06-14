@@ -21,6 +21,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.grid.Grid;
+import net.rptools.maptool.map.view.vision.VisibleArea;
 
 /** Interface implemented by classes that represent maps used in the game. */
 public interface GameMap {
@@ -95,4 +96,13 @@ public interface GameMap {
    * @return the entities on the map.
    */
   public Collection<Entity> getEntities();
+
+
+  /**
+   * Returns the visible area for all entities with the vision component.
+   *
+   * @return the visible area.
+   */
+  public VisibleArea getVisibleArea();
+
 }

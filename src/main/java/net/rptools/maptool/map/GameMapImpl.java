@@ -30,6 +30,9 @@ import net.rptools.maptool.map.events.MapEntityAddedEvent;
 import net.rptools.maptool.map.events.MapEntityRemovedEvent;
 import net.rptools.maptool.map.events.MapUpdateEvent;
 import net.rptools.maptool.map.grid.Grid;
+import net.rptools.maptool.map.view.vision.RayCastingVisionCalculator;
+import net.rptools.maptool.map.view.vision.VisibleArea;
+import net.rptools.maptool.map.view.vision.VisionCalculator;
 
 /** Class used to represent maps in the game. */
 public class GameMapImpl implements GameMap {
@@ -47,6 +50,11 @@ public class GameMapImpl implements GameMap {
 
   /** The {@link Entity}s on the map. */
   private final Set<Entity> entities = new HashSet<>();
+
+
+  /** the class used for vision calculations. */
+  @Inject
+  private VisionCalculator visionCalculator;
 
   /**
    * Creates a new <code>GameMapImpl</code> object.
@@ -104,17 +112,25 @@ public class GameMapImpl implements GameMap {
       pc.setY(snapCenter.getY());
     }
     entities.add(entity);
+    visionCalculator.addEntity(entity);
     eventBus.post(new MapEntityAddedEvent(this, entity));
   }
 
   @Override
   public void removeEntity(Entity entity) {
     entities.remove(entity);
+    visionCalculator.removeEntity(entity);
     eventBus.post(new MapEntityRemovedEvent(this, entity));
   }
 
   @Override
   public Collection<Entity> getEntities() {
     return Collections.unmodifiableCollection(entities);
+  }
+
+  @Override
+  public VisibleArea getVisibleArea() {
+    visionCalculator.calculate();
+    return visionCalculator.getTotalVisibleArea();
   }
 }

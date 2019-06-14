@@ -128,8 +128,8 @@ public class MLineSegment {
      * ray_t = (line_px + line_py * line_d - ray_px) / ray_tx;
      *
      */
-    final double lineD = (ray.tx + (this.py - ray.py) + ray.ty * (ray.px - this.px)) / (this.tx * ray.ty - this.ty * ray.tx);
-    final double rayD = (this.px + this.py * lineD - ray.px) / ray.tx;
+    final double lineD = (ray.tx * (this.py - ray.py) + ray.ty * (ray.px - this.px)) / (this.tx * ray.ty - this.ty * ray.tx);
+    final double rayD = (this.px + this.tx * lineD - ray.px) / ray.tx;
 
     /*
      * And this is where I confess to telling a small white lie above (for the sake of simplicity in discussing the equations).

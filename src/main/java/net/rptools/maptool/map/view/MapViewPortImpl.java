@@ -16,11 +16,16 @@ package net.rptools.maptool.map.view;
 
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.shape.Polygon;
 import net.rptools.maptool.map.GameMap;
 import net.rptools.maptool.map.geom.GeometryHelper;
+import net.rptools.maptool.map.geom.MPolygon;
 import net.rptools.maptool.map.geom.MRectangle;
 
 /** Class that implements the {@link MapViewPort} for co-ordinate translation. */
@@ -414,5 +419,22 @@ public class MapViewPortImpl implements MapViewPort {
     Point2D p2 = convertDisplayToMap(x2, y2);
 
     return MRectangle.createRectangle(p1, p2);
+  }
+
+  public Polygon convertMapPolygonToDisplay(MPolygon mapPoly) {
+    var poly = new Polygon();
+    poly.getPoints().addAll(convertMapDoublesToDisplay(mapPoly.getVerticesDoubleList()));
+
+    return poly;
+  }
+
+  @Override
+  public Set<Polygon> convertMapPolygonsToDisplay(Collection<MPolygon> polygons) {
+    var polygonSet = new HashSet<Polygon>();
+    for (var poly : polygons) {
+      polygonSet.add(convertMapPolygonToDisplay(poly));
+    }
+
+    return polygonSet;
   }
 }

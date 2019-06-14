@@ -14,10 +14,14 @@
  */
 package net.rptools.maptool.map.view;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.shape.Polygon;
 import net.rptools.maptool.map.GameMap;
+import net.rptools.maptool.map.geom.MPolygon;
 import net.rptools.maptool.map.geom.MRectangle;
 
 /**
@@ -378,4 +382,13 @@ public interface MapViewPort {
    * @return the rectangle in map co-ordinates.
    */
   MRectangle convertDisplayRectangleToMap(double x1, double y1, double x2, double y2);
+
+  /**
+   * Converts a collection of map polygons into display polygons.
+   *
+   * @param mapPoly the map polygons to convert.
+   *
+   * @return a collection of converted display polygons,
+   */
+  Set<Polygon> convertMapPolygonsToDisplay(Collection<MPolygon> mapPoly);
 }

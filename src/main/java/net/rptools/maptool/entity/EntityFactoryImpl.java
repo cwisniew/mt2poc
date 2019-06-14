@@ -14,21 +14,18 @@
  */
 package net.rptools.maptool.entity;
 
-import com.google.inject.Inject;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.MapFigureComponent;
 import net.rptools.maptool.component.PolygonDrawableComponent;
-import net.rptools.maptool.map.geom.GeometryHelper;
+import net.rptools.maptool.component.ViewerComponent;
+import net.rptools.maptool.component.VisionBlockingComponent;
 import net.rptools.maptool.map.geom.MRectangle;
 
 /** Factory class for creating {@link Entity}s. */
 public class EntityFactoryImpl implements EntityFactory {
-
-  /** The helper class for geometry. */
-  @Inject private GeometryHelper geometryHelper;
 
   @Override
   public EntityBuilder createEntity() {
@@ -41,6 +38,7 @@ public class EntityFactoryImpl implements EntityFactory {
         .with(new MapFigureComponent(x, y, w, h, z))
         .with(new ImageComponent(image))
         .with(new DraggableComponent())
+        .with(new ViewerComponent()) // TODO: This wont always be the case but POC :)
         .build();
   }
 
@@ -51,16 +49,18 @@ public class EntityFactoryImpl implements EntityFactory {
         .with(new MapFigureComponent(x, y, w, h, z, true))
         .with(new ImageComponent(image))
         .with(new DraggableComponent())
+        .with(new ViewerComponent()) // TODO: This wont always be the case but POC :)
         .build();
   }
 
   @Override
   public Entity createDrawableRectangle(double x1, double y1, double x2, double y2, double z) {
     var rect = MRectangle.createRectangle(x1, y1, x2, y2);
+    var poly = rect.asPolygon();
 
     return createEntity()
-        .with(
-            new PolygonDrawableComponent(rect.asPolygon(), Color.RED, Color.TRANSPARENT))
+        .with(new PolygonDrawableComponent(poly, Color.RED, Color.TRANSPARENT)) // TODO: Wont always be this colour but  pox ;)
+        .with(new VisionBlockingComponent(poly)) // TODO: This wont always be the case but POC :)
         .build();
   }
 }

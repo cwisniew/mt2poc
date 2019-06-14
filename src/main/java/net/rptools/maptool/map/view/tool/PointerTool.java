@@ -47,6 +47,16 @@ public class PointerTool extends MapViewTool {
   /** The {@link EventBus} to post events to */
   @Inject private EventBus eventBus;
 
+
+  /**
+   * Number of milliseconds delay before triggering successive map movements/redraws when
+   * dragging the mouse to move the map. This stops the movement from being too "touchy"
+   */
+  private static final int MAP_MOVEMENT_REDRAW_DELAY = 30;
+
+  /** the last time a drag event moved and redrew the mapp. */
+  private long lastMapMovementRedraw = 0;
+
   /**
    * Creates a new <code>PointerTool</code>.
    *
@@ -82,44 +92,20 @@ public class PointerTool extends MapViewTool {
   @Override
   public void mouseDragged(MouseEvent event) {
     if (event.isPrimaryButtonDown()) {
+      if (System.currentTimeMillis() - lastMapMovementRedraw > MAP_MOVEMENT_REDRAW_DELAY) {
 
-      mouseX = event.getX();
-      mouseY = event.getY();
+        mouseX = event.getX();
+        mouseY = event.getY();
 
-      // If the original click has higher X co-ordinate it was right of mouse so mouse is
-      // moving left
-      final boolean left = mousePressedX > mouseX;
-      // If the original click has lower X co-ordinate it was left of mouse so mouse is moving
-      // right
-      final boolean right = mousePressedX < mouseX;
-      // If the original click has higher Y co-ordinate it was below the mouse os mouse is
-      // moving up
-      final boolean up = mousePressedY > mouseY;
-      // If the original click has lower Y co-ordinate it was above the mouse os mouse is
-      // moving down
-      final boolean down = mousePressedY < mouseY;
+        final MapViewPort mapViewPort = getMapView().getMapViewPort();
+        mapViewPort.panView((mousePressedX - mouseX) / 20.0, (mousePressedY - mouseY) / 20.0);
 
-      final MapViewPort mapViewPort = getMapView().getMapViewPort();
-      if (left && up) {
-        mapViewPort.panViewLeftUp();
-      } else if (left && down) {
-        mapViewPort.panViewLeftDown();
-      } else if (right && up) {
-        mapViewPort.panViewRightUp();
-      } else if (right && down) {
-        mapViewPort.panViewRightDown();
-      } else if (left) {
-        mapViewPort.panViewLeft();
-      } else if (right) {
-        mapViewPort.panViewRight();
-      } else if (down) {
-        mapViewPort.panViewDown();
-      } else if (up) {
-        mapViewPort.panViewUp();
+
+        getMapView().rerender();
+        lastMapMovementRedraw = System.currentTimeMillis();
       }
 
       event.consume();
-      getMapView().rerender();
     }
   }
 

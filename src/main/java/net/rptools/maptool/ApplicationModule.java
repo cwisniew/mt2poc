@@ -40,6 +40,8 @@ import net.rptools.maptool.map.view.tool.factory.MapViewToolFactory;
 import net.rptools.maptool.map.view.tool.factory.MapViewToolFactoryImpl;
 import net.rptools.maptool.map.view.tool.factory.PointerToolFactory;
 import net.rptools.maptool.map.view.tool.factory.RectangleToolFactory;
+import net.rptools.maptool.map.view.vision.RayCastingVisionCalculator;
+import net.rptools.maptool.map.view.vision.VisionCalculator;
 import net.rptools.maptool.ui.FXMLLoaderProvier;
 
 /** <code>ApplicationModule</code> used for Google Guice injection bindings. */
@@ -95,5 +97,8 @@ public class ApplicationModule extends AbstractModule {
 
     // Geometry Helper
     bind(GeometryHelper.class).toInstance(geometryHelper);
+
+    // Vision Calculations
+    bind(VisionCalculator.class).to(RayCastingVisionCalculator.class);
   }
 }

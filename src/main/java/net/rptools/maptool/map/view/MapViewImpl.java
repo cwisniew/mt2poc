@@ -37,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import net.rptools.maptool.component.MapFigureComponent;
 import net.rptools.maptool.component.PolygonDrawableComponent;
@@ -129,7 +130,11 @@ public class MapViewImpl implements MapView, Closeable {
   /** The {@link Canvas} available for the the tool to render to in the foreground. */
   private Canvas foregroundToolCanvas = new ResizableCanvas();
 
+  private Canvas visionCanvas = new ResizableCanvas();
+
   private final Set<Entity> selected = new HashSet<>();
+
+
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -166,6 +171,9 @@ public class MapViewImpl implements MapView, Closeable {
     backgroundToolCanvas.widthProperty().bind(stackPane.widthProperty());
     backgroundToolCanvas.heightProperty().bind(stackPane.heightProperty());
 
+    visionCanvas.widthProperty().bind(stackPane.widthProperty());
+    visionCanvas.heightProperty().bind(stackPane.heightProperty());
+
     gridCanvas.widthProperty().bind(stackPane.widthProperty());
     gridCanvas.heightProperty().bind(stackPane.heightProperty());
 
@@ -176,11 +184,13 @@ public class MapViewImpl implements MapView, Closeable {
 
     gridCanvas.setMouseTransparent(true);
     backgroundToolCanvas.setMouseTransparent(true);
+    visionCanvas.setMouseTransparent(true);
     foregroundToolCanvas.setMouseTransparent(true);
 
     stackPane.getChildren().add(backgroundCanvas);
     stackPane.getChildren().add(drawableLayer);
     stackPane.getChildren().add(backgroundToolCanvas);
+    stackPane.getChildren().add(visionCanvas);
     stackPane.getChildren().add(figureLayer);
     stackPane.getChildren().add(foregroundToolCanvas);
     stackPane.getChildren().add(gridCanvas);
@@ -349,6 +359,8 @@ public class MapViewImpl implements MapView, Closeable {
         draggingNodes.remove(figure);
       }
     }
+
+    render(false);
   }
 
   @Subscribe
@@ -465,7 +477,45 @@ public class MapViewImpl implements MapView, Closeable {
         renderFigures();
         renderDrawables();
       }
+      renderVisibleArea();
     }
+  }
+
+
+  /**
+   * Renders the polygons that make up the visible area.
+   */
+  private void renderVisibleArea() {
+    GraphicsContext gc = visionCanvas.getGraphicsContext2D();
+    gc.save();
+
+    gc.clearRect(0, 0, visionCanvas.getWidth(), visionCanvas.getHeight());
+
+    var visibleArea = gameMap.getVisibleArea();
+    for (var vert : visibleArea.getVertices()) {
+      var p = mapViewPort.convertMapToDisplay(vert);
+      gc.fillOval(p.getX() - 2, p.getY() -2 , 5, 5);
+    }
+
+    gc.setStroke(Color.WHITE);
+    gc.setFill(Color.rgb(255, 255, 255, 0.15));
+    final Set<Polygon> polygons = mapViewPort.convertMapPolygonsToDisplay(visibleArea.getPolygons());
+    for (var poly : polygons) {
+      final double x1 = poly.getPoints().get(0);
+      final double y1 = poly.getPoints().get(1);
+      final double x2 = poly.getPoints().get(2);
+      final double y2 = poly.getPoints().get(3);
+      final double x3 = poly.getPoints().get(4);
+      final double y3 = poly.getPoints().get(5);
+
+      gc.strokeLine(x1, y1, x2, y2);
+      gc.strokeLine(x2, y2, x3, y3);
+      gc.strokeLine(x3, y3, x1, y1);
+
+      gc.fillPolygon(new double[] {x1, x2, x3}, new double[] {y1, y2, y3}, 3);
+    }
+
+    gc.restore();
   }
 
   /** Perform rendering tasks / updates for drawables. */

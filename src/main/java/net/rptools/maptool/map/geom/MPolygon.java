@@ -22,6 +22,19 @@ public class MPolygon {
 
 
   /**
+   * Creates a polygon that represents the triangle denotes by three points.
+   * @param p1 The first point of the triangle.
+   * @param p2 The second point of the triangle.
+   * @param p3 The third point of the triangle.
+   *
+   * @return The polygon representing the triangle.
+   */
+  public static MPolygon createTriangle(Point2D p1, Point2D p2, Point2D p3) {
+    return new MPolygon(List.of(p1, p2, p3));
+  }
+
+
+  /**
    * Creates a new <code>MPolygon</code> for the given vertices.
    *
    * @param vert The vertices for the polygon.
@@ -93,5 +106,13 @@ public class MPolygon {
     return verticesDoubleList;
   }
 
+  /**
+   * Returns the {@link MLineSegment}s that make up this polygon.
+   *
+   * @return the line segments that make up this polygon.
+   */
+  public Set<MLineSegment> getLineSegments() {
+    return lineSegments;
+  }
 
 }
