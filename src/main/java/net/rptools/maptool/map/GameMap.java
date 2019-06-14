@@ -97,12 +97,10 @@ public interface GameMap {
    */
   public Collection<Entity> getEntities();
 
-
   /**
    * Returns the visible area for all entities with the vision component.
    *
    * @return the visible area.
    */
   public VisibleArea getVisibleArea();
-
 }

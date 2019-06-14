@@ -15,7 +15,6 @@
 package net.rptools.maptool.map.geom;
 
 import javafx.geometry.Rectangle2D;
-import javafx.scene.shape.Polygon;
 
 public class GeometryHelperImpl implements GeometryHelper {
 
@@ -44,5 +43,4 @@ public class GeometryHelperImpl implements GeometryHelper {
 
     return new Rectangle2D(minX, minY, rectWidth, rectHeight);
   }
-
 }

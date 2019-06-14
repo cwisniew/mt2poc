@@ -1,3 +1,17 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.map.view.vision;
 
 import java.util.ArrayList;
@@ -14,12 +28,12 @@ import net.rptools.maptool.map.geom.MLineSegment;
 import net.rptools.maptool.map.geom.MPolygon;
 
 /**
- * Class used to hold onto the list of vision blocking polygons.
- * It doesnt actually do much more than that (yet...)
+ * Class used to hold onto the list of vision blocking polygons. It doesnt actually do much more
+ * than that (yet...)
  */
 public class VisionBlockingPolygonList {
 
-  /** The vision blocking  polygons. */
+  /** The vision blocking polygons. */
   private final List<MPolygon> polygons = new ArrayList<>();
 
   /** The vertices of the vision blocking polygons. */
@@ -28,14 +42,13 @@ public class VisionBlockingPolygonList {
   /** The line segments for the vision blocking polygons. */
   private final Set<MLineSegment> lineSegments = new HashSet<>();
 
-
   /**
    * Creates a <code>VisionBlockingPolygonList</code>.
    *
    * @param entities the entities that are vision blocking.
    */
   public VisionBlockingPolygonList(Collection<Entity> entities) {
-    for (Entity entity : entities ) {
+    for (Entity entity : entities) {
       Optional<VisionBlockingComponent> vbc = entity.getComponent(VisionBlockingComponent.class);
       if (vbc.isPresent()) {
         var blockingPoly = vbc.get();
@@ -47,8 +60,8 @@ public class VisionBlockingPolygonList {
     }
   }
 
-  /***
-   * Returns the number of vertices associated with the vision blocking polygons.
+  /**
+   * * Returns the number of vertices associated with the vision blocking polygons.
    *
    * @return the number of vertices.
    */
@@ -82,5 +95,4 @@ public class VisionBlockingPolygonList {
   public Set<MLineSegment> getLineSegments() {
     return Collections.unmodifiableSet(lineSegments);
   }
-
 }

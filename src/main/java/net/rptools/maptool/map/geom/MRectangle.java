@@ -1,5 +1,18 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.map.geom;
-
 
 import java.util.ArrayList;
 import javafx.geometry.Point2D;
@@ -22,7 +35,6 @@ public class MRectangle {
 
   private final double maxX;
   private final double maxY;
-
 
   private MRectangle(double rx1, double ry1, double rx2, double ry2) {
     x1 = rx1;
@@ -58,19 +70,22 @@ public class MRectangle {
     return new MRectangle(x1, y1, x2, y2);
   }
 
-  public static MRectangle createWHRectangle(double minx, double miny, double width, double height) {
+  public static MRectangle createWHRectangle(
+      double minx, double miny, double width, double height) {
     return createRectangle(minx, miny, minx + width, miny + height);
   }
 
-  public static MRectangle createRectangleCenteredAt(double centerX, double centerY, double width, double height) {
+  public static MRectangle createRectangleCenteredAt(
+      double centerX, double centerY, double width, double height) {
     final double halfWidth = width / 2.0;
     final double halfHeight = height / 2.0;
 
-    return new MRectangle(centerX - halfWidth, centerY + halfHeight, centerX + halfWidth, centerY - halfHeight);
+    return new MRectangle(
+        centerX - halfWidth, centerY + halfHeight, centerX + halfWidth, centerY - halfHeight);
   }
 
   public static MRectangle createRectangle(Point2D p1, Point2D p2) {
-    return  createRectangle(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    return createRectangle(p1.getX(), p1.getY(), p2.getX(), p2.getY());
   }
 
   public double getX1() {

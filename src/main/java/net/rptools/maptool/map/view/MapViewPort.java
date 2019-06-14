@@ -387,7 +387,6 @@ public interface MapViewPort {
    * Converts a collection of map polygons into display polygons.
    *
    * @param mapPoly the map polygons to convert.
-   *
    * @return a collection of converted display polygons,
    */
   Set<Polygon> convertMapPolygonsToDisplay(Collection<MPolygon> mapPoly);

@@ -1,12 +1,24 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.map.geom;
 
 import java.util.Objects;
 import java.util.Optional;
 import javafx.geometry.Point2D;
 
-/**
- * Class that represents lines,
- */
+/** Class that represents lines, */
 public class MLineSegment {
 
   /** The first point on the line. */
@@ -15,7 +27,7 @@ public class MLineSegment {
   /** The second point on the line. */
   private final Point2D point2;
 
-  /** The x position vector for the parametric equation of the line segment.  */
+  /** The x position vector for the parametric equation of the line segment. */
   private final double px;
   /** The y position vector for the parametric equation of the line segment. */
   private final double py;
@@ -24,11 +36,15 @@ public class MLineSegment {
   /** The y directional vector for the parametric equation of the line segment. */
   private final double ty;
 
-  /** A unit vector calculated from the directional vector portion of the parametric equation for the line, i.e. [tx,ty] above. */
+  /**
+   * A unit vector calculated from the directional vector portion of the parametric equation for the
+   * line, i.e. [tx,ty] above.
+   */
   private final Point2D tUnitVector;
 
   /**
    * Creates a new <code>MLineSegment</code>
+   *
    * @param p1 One point on the line segment.
    * @param p2 A second point on the line segment.
    */
@@ -58,7 +74,6 @@ public class MLineSegment {
     tUnitVector = new Point2D(utx, uty);
   }
 
-
   /**
    * Returns the first point which lines somewhere on the line segment.
    *
@@ -77,16 +92,13 @@ public class MLineSegment {
     return point2;
   }
 
-
   /**
-   * Returns the intersection of this line and the provided "ray" <code>MLineSegment</code>.
-   * The ray is considered to extend to infinity.
-   *
+   * Returns the intersection of this line and the provided "ray" <code>MLineSegment</code>. The ray
+   * is considered to extend to infinity.
    *
    * @param ray The ray to test for intersection with this line.
-   * @param angle The angle of the ray. This is not used in any calculations but is required so
-   *              that the {@link MLineIntersection} can be created correctly.
-   *
+   * @param angle The angle of the ray. This is not used in any calculations but is required so that
+   *     the {@link MLineIntersection} can be created correctly.
    * @return the intersection of this line and the ray.
    */
   public Optional<MLineIntersection> getIntersection(MLineSegment ray, double angle) {
@@ -128,7 +140,9 @@ public class MLineSegment {
      * ray_t = (line_px + line_py * line_d - ray_px) / ray_tx;
      *
      */
-    final double lineD = (ray.tx * (this.py - ray.py) + ray.ty * (ray.px - this.px)) / (this.tx * ray.ty - this.ty * ray.tx);
+    final double lineD =
+        (ray.tx * (this.py - ray.py) + ray.ty * (ray.px - this.px))
+            / (this.tx * ray.ty - this.ty * ray.tx);
     final double rayD = (this.px + this.tx * lineD - ray.px) / ray.tx;
 
     /*
@@ -157,12 +171,13 @@ public class MLineSegment {
      * If we are hee we have a valid intersection so lets create the intersection object and get out of here so you can pretend the
      * math never even happened if you prefer.
      */
-    var intersection =  new MLineIntersection(
-        // See above comments as to how we get these calculations for x,y intersection point.
-        new Point2D(ray.px + ray.tx * rayD, ray.py + ray.ty * rayD),
-        rayD, // The distance along the ray the intersection occurred at.
-        angle // The angle of the ray.
-    );
+    var intersection =
+        new MLineIntersection(
+            // See above comments as to how we get these calculations for x,y intersection point.
+            new Point2D(ray.px + ray.tx * rayD, ray.py + ray.ty * rayD),
+            rayD, // The distance along the ray the intersection occurred at.
+            angle // The angle of the ray.
+            );
 
     return Optional.of(intersection);
   }
@@ -212,8 +227,7 @@ public class MLineSegment {
       return false;
     }
     MLineSegment that = (MLineSegment) o;
-    return point1.equals(that.point1) &&
-        point2.equals(that.point2);
+    return point1.equals(that.point1) && point2.equals(that.point2);
   }
 
   @Override

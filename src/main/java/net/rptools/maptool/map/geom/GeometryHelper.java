@@ -33,5 +33,4 @@ public interface GeometryHelper {
    * @return a {@link Rectangle2D} for the given points.
    */
   Rectangle2D getRectangle2D(double x1, double y1, double x2, double y2);
-
 }

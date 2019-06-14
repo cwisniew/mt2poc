@@ -33,12 +33,8 @@ public class PolygonDrawableComponent implements Component {
   /** The {@link Paint} to use for fillinh the polygon. */
   private Paint fill;
 
-
-  /**
-   * The actual polygon.
-   */
+  /** The actual polygon. */
   private MPolygon polygon;
-
 
   /**
    * Creates a new <code>PolygonDrawableComponent</code> with the specified x and y co-ordinates.
@@ -73,9 +69,7 @@ public class PolygonDrawableComponent implements Component {
     fill = fillPaint;
   }
 
-
   /**
-   *
    * @param poly The polygon.
    * @param strokePaint The {@link Paint) to stroke draw the polygon with.}
    * @param fillPaint The {@link Paint} to fill the polygon with.
@@ -85,7 +79,6 @@ public class PolygonDrawableComponent implements Component {
     stroke = strokePaint;
     fill = fillPaint;
   }
-
 
   /**
    * Returns the polygon for this component.

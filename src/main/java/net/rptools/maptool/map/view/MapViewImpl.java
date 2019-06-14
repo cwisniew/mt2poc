@@ -134,8 +134,6 @@ public class MapViewImpl implements MapView, Closeable {
 
   private final Set<Entity> selected = new HashSet<>();
 
-
-
   /**
    * Creates a new <code>MapViewImpl</code> object.
    *
@@ -481,10 +479,7 @@ public class MapViewImpl implements MapView, Closeable {
     }
   }
 
-
-  /**
-   * Renders the polygons that make up the visible area.
-   */
+  /** Renders the polygons that make up the visible area. */
   private void renderVisibleArea() {
     GraphicsContext gc = visionCanvas.getGraphicsContext2D();
     gc.save();
@@ -494,12 +489,13 @@ public class MapViewImpl implements MapView, Closeable {
     var visibleArea = gameMap.getVisibleArea();
     for (var vert : visibleArea.getVertices()) {
       var p = mapViewPort.convertMapToDisplay(vert);
-      gc.fillOval(p.getX() - 2, p.getY() -2 , 5, 5);
+      gc.fillOval(p.getX() - 2, p.getY() - 2, 5, 5);
     }
 
     gc.setStroke(Color.WHITE);
     gc.setFill(Color.rgb(255, 255, 255, 0.15));
-    final Set<Polygon> polygons = mapViewPort.convertMapPolygonsToDisplay(visibleArea.getPolygons());
+    final Set<Polygon> polygons =
+        mapViewPort.convertMapPolygonsToDisplay(visibleArea.getPolygons());
     for (var poly : polygons) {
       final double x1 = poly.getPoints().get(0);
       final double y1 = poly.getPoints().get(1);

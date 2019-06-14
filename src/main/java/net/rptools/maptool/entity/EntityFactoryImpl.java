@@ -59,7 +59,9 @@ public class EntityFactoryImpl implements EntityFactory {
     var poly = rect.asPolygon();
 
     return createEntity()
-        .with(new PolygonDrawableComponent(poly, Color.RED, Color.TRANSPARENT)) // TODO: Wont always be this colour but  pox ;)
+        .with(
+            new PolygonDrawableComponent(
+                poly, Color.RED, Color.TRANSPARENT)) // TODO: Wont always be this colour but  pox ;)
         .with(new VisionBlockingComponent(poly)) // TODO: This wont always be the case but POC :)
         .build();
   }

@@ -1,3 +1,17 @@
+/*
+ * This software Copyright by the RPTools.net development team, and
+ * licensed under the Affero GPL Version 3 or, at your option, any later
+ * version.
+ *
+ * MapTool Source Code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License * along with this source Code.  If not, please visit
+ * <http://www.gnu.org/licenses/> and specifically the Affero license
+ * text at <http://www.gnu.org/licenses/agpl.html>.
+ */
 package net.rptools.maptool.map.view.vision;
 
 import java.util.ArrayList;
@@ -17,12 +31,13 @@ import net.rptools.maptool.map.geom.MLineIntersection;
 import net.rptools.maptool.map.geom.MLineSegment;
 import net.rptools.maptool.map.geom.MPolygon;
 
-/**
- * Class that performs ray casting to determine visibility on the map.
- */
+/** Class that performs ray casting to determine visibility on the map. */
 public class RayCastingVisionCalculator implements VisionCalculator {
 
-  /** Small delta angle used for a ray either side of vertex so that vision/light will extend past the vertex. */
+  /**
+   * Small delta angle used for a ray either side of vertex so that vision/light will extend past
+   * the vertex.
+   */
   private static final double VERY_SMALL_ANGLE = 0.00001;
 
   /** The viewers on the map. */
@@ -37,11 +52,8 @@ public class RayCastingVisionCalculator implements VisionCalculator {
   /** The visible areas for each entity that is a viewer, Note this does not depend on lighting. */
   private Map<Entity, VisibleArea> visibleAreas = new HashMap<>();
 
-  /** The total visible area for all viewer entities.  Note this does not depend on lighting. */
+  /** The total visible area for all viewer entities. Note this does not depend on lighting. */
   private VisibleArea totalVisibleArea = VisibleArea.NO_VISIBLE_AREA;
-
-
-
 
   @Override
   public void addEntity(Entity entity) {
@@ -70,15 +82,15 @@ public class RayCastingVisionCalculator implements VisionCalculator {
   @Override
   public void removeEntities(Collection<Entity> entities) {
 
-      for (Entity e : entities) {
-        if (e.hasComponent(ViewerComponent.class)) {
-          viewers.remove(e);
-        }
-
-        if (e.hasComponent(VisionBlockingComponent.class)) {
-          blockers.remove(e);
-        }
+    for (Entity e : entities) {
+      if (e.hasComponent(ViewerComponent.class)) {
+        viewers.remove(e);
       }
+
+      if (e.hasComponent(VisionBlockingComponent.class)) {
+        blockers.remove(e);
+      }
+    }
   }
 
   @Override
@@ -100,17 +112,15 @@ public class RayCastingVisionCalculator implements VisionCalculator {
     return Collections.unmodifiableSet(visibleEntities);
   }
 
-
   @Override
   public void calculate() {
     var blockingPolys = new VisionBlockingPolygonList(blockers);
     Set<MLineSegment> rays = new HashSet<>();
 
-
-    // Allocate an array large enough for all the angles to the vertices plus a small delta to each side.
+    // Allocate an array large enough for all the angles to the vertices plus a small delta to each
+    // side.
     final int numberOfAngles = blockingPolys.getNumberOfVertices() * 3;
     double[] angles = new double[numberOfAngles];
-
 
     // Loop through all our viewers
     for (Entity viewer : viewers) {
@@ -124,21 +134,27 @@ public class RayCastingVisionCalculator implements VisionCalculator {
         // Loop through all of the vertices and determine the angle from our viewer.
         int ind = 0;
         for (Point2D vert : blockingPolys.getVertices()) {
-          double angle = Math.atan2(vert.getY() - viewerPoint.getY(), vert.getX() - viewerPoint.getX());
+          double angle =
+              Math.atan2(vert.getY() - viewerPoint.getY(), vert.getX() - viewerPoint.getX());
           angles[ind++] = angle - VERY_SMALL_ANGLE;
           angles[ind++] = angle;
           angles[ind++] = angle + VERY_SMALL_ANGLE;
         }
 
-        // Get a list of the closest intersection along a ray for each of the angles we derived above.
+        // Get a list of the closest intersection along a ray for each of the angles we derived
+        // above.
         var lineIntersections = new ArrayList<MLineIntersection>(numberOfAngles);
         for (double angle : angles) {
           var direction = new Point2D(Math.cos(angle), Math.sin(angle));
 
           // Create a new ray from the vertex to the viewer.
-          MLineSegment ray = new MLineSegment(viewerPoint, new Point2D(viewerPoint.getX() + direction.getX(), viewerPoint.getY() + direction.getY()));
+          MLineSegment ray =
+              new MLineSegment(
+                  viewerPoint,
+                  new Point2D(
+                      viewerPoint.getX() + direction.getX(),
+                      viewerPoint.getY() + direction.getY()));
           rays.add(ray);
-
 
           MLineIntersection closest = null;
           for (var lineSegment : blockingPolys.getLineSegments()) {
@@ -157,17 +173,18 @@ public class RayCastingVisionCalculator implements VisionCalculator {
         }
 
         // Sort our intersections by angle, this is so we can easily turn them into triangles.
-        Collections.sort(lineIntersections, Comparator.comparingDouble(MLineIntersection::getAngle));
+        Collections.sort(
+            lineIntersections, Comparator.comparingDouble(MLineIntersection::getAngle));
 
         // Create the triangles
         var polyList = new ArrayList<MPolygon>();
-        for (int i = 0 ; i < lineIntersections.size() - 1; i++) {
+        for (int i = 0; i < lineIntersections.size() - 1; i++) {
           var p1 = lineIntersections.get(i).getPoint();
-          var p2 = lineIntersections.get(i+1).getPoint();
+          var p2 = lineIntersections.get(i + 1).getPoint();
           polyList.add(MPolygon.createTriangle(viewerPoint, p1, p2));
         }
         // Close off the polygon
-        var p1 = lineIntersections.get(lineIntersections.size() -1).getPoint();
+        var p1 = lineIntersections.get(lineIntersections.size() - 1).getPoint();
         var p2 = lineIntersections.get(0).getPoint();
         polyList.add(MPolygon.createTriangle(viewerPoint, p1, p2));
 
@@ -176,7 +193,5 @@ public class RayCastingVisionCalculator implements VisionCalculator {
     }
 
     totalVisibleArea = VisibleArea.mergeVisibleAreas(visibleAreas.values());
-
   }
-
 }

@@ -16,7 +16,6 @@ package net.rptools.maptool.map.view.mappable.drawable;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import net.rptools.maptool.component.PolygonDrawableComponent;
 import net.rptools.maptool.entity.Entity;
@@ -65,7 +64,9 @@ public class PolyDrawableImpl implements PolyDrawable {
   @Override
   public void update() {
     PolygonDrawableComponent pd = entity.getComponent(PolygonDrawableComponent.class).get();
-    polygon.getPoints().setAll(mapViewPort.convertMapDoublesToDisplay(pd.getPolygon().getVerticesDoubleList()));
+    polygon
+        .getPoints()
+        .setAll(mapViewPort.convertMapDoublesToDisplay(pd.getPolygon().getVerticesDoubleList()));
     polygon.setStroke(pd.getStroke());
     polygon.setFill(pd.getFill());
   }
