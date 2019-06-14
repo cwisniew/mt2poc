@@ -15,11 +15,11 @@
 package net.rptools.maptool.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Paint;
+import net.rptools.maptool.map.geom.MPolygon;
 
 /** Component for rectangle shaped drawables. */
 public class PolygonDrawableComponent implements Component {
@@ -27,75 +27,118 @@ public class PolygonDrawableComponent implements Component {
   /** The id of this component. */
   private UUID id = UUID.randomUUID();
 
+  /** The {@link Paint} to use for stroking the polygon. */
+  private Paint stroke;
+
+  /** The {@link Paint} to use for fillinh the polygon. */
+  private Paint fill;
+
+
   /**
-   * The x,y co-ordinates of the points on the drawable stored in a way efficient for optimised
-   * calculation
+   * The actual polygon.
    */
-  private Double[] coordinates;
+  private MPolygon polygon;
 
-  /** The points of the drawable. */
-  private List<Point2D> points;
-
-  /** Creates a new <code>PolygonDrawableComponent</code> with no co-ordinates. */
-  public PolygonDrawableComponent() {
-    coordinates = new Double[0];
-    points = new ArrayList<>();
-  }
 
   /**
    * Creates a new <code>PolygonDrawableComponent</code> with the specified x and y co-ordinates.
    *
    * @param xy the alternating x and y co-ordinates for the drawable.
    */
-  public PolygonDrawableComponent(Double[] xy) {
-    coordinates = Arrays.copyOf(xy, xy.length);
-    int numPoints = xy.length / 2;
+  public PolygonDrawableComponent(Double[] xy, Paint strokePaint, Paint fillPaint) {
 
-    points = new ArrayList<>(numPoints);
-    for (int i = 0; i < numPoints; i += 2) {
+    int numPoints = xy.length / 2;
+    var points = new ArrayList<Point2D>(numPoints);
+
+    for (int i = 0; i < xy.length; i += 2) {
       points.add(new Point2D(xy[i], xy[i + 1]));
     }
+
+    polygon = new MPolygon(points);
+
+    stroke = strokePaint;
+    fill = fillPaint;
   }
 
   /**
    * Creates a new <code>PolygonDrawableComponent</code> with the specified x and y co-ordinates.
    *
-   * @param p the list of points for the drawable.
+   * @param p the list of points for the polygon.
+   * @param strokePaint The {@link Paint) to stroke draw the polygon with.}
+   * @param fillPaint The {@link Paint} to fill the polygon with.
    */
-  public PolygonDrawableComponent(List<Point2D> p) {
-    points = new ArrayList<>(p);
+  public PolygonDrawableComponent(List<Point2D> p, Paint strokePaint, Paint fillPaint) {
+    polygon = new MPolygon(p);
+    stroke = strokePaint;
+    fill = fillPaint;
+  }
 
-    coordinates = new Double[points.size() * 2];
 
-    int arrayInd = 0;
-    for (int i = 0; i < points.size(); i++) {
-      Point2D pnt = points.get(i);
-      coordinates[arrayInd++] = pnt.getX();
-      coordinates[arrayInd++] = pnt.getY();
-    }
+  /**
+   *
+   * @param poly The polygon.
+   * @param strokePaint The {@link Paint) to stroke draw the polygon with.}
+   * @param fillPaint The {@link Paint} to fill the polygon with.
+   */
+  public PolygonDrawableComponent(MPolygon poly, Paint strokePaint, Paint fillPaint) {
+    polygon = poly;
+    stroke = strokePaint;
+    fill = fillPaint;
+  }
+
+
+  /**
+   * Returns the polygon for this component.
+   *
+   * @return the polygon for the component.
+   */
+  public MPolygon getPolygon() {
+    return polygon;
   }
 
   /**
-   * Returns the x, y co-ordinates of the drawable.
+   * Sets the polygon for this component.
    *
-   * @return an array of {@link Double}s with x and y co-ordinate of the points interleaved.
+   * @param poly the polygon to set for this component.
    */
-  public Double[] getPointsArray() {
-    // TODO: this is not really safe as some one could modify.
-    return coordinates;
-  }
-
-  public List<Double> getPointsDoubleList() {
-    return Arrays.asList(coordinates);
+  public void setPolygon(MPolygon poly) {
+    polygon = poly;
   }
 
   /**
-   * Returns the points of the polygon.
+   * Returns the {@link Paint} used to stroke the polygon.
    *
-   * @return the points of the polygon.
+   * @return the {@link Paint} used to stroke the polygon.
    */
-  public List<Point2D> getPoints() {
-    return Collections.unmodifiableList(points);
+  public Paint getStroke() {
+    return stroke;
+  }
+
+  /**
+   * Sets the {@link Paint} used to stroke the polygon,
+   *
+   * @param stroke the {@link Paint} used to stroke the polygon.
+   */
+  public void setStroke(Paint stroke) {
+    this.stroke = stroke;
+  }
+
+  /**
+   * Returns the {@link Paint} used to fill the polygon.
+   *
+   * @return the {@link Paint} used to fill the polygon.
+   */
+  public Paint getFill() {
+    return fill;
+  }
+
+  /**
+   * Sets the {@link Paint} used to fill the polygon.
+   *
+   * @param fill the {@link Paint} used to fill the polygon.
+   */
+  public void setFill(Paint fill) {
+    this.fill = fill;
   }
 
   @Override

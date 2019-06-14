@@ -65,9 +65,9 @@ public class PolyDrawableImpl implements PolyDrawable {
   @Override
   public void update() {
     PolygonDrawableComponent pd = entity.getComponent(PolygonDrawableComponent.class).get();
-    polygon.getPoints().setAll(mapViewPort.convertMapDoublesToDisplay(pd.getPointsDoubleList()));
-    polygon.setStroke(Color.RED);
-    polygon.setFill(Color.TRANSPARENT);
+    polygon.getPoints().setAll(mapViewPort.convertMapDoublesToDisplay(pd.getPolygon().getVerticesDoubleList()));
+    polygon.setStroke(pd.getStroke());
+    polygon.setFill(pd.getFill());
   }
 
   @Override

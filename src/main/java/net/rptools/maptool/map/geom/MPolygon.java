@@ -33,7 +33,7 @@ public class MPolygon {
 
     for (var vertex : vertices) {
       vlist.add(vertex.getX());
-      vlist.add(vertex.getX());
+      vlist.add(vertex.getY());
     }
 
     verticesDoubleList = Collections.unmodifiableList(vlist);

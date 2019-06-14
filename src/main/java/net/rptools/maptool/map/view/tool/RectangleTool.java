@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.entity.EntityFactory;
 import net.rptools.maptool.map.geom.GeometryHelper;
+import net.rptools.maptool.map.geom.MRectangle;
 import net.rptools.maptool.map.view.MapView;
 
 /** The <code>RectangleTool</code> is used to create a rectangle drawable entity. */
@@ -98,7 +99,7 @@ public class RectangleTool extends MapViewTool {
 
     var viewPort = getMapView().getMapViewPort();
 
-    Rectangle2D rect =
+    MRectangle rect =
         viewPort.convertDisplayRectangleToMap(
             event.getX(), event.getY(), mousePressedX, mousePressedY);
 

@@ -15,7 +15,6 @@
 package net.rptools.maptool.map.geom;
 
 import javafx.geometry.Rectangle2D;
-import javafx.scene.shape.Polygon;
 
 /**
  * Utility class for geometry based convenience methods. Unless otherwise specified all methods
@@ -35,15 +34,4 @@ public interface GeometryHelper {
    */
   Rectangle2D getRectangle2D(double x1, double y1, double x2, double y2);
 
-  /**
-   * Returns a {@link Polygon} object for a rectangle given two x,y co-ordinates. This drawable is
-   * always wound clockwise.
-   *
-   * @param x1 The first x co-ordinate.
-   * @param y1 The first y co-ordinate.
-   * @param x2 The second x co-ordinate.
-   * @param y2 The second y co-ordinate.
-   * @return a {@link Polygon} object for the specified rectangle.
-   */
-  Polygon rectangleToPolygon(double x1, double y1, double x2, double y2);
 }

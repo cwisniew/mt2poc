@@ -18,6 +18,7 @@ import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import net.rptools.maptool.map.GameMap;
+import net.rptools.maptool.map.geom.MRectangle;
 
 /**
  * Interface for classes that perform translations between screen and map co-ordinates.
@@ -365,7 +366,7 @@ public interface MapViewPort {
    * @param rect the rectangle in display co-ordinates.
    * @return the rectangle in map co-ordinates.
    */
-  Rectangle2D convertDisplayRectangleToMap(Rectangle2D rect);
+  MRectangle convertDisplayRectangleToMap(Rectangle2D rect);
 
   /**
    * Returns a rectangle converted from display co-ordinates to map co-ordinates.
@@ -376,5 +377,5 @@ public interface MapViewPort {
    * @param y2 the y co-ordinate of the opposite corner of the rectangle.
    * @return the rectangle in map co-ordinates.
    */
-  Rectangle2D convertDisplayRectangleToMap(double x1, double y1, double x2, double y2);
+  MRectangle convertDisplayRectangleToMap(double x1, double y1, double x2, double y2);
 }

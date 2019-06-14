@@ -164,7 +164,7 @@ public class MLineSegment {
         angle // The angle of the ray.
     );
 
-    return new Optional<>(intersection);
+    return Optional.of(intersection);
   }
 
   /**
