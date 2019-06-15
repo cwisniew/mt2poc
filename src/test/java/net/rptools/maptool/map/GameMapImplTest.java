@@ -23,6 +23,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import net.rptools.maptool.entity.Entity;
 import net.rptools.maptool.map.grid.Grid;
+import net.rptools.maptool.map.view.vision.VisionCalculator;
 import org.junit.jupiter.api.Test;
 
 class GameMapImplTest {
@@ -30,8 +31,9 @@ class GameMapImplTest {
   @Test
   void getId() {
     EventBus eventBus = mock(EventBus.class);
-    GameMap gameMap1 = new GameMapImpl(eventBus);
-    GameMap gameMap2 = new GameMapImpl(eventBus);
+    VisionCalculator vc = mock(VisionCalculator.class);
+    GameMap gameMap1 = new GameMapImpl(eventBus, vc);
+    GameMap gameMap2 = new GameMapImpl(eventBus, vc);
 
     assertEquals(gameMap1.getId(), gameMap1.getId());
     assertNotEquals(gameMap1.getId(), gameMap2.getId());
@@ -40,7 +42,8 @@ class GameMapImplTest {
   @Test
   void texturedBackground() {
     EventBus eventBus = mock(EventBus.class);
-    GameMap gameMap = new GameMapImpl(eventBus);
+    VisionCalculator vc = mock(VisionCalculator.class);
+    GameMap gameMap = new GameMapImpl(eventBus, vc);
 
     Image img = mock(Image.class);
 
@@ -54,7 +57,8 @@ class GameMapImplTest {
   @Test
   void grid() {
     EventBus eventBus = mock(EventBus.class);
-    GameMap gameMap = new GameMapImpl(eventBus);
+    VisionCalculator vc = mock(VisionCalculator.class);
+    GameMap gameMap = new GameMapImpl(eventBus, vc);
 
     Grid grid = mock(Grid.class);
 
@@ -68,7 +72,8 @@ class GameMapImplTest {
   @Test
   void getGridCenter() {
     EventBus eventBus = mock(EventBus.class);
-    GameMap gameMap = new GameMapImpl(eventBus);
+    VisionCalculator vc = mock(VisionCalculator.class);
+    GameMap gameMap = new GameMapImpl(eventBus, vc);
 
     Grid grid = mock(Grid.class);
     Point2D point1 = new Point2D(1, 1);
@@ -88,7 +93,8 @@ class GameMapImplTest {
   @Test
   void putRemoveEntity() {
     EventBus eventBus = mock(EventBus.class);
-    GameMap gameMap = new GameMapImpl(eventBus);
+    VisionCalculator vc = mock(VisionCalculator.class);
+    GameMap gameMap = new GameMapImpl(eventBus, vc);
 
     Entity entity1 = mock(Entity.class);
     Entity entity2 = mock(Entity.class);

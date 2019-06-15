@@ -51,16 +51,18 @@ public class GameMapImpl implements GameMap {
   private final Set<Entity> entities = new HashSet<>();
 
   /** the class used for vision calculations. */
-  @Inject private VisionCalculator visionCalculator;
+  private final VisionCalculator visionCalculator;
 
   /**
    * Creates a new <code>GameMapImpl</code> object.
    *
    * @param eventBus the event bus to send update events on.
+   * @param visCalc the vision calculator.
    */
   @Inject
-  public GameMapImpl(EventBus eventBus) {
+  public GameMapImpl(EventBus eventBus, VisionCalculator visCalc) {
     this.eventBus = eventBus;
+    visionCalculator = visCalc;
     id = UUID.randomUUID();
   }
 

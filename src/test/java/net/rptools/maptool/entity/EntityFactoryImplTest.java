@@ -22,6 +22,7 @@ import net.rptools.maptool.component.Component;
 import net.rptools.maptool.component.DraggableComponent;
 import net.rptools.maptool.component.ImageComponent;
 import net.rptools.maptool.component.MapFigureComponent;
+import net.rptools.maptool.component.ViewerComponent;
 import org.junit.jupiter.api.Test;
 
 class EntityFactoryImplTest {
@@ -45,8 +46,9 @@ class EntityFactoryImplTest {
     assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
     assertTrue(entity.hasComponent(DraggableComponent.class));
+    assertTrue(entity.hasComponent(ViewerComponent.class));
 
-    assertEquals(3, entity.getComponentTypes().size());
+    assertEquals(4, entity.getComponentTypes().size());
 
     MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
     assertFalse(pc.isSnapToGrid());
@@ -60,8 +62,9 @@ class EntityFactoryImplTest {
     assertTrue(entity.hasComponent(MapFigureComponent.class));
     assertTrue(entity.hasComponent(ImageComponent.class));
     assertTrue(entity.hasComponent(DraggableComponent.class));
+    assertTrue(entity.hasComponent(ViewerComponent.class));
 
-    assertEquals(3, entity.getComponentTypes().size());
+    assertEquals(4, entity.getComponentTypes().size());
 
     MapFigureComponent pc = entity.getComponent(MapFigureComponent.class).get();
     assertTrue(pc.isSnapToGrid());
