@@ -15,8 +15,11 @@
 package net.rptools.maptool;
 
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 public class AppConfigImpl implements AppConfig {
+
+  private Consumer<Long> renderTimeDisplayCallback;
 
   @Override
   public Path getDataDir() {
@@ -31,5 +34,17 @@ public class AppConfigImpl implements AppConfig {
   @Override
   public Path getResourceLibraryDir() {
     return getDataDir("resource");
+  }
+
+  @Override
+  public void setRenderTimeDisplayCallback(Consumer<Long> callback) {
+    renderTimeDisplayCallback = callback;
+  }
+
+  @Override
+  public void displayRenderTime(long ms) {
+    if (renderTimeDisplayCallback != null) {
+      renderTimeDisplayCallback.accept(ms);
+    }
   }
 }

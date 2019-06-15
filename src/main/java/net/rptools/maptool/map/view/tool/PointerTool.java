@@ -51,7 +51,7 @@ public class PointerTool extends MapViewTool {
    * Number of milliseconds delay before triggering successive map movements/redraws when dragging
    * the mouse to move the map. This stops the movement from being too "touchy"
    */
-  private static final int MAP_MOVEMENT_REDRAW_DELAY = 30;
+  private static final int MAP_MOVEMENT_REDRAW_DELAY = 5;
 
   /** the last time a drag event moved and redrew the mapp. */
   private long lastMapMovementRedraw = 0;
@@ -97,7 +97,7 @@ public class PointerTool extends MapViewTool {
         mouseY = event.getY();
 
         final MapViewPort mapViewPort = getMapView().getMapViewPort();
-        mapViewPort.panView((mousePressedX - mouseX) / 20.0, (mousePressedY - mouseY) / 20.0);
+        mapViewPort.panView((mousePressedX - mouseX) / 5, (mousePressedY - mouseY) / 5);
 
         getMapView().rerender();
         lastMapMovementRedraw = System.currentTimeMillis();

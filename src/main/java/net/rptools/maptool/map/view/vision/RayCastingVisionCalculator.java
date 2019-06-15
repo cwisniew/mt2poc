@@ -66,6 +66,16 @@ public class RayCastingVisionCalculator implements VisionCalculator {
   }
 
   @Override
+  public void updatedEntity(Entity entity) {
+    // Remove any visible areas calculated for this entity so they will need to be recalculated.
+    visibleAreas.remove(entity);
+
+    if (entity.hasComponent(VisionBlockingComponent.class)) {
+      visibleAreas.clear();
+    }
+  }
+
+  @Override
   public void addEntities(Collection<Entity> entities) {
 
     for (Entity e : entities) {
@@ -75,12 +85,15 @@ public class RayCastingVisionCalculator implements VisionCalculator {
 
       if (e.hasComponent(VisionBlockingComponent.class)) {
         blockers.add(e);
+        visibleAreas.clear();
       }
     }
   }
 
   @Override
   public void removeEntities(Collection<Entity> entities) {
+
+    visibleAreas.remove(entities);
 
     for (Entity e : entities) {
       if (e.hasComponent(ViewerComponent.class)) {
@@ -89,6 +102,7 @@ public class RayCastingVisionCalculator implements VisionCalculator {
 
       if (e.hasComponent(VisionBlockingComponent.class)) {
         blockers.remove(e);
+        visibleAreas.clear();
       }
     }
   }
@@ -122,76 +136,84 @@ public class RayCastingVisionCalculator implements VisionCalculator {
     final int numberOfAngles = blockingPolys.getNumberOfVertices() * 3;
     double[] angles = new double[numberOfAngles];
 
+    boolean totalVisibleChanged = false;
     // Loop through all our viewers
     for (Entity viewer : viewers) {
 
-      var component = viewer.getComponent(MapFigureComponent.class);
-      if (component.isPresent()) {
-        var mapFig = component.get();
-        var viewerPoint = new Point2D(mapFig.getX(), mapFig.getY());
-        rays.clear();
+      if (!visibleAreas.containsKey(viewer)) { // Already calculated
 
-        // Loop through all of the vertices and determine the angle from our viewer.
-        int ind = 0;
-        for (Point2D vert : blockingPolys.getVertices()) {
-          double angle =
-              Math.atan2(vert.getY() - viewerPoint.getY(), vert.getX() - viewerPoint.getX());
-          angles[ind++] = angle - VERY_SMALL_ANGLE;
-          angles[ind++] = angle;
-          angles[ind++] = angle + VERY_SMALL_ANGLE;
-        }
+        totalVisibleChanged = true;
 
-        // Get a list of the closest intersection along a ray for each of the angles we derived
-        // above.
-        var lineIntersections = new ArrayList<MLineIntersection>(numberOfAngles);
-        for (double angle : angles) {
-          var direction = new Point2D(Math.cos(angle), Math.sin(angle));
+        var component = viewer.getComponent(MapFigureComponent.class);
+        if (component.isPresent()) {
+          var mapFig = component.get();
+          var viewerPoint = new Point2D(mapFig.getX(), mapFig.getY());
+          rays.clear();
 
-          // Create a new ray from the vertex to the viewer.
-          MLineSegment ray =
-              new MLineSegment(
-                  viewerPoint,
-                  new Point2D(
-                      viewerPoint.getX() + direction.getX(),
-                      viewerPoint.getY() + direction.getY()));
-          rays.add(ray);
+          // Loop through all of the vertices and determine the angle from our viewer.
+          int ind = 0;
+          for (Point2D vert : blockingPolys.getVertices()) {
+            double angle =
+                Math.atan2(vert.getY() - viewerPoint.getY(), vert.getX() - viewerPoint.getX());
+            angles[ind++] = angle - VERY_SMALL_ANGLE;
+            angles[ind++] = angle;
+            angles[ind++] = angle + VERY_SMALL_ANGLE;
+          }
 
-          MLineIntersection closest = null;
-          for (var lineSegment : blockingPolys.getLineSegments()) {
-            var interOpt = lineSegment.getIntersection(ray, angle);
-            if (interOpt.isPresent()) {
-              var inter = interOpt.get();
-              if (closest == null || closest.getDistance() > inter.getDistance()) {
-                closest = inter;
+          // Get a list of the closest intersection along a ray for each of the angles we derived
+          // above.
+          var lineIntersections = new ArrayList<MLineIntersection>(numberOfAngles);
+          for (double angle : angles) {
+            var direction = new Point2D(Math.cos(angle), Math.sin(angle));
+
+            // Create a new ray from the vertex to the viewer.
+            MLineSegment ray =
+                new MLineSegment(
+                    viewerPoint,
+                    new Point2D(
+                        viewerPoint.getX() + direction.getX(),
+                        viewerPoint.getY() + direction.getY()));
+            rays.add(ray);
+
+            MLineIntersection closest = null;
+            for (var lineSegment : blockingPolys.getLineSegments()) {
+              var interOpt = lineSegment.getIntersection(ray, angle);
+              if (interOpt.isPresent()) {
+                var inter = interOpt.get();
+                if (closest == null || closest.getDistance() > inter.getDistance()) {
+                  closest = inter;
+                }
               }
+            }
+
+            if (closest != null) {
+              lineIntersections.add(closest);
             }
           }
 
-          if (closest != null) {
-            lineIntersections.add(closest);
+          // Sort our intersections by angle, this is so we can easily turn them into triangles.
+          Collections.sort(
+              lineIntersections, Comparator.comparingDouble(MLineIntersection::getAngle));
+
+          // Create the triangles
+          var polyList = new ArrayList<MPolygon>();
+          for (int i = 0; i < lineIntersections.size() - 1; i++) {
+            var p1 = lineIntersections.get(i).getPoint();
+            var p2 = lineIntersections.get(i + 1).getPoint();
+            polyList.add(MPolygon.createTriangle(viewerPoint, p1, p2));
           }
-        }
-
-        // Sort our intersections by angle, this is so we can easily turn them into triangles.
-        Collections.sort(
-            lineIntersections, Comparator.comparingDouble(MLineIntersection::getAngle));
-
-        // Create the triangles
-        var polyList = new ArrayList<MPolygon>();
-        for (int i = 0; i < lineIntersections.size() - 1; i++) {
-          var p1 = lineIntersections.get(i).getPoint();
-          var p2 = lineIntersections.get(i + 1).getPoint();
+          // Close off the polygon
+          var p1 = lineIntersections.get(lineIntersections.size() - 1).getPoint();
+          var p2 = lineIntersections.get(0).getPoint();
           polyList.add(MPolygon.createTriangle(viewerPoint, p1, p2));
-        }
-        // Close off the polygon
-        var p1 = lineIntersections.get(lineIntersections.size() - 1).getPoint();
-        var p2 = lineIntersections.get(0).getPoint();
-        polyList.add(MPolygon.createTriangle(viewerPoint, p1, p2));
 
-        visibleAreas.put(viewer, new VisibleArea(polyList, rays, blockingPolys.getVertices()));
+          visibleAreas.put(viewer, new VisibleArea(polyList, rays, blockingPolys.getVertices()));
+        }
       }
     }
 
-    totalVisibleArea = VisibleArea.mergeVisibleAreas(visibleAreas.values());
+    if (totalVisibleChanged) {
+      totalVisibleArea = VisibleArea.mergeVisibleAreas(visibleAreas.values());
+    }
   }
 }

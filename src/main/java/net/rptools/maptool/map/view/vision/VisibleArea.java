@@ -16,6 +16,7 @@ package net.rptools.maptool.map.view.vision;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import javafx.geometry.Point2D;
 import net.rptools.maptool.map.geom.MLineSegment;
@@ -28,7 +29,7 @@ public class VisibleArea {
   public static VisibleArea NO_VISIBLE_AREA = new VisibleArea();
 
   /** The polygons that make up the visible area. */
-  private final Set<MPolygon> polygons;
+  private final List<MPolygon> polygons;
 
   /**
    * The "rays" shot out towards vision blocking polygon vertices (only really useful for debugging.
@@ -59,7 +60,7 @@ public class VisibleArea {
 
   /** Creates a new <code>VisibleArea</code> where nothing is visible. */
   private VisibleArea() {
-    polygons = Set.of();
+    polygons = List.of();
     rays = Set.of();
     vertices = Set.of();
   }
@@ -73,7 +74,7 @@ public class VisibleArea {
    */
   public VisibleArea(
       Collection<MPolygon> polys, Collection<MLineSegment> visionRays, Collection<Point2D> vert) {
-    polygons = Set.copyOf(polys);
+    polygons = List.copyOf(polys);
     rays = Set.copyOf(visionRays);
     vertices = Set.copyOf(vert);
   }
@@ -83,7 +84,7 @@ public class VisibleArea {
    *
    * @return the polygons that make up the visible area.
    */
-  public Set<MPolygon> getPolygons() {
+  public List<MPolygon> getPolygons() {
     return polygons;
   }
 

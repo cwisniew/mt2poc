@@ -80,6 +80,9 @@ public class App extends Application {
 
     EventBus eventBus = injector.getInstance(EventBus.class);
     eventBus.post(new GUIStartupEvent());
+
+    AppConfig appConfig = injector.getInstance(AppConfig.class);
+    appConfig.setRenderTimeDisplayCallback(ms -> sidePanelController.setLastRenderMs(ms));
   }
 
   /**

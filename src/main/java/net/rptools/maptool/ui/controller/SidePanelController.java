@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 
@@ -42,6 +43,9 @@ public class SidePanelController {
   @FXML // fx:id="layersListView"
   private ListView<String> layersListView;
 
+  @FXML // fx:id="lastRenderMs"
+  private Label lastRenderMs;
+
   /** The names of the resource files that contain the images we will be using. */
   @FXML // This method is called by the FXMLLoader when initialization is complete
   void initialize() {
@@ -56,5 +60,14 @@ public class SidePanelController {
 
     assert layersListView != null
         : "fx:id=\"layersListView\" was not injected: check your FXML file 'Untitled'.";
+
+    assert lastRenderMs != null
+        : "fx:id=\"lastRenderMs\" was not injected: check your FXML file 'Untitled'.";
+  }
+
+  public void setLastRenderMs(long ms) {
+    String timeTaken = ms + " ms";
+    lastRenderMs.setText(timeTaken);
+    System.out.println(timeTaken);
   }
 }

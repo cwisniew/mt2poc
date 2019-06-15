@@ -37,8 +37,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import net.rptools.maptool.AppConfig;
 import net.rptools.maptool.component.MapFigureComponent;
 import net.rptools.maptool.component.PolygonDrawableComponent;
 import net.rptools.maptool.entity.Entity;
@@ -50,6 +50,7 @@ import net.rptools.maptool.map.events.MapFigureDragEnd;
 import net.rptools.maptool.map.events.MapFigureDragStart;
 import net.rptools.maptool.map.events.MapFigureUpdate;
 import net.rptools.maptool.map.events.MapUpdateEvent;
+import net.rptools.maptool.map.geom.DPolygon;
 import net.rptools.maptool.map.grid.Grid;
 import net.rptools.maptool.map.grid.render.GridLine;
 import net.rptools.maptool.map.grid.render.GridRendererFactory;
@@ -133,6 +134,8 @@ public class MapViewImpl implements MapView, Closeable {
   private Canvas visionCanvas = new ResizableCanvas();
 
   private final Set<Entity> selected = new HashSet<>();
+
+  @Inject private AppConfig appConfig;
 
   /**
    * Creates a new <code>MapViewImpl</code> object.
@@ -467,6 +470,7 @@ public class MapViewImpl implements MapView, Closeable {
 
   /** Renders the content of the Map View. */
   private void render(boolean viewChanged) {
+    long startMs = System.currentTimeMillis();
     // Don't render until both width and height are set
     if (stackPane.getWidth() != 0 && stackPane.getHeight() != 0) {
       if (viewChanged) {
@@ -477,6 +481,7 @@ public class MapViewImpl implements MapView, Closeable {
       }
       renderVisibleArea();
     }
+    appConfig.displayRenderTime(System.currentTimeMillis() - startMs);
   }
 
   /** Renders the polygons that make up the visible area. */
@@ -494,21 +499,18 @@ public class MapViewImpl implements MapView, Closeable {
 
     gc.setStroke(Color.WHITE);
     gc.setFill(Color.rgb(255, 255, 255, 0.15));
-    final Set<Polygon> polygons =
+    final Set<DPolygon> polygons =
         mapViewPort.convertMapPolygonsToDisplay(visibleArea.getPolygons());
+
     for (var poly : polygons) {
-      final double x1 = poly.getPoints().get(0);
-      final double y1 = poly.getPoints().get(1);
-      final double x2 = poly.getPoints().get(2);
-      final double y2 = poly.getPoints().get(3);
-      final double x3 = poly.getPoints().get(4);
-      final double y3 = poly.getPoints().get(5);
+      final double[] x = poly.getX();
+      final double[] y = poly.getY();
 
-      gc.strokeLine(x1, y1, x2, y2);
-      gc.strokeLine(x2, y2, x3, y3);
-      gc.strokeLine(x3, y3, x1, y1);
+      gc.strokeLine(x[0], y[0], x[1], y[1]);
+      gc.strokeLine(x[1], y[1], x[2], y[2]);
+      gc.strokeLine(x[2], y[2], x[0], y[0]);
 
-      gc.fillPolygon(new double[] {x1, x2, x3}, new double[] {y1, y2, y3}, 3);
+      gc.fillPolygon(x, y, x.length);
     }
 
     gc.restore();

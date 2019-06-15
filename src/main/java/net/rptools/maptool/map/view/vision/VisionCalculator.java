@@ -36,6 +36,13 @@ public interface VisionCalculator {
   void removeEntity(Entity entity);
 
   /**
+   * Signals that the entity has been updated.
+   *
+   * @param entity the entity that was updated.
+   */
+  void updatedEntity(Entity entity);
+
+  /**
    * Adds several entities to the vision calculator.
    *
    * @param entities The entities to be added.

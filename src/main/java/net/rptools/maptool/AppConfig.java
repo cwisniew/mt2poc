@@ -15,6 +15,7 @@
 package net.rptools.maptool;
 
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /** Class that holds configuration values. */
 public interface AppConfig {
@@ -24,4 +25,8 @@ public interface AppConfig {
   Path getDataDir(String dirName);
 
   Path getResourceLibraryDir();
+
+  void setRenderTimeDisplayCallback(Consumer<Long> callback);
+
+  void displayRenderTime(long ms);
 }
