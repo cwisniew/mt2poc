@@ -138,7 +138,7 @@ public class ResourceLibraryController {
   }
 
   private ImageView getImageView(File file) {
-    Image img = new Image("file://" + file.getAbsolutePath(), true);
+    Image img = new Image(file.toURI().toString(), true);
     ImageView imageView = new ImageView(img);
     imageView.setPreserveRatio(true);
     imageView.setFitWidth(50);

@@ -136,6 +136,10 @@ public class RayCastingVisionCalculator implements VisionCalculator {
     final int numberOfAngles = blockingPolys.getNumberOfVertices() * 3;
     double[] angles = new double[numberOfAngles];
 
+    if (blockingPolys.getPolygons().size() == 0) {
+      return;
+    }
+
     boolean totalVisibleChanged = false;
     // Loop through all our viewers
     for (Entity viewer : viewers) {

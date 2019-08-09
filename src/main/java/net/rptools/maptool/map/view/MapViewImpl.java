@@ -252,7 +252,7 @@ public class MapViewImpl implements MapView, Closeable {
             // after all)
             Point2D mapPoint =
                 mapViewPort.convertDisplayToMap(new Point2D(event.getX(), event.getY()));
-            Image img = new Image("file://" + file.getAbsolutePath(), true);
+            Image img = new Image(file.toURI().toString(), true);
 
             double width;
             double height;

@@ -23,7 +23,7 @@ public class AppConfigImpl implements AppConfig {
 
   @Override
   public Path getDataDir() {
-    return Path.of(System.getProperty("user.home")).resolve(".maptool");
+    return Path.of(System.getProperty("user.home")).resolve(".maptool-rptools");
   }
 
   @Override
