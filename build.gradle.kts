@@ -29,8 +29,8 @@ repositories {
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_12
-    targetCompatibility = JavaVersion.VERSION_12
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
 
     // Get tag and commit info from Git to use for version numbering
     var repo = Grgit.open(mapOf("currentDir" to project.rootDir))
